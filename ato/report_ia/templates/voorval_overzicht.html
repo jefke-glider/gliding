@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+<style type="text/css">
+    .ingave-lijst{
+    	margin: 20px;
+    }
+</style>
+
+<div class="ingave-lijst">
+<h4><span class="label label-default"> {{user.username}} </span></h4>
+<h4><span class="label label-default"> {{club}} </span></h4>
+</div>
+<div class="page-menu">
+<ul class="breadcrumb">
+	<li><a href="{% url 'report_ia:voorval_create' %}">Nieuw voorval</a></li>
+	<li><a href="{% url 'logout' %}">Afmelden</a></li>
+{% if user.is_superuser %}
+	<li><a href="{% url 'report_ia:voorval_overzicht' %}">Totalen</a></li>
+	<li><a href="{% url 'report_ia:voorval_list' %}">Overzicht</a></li>
+	<li><a href="{% url 'admin:index' %}">Administrator</a></li>
+{% endif %}
+</ul>
+</div>
+{% if object_list %}
+    <div class="ingave-lijst">
+	<table class="table table-bordered">
+        <thead>
+            <tr>
+	        <th>Club</th>
+                <th>Aantal</th>
+            </tr>
+        </thead>
+        <tbody>
+	  {% for voorval in object_list %}
+	  <tr>
+	    <td><a href="{% url 'report_ia:voorval_lijst' voorval.club__id %}">{{ voorval.club__naam }}</a></td>
+	    <td>{{ voorval.aantal_voorvallen }}</td>
+	   </tr>
+           {% endfor %}
+	  </tbody>
+         </table>
+	</div>
+{% else %}
+    <p>Er zijn nog geen voorvallen geregistreerd.</p>
+{% endif %}
+
+
+
+{% endblock %}

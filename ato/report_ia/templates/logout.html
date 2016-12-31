@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+<style type="text/css">
+    .signin-class{
+    	margin: 20px;
+    }
+</style>
+
+<div class="page-header">
+ Gebruiker is afgemeld
+</div>
+<a href="{% url 'login' %}">Terug aanmelden</a>
+{% endblock %}
+
+
