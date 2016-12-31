@@ -1,0 +1,9 @@
+#all xemacs backup files
+*~
+*#
+*.jar
+*.zip
+*.exe
+*.tar
+*.dll
+__pycache__/
