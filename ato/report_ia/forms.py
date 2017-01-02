@@ -1,4 +1,5 @@
 from django.forms import ModelForm
+from django import forms
 
 from .models import Voorval
 
@@ -13,6 +14,9 @@ class VoorvalForm(ModelForm):
             'type_voorval': ('Wat soort voorval betreft het hier'),
             'synopsis': ('Geeft een omschrijving van het voorval'),
             'opleiding': ('De opleiding waarin de leerling zich momenteel bevindt'),
-            'startwijze':('Geef de startwijze aan'),
+            'startwijze': ('Geef de startwijze aan'),
             },
+        widgets = {
+            'datum': forms.DateInput(attrs={'class': 'datepicker'}),
+        }
 
