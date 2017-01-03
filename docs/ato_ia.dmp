@@ -1,0 +1,1844 @@
+--
+-- PostgreSQL database cluster dump
+--
+
+SET default_transaction_read_only = off;
+
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+
+--
+-- Roles
+--
+
+CREATE ROLE ato_admin;
+ALTER ROLE ato_admin WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN NOREPLICATION PASSWORD 'md5508231e45e57abc93c686cb852b4fab8';
+CREATE ROLE postgres;
+ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION;
+
+
+
+
+
+
+--
+-- Database creation
+--
+
+CREATE DATABASE ato_ia WITH TEMPLATE = template0 OWNER = postgres;
+REVOKE ALL ON DATABASE template1 FROM PUBLIC;
+REVOKE ALL ON DATABASE template1 FROM postgres;
+GRANT ALL ON DATABASE template1 TO postgres;
+GRANT CONNECT ON DATABASE template1 TO PUBLIC;
+
+
+\connect ato_ia
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE auth_group (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO ato_admin;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE auth_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO ato_admin;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE auth_group_id_seq OWNED BY auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO ato_admin;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE auth_group_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO ato_admin;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE auth_group_permissions_id_seq OWNED BY auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO ato_admin;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE auth_permission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO ato_admin;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE auth_permission_id_seq OWNED BY auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(30) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO ato_admin;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO ato_admin;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE auth_user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO ato_admin;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE auth_user_groups_id_seq OWNED BY auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE auth_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO ato_admin;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE auth_user_id_seq OWNED BY auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO ato_admin;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE auth_user_user_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO ato_admin;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE auth_user_user_permissions_id_seq OWNED BY auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO ato_admin;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE django_admin_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO ato_admin;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE django_admin_log_id_seq OWNED BY django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO ato_admin;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE django_content_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO ato_admin;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE django_content_type_id_seq OWNED BY django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO ato_admin;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE django_migrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO ato_admin;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE django_migrations_id_seq OWNED BY django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO ato_admin;
+
+--
+-- Name: report_ia_ato_gebruiker; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_ato_gebruiker (
+    id integer NOT NULL,
+    club_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_ato_gebruiker OWNER TO ato_admin;
+
+--
+-- Name: report_ia_club; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_club (
+    id integer NOT NULL,
+    naam text NOT NULL,
+    naam_kort character varying(10) NOT NULL,
+    locatie_id integer NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_club OWNER TO ato_admin;
+
+--
+-- Name: report_ia_club_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_club_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_club_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_club_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_club_id_seq OWNED BY report_ia_club.id;
+
+
+--
+-- Name: report_ia_opleiding; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_opleiding (
+    id integer NOT NULL,
+    naam character varying(30) NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_opleiding OWNER TO ato_admin;
+
+--
+-- Name: report_ia_opleiding_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_opleiding_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_opleiding_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_opleiding_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_opleiding_id_seq OWNED BY report_ia_opleiding.id;
+
+
+--
+-- Name: report_ia_startwijze; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_startwijze (
+    id integer NOT NULL,
+    naam character varying(30) NOT NULL,
+    naam_kort character varying(1) NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_startwijze OWNER TO ato_admin;
+
+--
+-- Name: report_ia_startwijze_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_startwijze_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_startwijze_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_startwijze_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_startwijze_id_seq OWNED BY report_ia_startwijze.id;
+
+
+--
+-- Name: report_ia_type_toestel; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_type_toestel (
+    id integer NOT NULL,
+    naam character varying(30) NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_type_toestel OWNER TO ato_admin;
+
+--
+-- Name: report_ia_type_toestel_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_type_toestel_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_type_toestel_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_type_toestel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_type_toestel_id_seq OWNED BY report_ia_type_toestel.id;
+
+
+--
+-- Name: report_ia_type_voorval; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_type_voorval (
+    id integer NOT NULL,
+    naam character varying(20) NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_type_voorval OWNER TO ato_admin;
+
+--
+-- Name: report_ia_type_voorval_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_type_voorval_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_type_voorval_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_type_voorval_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_type_voorval_id_seq OWNED BY report_ia_type_voorval.id;
+
+
+--
+-- Name: report_ia_userprofile_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_userprofile_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_userprofile_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_userprofile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_userprofile_id_seq OWNED BY report_ia_ato_gebruiker.id;
+
+
+--
+-- Name: report_ia_vliegveld; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_vliegveld (
+    id integer NOT NULL,
+    naam character varying(30) NOT NULL,
+    afkorting_icao character varying(4) NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_vliegveld OWNER TO ato_admin;
+
+--
+-- Name: report_ia_vliegveld_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_vliegveld_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_vliegveld_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_vliegveld_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_vliegveld_id_seq OWNED BY report_ia_vliegveld.id;
+
+
+--
+-- Name: report_ia_voorval; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_voorval (
+    id integer NOT NULL,
+    ingave timestamp with time zone NOT NULL,
+    datum date NOT NULL,
+    uur time without time zone NOT NULL,
+    synopsis text NOT NULL,
+    opleiding_id integer NOT NULL,
+    startwijze_id integer NOT NULL,
+    type_voorval_id integer NOT NULL,
+    club_id integer NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_voorval OWNER TO ato_admin;
+
+--
+-- Name: report_ia_voorval_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_voorval_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_voorval_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_voorval_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_voorval_id_seq OWNED BY report_ia_voorval.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_user ALTER COLUMN id SET DEFAULT nextval('auth_user_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_user_groups ALTER COLUMN id SET DEFAULT nextval('auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY django_migrations ALTER COLUMN id SET DEFAULT nextval('django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_ato_gebruiker ALTER COLUMN id SET DEFAULT nextval('report_ia_userprofile_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_club ALTER COLUMN id SET DEFAULT nextval('report_ia_club_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_opleiding ALTER COLUMN id SET DEFAULT nextval('report_ia_opleiding_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_startwijze ALTER COLUMN id SET DEFAULT nextval('report_ia_startwijze_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_type_toestel ALTER COLUMN id SET DEFAULT nextval('report_ia_type_toestel_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_type_voorval ALTER COLUMN id SET DEFAULT nextval('report_ia_type_voorval_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_vliegveld ALTER COLUMN id SET DEFAULT nextval('report_ia_vliegveld_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_voorval ALTER COLUMN id SET DEFAULT nextval('report_ia_voorval_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY auth_group (id, name) FROM stdin;
+1	ato_admin
+2	ato_user
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('auth_group_id_seq', 2, true);
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
+1	1	1
+2	1	2
+3	1	3
+4	1	4
+5	1	5
+6	1	6
+7	1	7
+8	1	8
+9	1	9
+10	1	10
+11	1	11
+12	1	12
+13	1	13
+14	1	14
+15	1	15
+16	1	16
+17	1	17
+18	1	18
+19	1	19
+20	1	20
+21	1	21
+22	1	22
+23	1	23
+24	1	24
+25	1	25
+26	1	26
+27	1	27
+28	1	28
+29	1	29
+30	1	30
+31	1	31
+32	1	32
+33	1	33
+34	1	34
+35	1	35
+36	1	36
+37	1	37
+38	1	38
+39	1	39
+\.
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', 39, true);
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can add group	2	add_group
+5	Can change group	2	change_group
+6	Can delete group	2	delete_group
+7	Can add permission	3	add_permission
+8	Can change permission	3	change_permission
+9	Can delete permission	3	delete_permission
+10	Can add user	4	add_user
+11	Can change user	4	change_user
+12	Can delete user	4	delete_user
+13	Can add content type	5	add_contenttype
+14	Can change content type	5	change_contenttype
+15	Can delete content type	5	delete_contenttype
+16	Can add session	6	add_session
+17	Can change session	6	change_session
+18	Can delete session	6	delete_session
+19	Can add club	7	add_club
+20	Can change club	7	change_club
+21	Can delete club	7	delete_club
+22	Can add vliegveld	8	add_vliegveld
+23	Can change vliegveld	8	change_vliegveld
+24	Can delete vliegveld	8	delete_vliegveld
+25	Can add opleiding	9	add_opleiding
+26	Can change opleiding	9	change_opleiding
+27	Can delete opleiding	9	delete_opleiding
+28	Can add startwijze	10	add_startwijze
+29	Can change startwijze	10	change_startwijze
+30	Can delete startwijze	10	delete_startwijze
+31	Can add type_voorval	11	add_type_voorval
+32	Can change type_voorval	11	change_type_voorval
+33	Can delete type_voorval	11	delete_type_voorval
+34	Can add voorval	12	add_voorval
+35	Can change voorval	12	change_voorval
+36	Can delete voorval	12	delete_voorval
+37	Can add type_toestel	13	add_type_toestel
+38	Can change type_toestel	13	change_type_toestel
+39	Can delete type_toestel	13	delete_type_toestel
+40	Can add user profile	14	add_userprofile
+41	Can change user profile	14	change_userprofile
+42	Can delete user profile	14	delete_userprofile
+43	Can add ato_gebruiker	14	add_ato_gebruiker
+44	Can change ato_gebruiker	14	change_ato_gebruiker
+45	Can delete ato_gebruiker	14	delete_ato_gebruiker
+\.
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('auth_permission_id_seq', 45, true);
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+3	pbkdf2_sha256$30000$M3s1ho2BuyMT$Fep7HAQvXYukDYzBTtMOypU8lHfrtnVAXS6VdskvvOk=	2016-12-29 15:36:57.352769+01	f	vza_user				f	t	2016-12-29 15:35:05.560853+01
+2	pbkdf2_sha256$30000$okIXBTHiuC01$QYSjIuox55KQWwJUY4QrIPGCePjS9xWIlnmg1EsJQCk=	2016-12-30 11:44:25.752015+01	f	kac_user				f	t	2016-12-27 13:12:44.021294+01
+1	pbkdf2_sha256$30000$eAnm6PSlpyX8$cEzDlDmcAamtxRAa+j0dJAgL2aFYwGGpVvUt2gD/s2w=	2016-12-31 13:41:49.541349+01	t	jpe			jef.peeraer@telenet.be	t	t	2016-12-15 15:27:46.169849+01
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('auth_user_id_seq', 3, true);
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2016-12-15 15:32:28.884988+01	1	Vliegveld object	1	[{"added": {}}]	8	1
+2	2016-12-15 15:32:45.60316+01	2	Vliegveld object	1	[{"added": {}}]	8	1
+3	2016-12-15 16:01:39.521344+01	1	Kempische Aeroclub	1	[{"added": {}}]	7	1
+4	2016-12-15 16:02:14.382818+01	2	Vlaamse Zweefvlieg Academie	1	[{"added": {}}]	7	1
+5	2016-12-15 16:35:15.113521+01	1	Sleepstart	1	[{"added": {}}]	10	1
+6	2016-12-15 16:35:30.485488+01	2	Lierstart	1	[{"added": {}}]	10	1
+7	2016-12-15 16:35:41.033201+01	3	Bungee	1	[{"added": {}}]	10	1
+8	2016-12-15 16:35:56.852811+01	4	Self Launching	1	[{"added": {}}]	10	1
+9	2016-12-15 16:36:14.887566+01	2	Winch	2	[{"changed": {"fields": ["naam"]}}]	10	1
+10	2016-12-15 16:36:32.481708+01	1	Aerotow	2	[{"changed": {"fields": ["naam"]}}]	10	1
+11	2016-12-16 10:43:02.110974+01	1	incident	1	[{"added": {}}]	11	1
+12	2016-12-16 10:43:13.463296+01	2	ernstig incident	1	[{"added": {}}]	11	1
+13	2016-12-16 10:43:21.902595+01	3	accident	1	[{"added": {}}]	11	1
+14	2016-12-16 11:06:43.204454+01	1	ASK-21	1	[{"added": {}}]	13	1
+15	2016-12-16 11:06:49.844909+01	2	ASK-13	1	[{"added": {}}]	13	1
+16	2016-12-16 11:07:14.84466+01	3	Twin Astir I (dikke Twin)	1	[{"added": {}}]	13	1
+17	2016-12-16 11:07:29.789911+01	4	Twin Astir II (dunne twin)	1	[{"added": {}}]	13	1
+18	2016-12-16 11:07:39.657756+01	5	Twin Astir III	1	[{"added": {}}]	13	1
+19	2016-12-20 12:30:50.276616+01	1	LAPL(S)/SPL	1	[{"added": {}}]	9	1
+20	2016-12-20 12:30:57.895274+01	2	FI	1	[{"added": {}}]	9	1
+21	2016-12-20 12:31:12.313992+01	3	TMG	1	[{"added": {}}]	9	1
+22	2016-12-20 14:47:22.643697+01	2	Voorval object	2	[{"changed": {"fields": ["datum"]}}]	12	1
+23	2016-12-27 12:42:22.077536+01	1	ato_admin	1	[{"added": {}}]	2	1
+24	2016-12-27 12:42:55.20119+01	2	ato_user	1	[{"added": {}}]	2	1
+25	2016-12-27 13:12:44.212159+01	2	kac_user	1	[{"added": {}}]	4	1
+26	2016-12-27 13:14:03.388679+01	1	UserProfile object	1	[{"added": {}}]	14	1
+27	2016-12-29 15:35:05.746232+01	3	vza_user	1	[{"added": {}}]	4	1
+28	2016-12-29 15:36:26.871877+01	2	Vlaamse Zweefvlieg Academie vza_user	1	[{"added": {}}]	14	1
+29	2016-12-29 21:12:10.197442+01	3	ATO	1	[{"added": {}}]	8	1
+30	2016-12-29 21:12:49.843888+01	3	Approved Training organization	1	[{"added": {}}]	7	1
+31	2016-12-29 21:13:17.982159+01	3	Approved Training organization jpe	1	[{"added": {}}]	14	1
+\.
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('django_admin_log_id_seq', 31, true);
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	group
+3	auth	permission
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	report_ia	club
+8	report_ia	vliegveld
+9	report_ia	opleiding
+10	report_ia	startwijze
+11	report_ia	type_voorval
+12	report_ia	voorval
+13	report_ia	type_toestel
+14	report_ia	ato_gebruiker
+\.
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('django_content_type_id_seq', 14, true);
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2016-12-15 13:03:35.298052+01
+2	auth	0001_initial	2016-12-15 13:03:35.523717+01
+3	admin	0001_initial	2016-12-15 13:03:35.615996+01
+4	admin	0002_logentry_remove_auto_add	2016-12-15 13:03:35.675468+01
+5	contenttypes	0002_remove_content_type_name	2016-12-15 13:03:35.814096+01
+6	auth	0002_alter_permission_name_max_length	2016-12-15 13:03:35.868382+01
+7	auth	0003_alter_user_email_max_length	2016-12-15 13:03:35.929398+01
+8	auth	0004_alter_user_username_opts	2016-12-15 13:03:35.984725+01
+9	auth	0005_alter_user_last_login_null	2016-12-15 13:03:36.043974+01
+10	auth	0006_require_contenttypes_0002	2016-12-15 13:03:36.050346+01
+11	auth	0007_alter_validators_add_error_messages	2016-12-15 13:03:36.113417+01
+12	auth	0008_alter_user_username_max_length	2016-12-15 13:03:36.231382+01
+13	sessions	0001_initial	2016-12-15 13:03:36.2669+01
+14	report_ia	0001_initial	2016-12-15 15:10:58.329806+01
+15	report_ia	0002_auto_20161215_1438	2016-12-15 15:38:29.80137+01
+16	report_ia	0003_opleiding_startwijze	2016-12-15 16:25:08.172729+01
+17	report_ia	0004_startwijze_naam_kort	2016-12-15 16:34:45.152278+01
+18	report_ia	0005_type_voorval_voorval	2016-12-16 10:39:57.837702+01
+19	report_ia	0006_type_toestel	2016-12-16 11:06:09.371866+01
+20	report_ia	0007_auto_20161227_1159	2016-12-27 12:59:31.507113+01
+21	report_ia	0008_voorval_club	2016-12-27 13:38:40.381875+01
+22	report_ia	0009_auto_20161229_0847	2016-12-29 09:47:08.382844+01
+23	report_ia	0010_auto_20161229_1413	2016-12-29 15:13:27.697792+01
+\.
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('django_migrations_id_seq', 23, true);
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY django_session (session_key, session_data, expire_date) FROM stdin;
+oirt7ktiguwsdxhqvamuauy3gdgrx08k	YjlhN2IzY2ZmY2E2NmVmMTZlZDJmMjhiZGQ0OWQ2MDk2ZDljOTU5NDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYzI1NGE4MTNiNjFkYzBiZTE1YjA4MzE0ZjRhZjAyYTEyMzA3MDQ2NSIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=	2017-01-14 13:41:49.549868+01
+kovt3fypf6fkheum7ho4fohg7iyg6300	YjlhN2IzY2ZmY2E2NmVmMTZlZDJmMjhiZGQ0OWQ2MDk2ZDljOTU5NDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYzI1NGE4MTNiNjFkYzBiZTE1YjA4MzE0ZjRhZjAyYTEyMzA3MDQ2NSIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=	2016-12-29 16:39:40.949631+01
+i1h8c4891ao1yx4t220ju4qrn671sogt	NWVlYjFmNjhkYWJkZTFmNTIzZGEwZDNhYWY0YjY1NzU4MDJjNWVjNTp7fQ==	2017-01-13 08:47:23.483824+01
+5pashv84e6z5wctc30t2i4sqjg7fjk9b	NWVlYjFmNjhkYWJkZTFmNTIzZGEwZDNhYWY0YjY1NzU4MDJjNWVjNTp7fQ==	2017-01-13 09:21:00.915905+01
+rs0exc8uow4blhrnd3wt3gvkt1czlb08	NWVlYjFmNjhkYWJkZTFmNTIzZGEwZDNhYWY0YjY1NzU4MDJjNWVjNTp7fQ==	2017-01-13 09:36:55.793815+01
+f5eu3yapq6o67dgxtfsn2opxd070zgdx	NWVlYjFmNjhkYWJkZTFmNTIzZGEwZDNhYWY0YjY1NzU4MDJjNWVjNTp7fQ==	2017-01-13 09:48:18.722881+01
+06wvaabzgyvfgx22snp2c8zm8bztqnwd	NWVlYjFmNjhkYWJkZTFmNTIzZGEwZDNhYWY0YjY1NzU4MDJjNWVjNTp7fQ==	2017-01-13 10:02:00.560325+01
+\.
+
+
+--
+-- Data for Name: report_ia_ato_gebruiker; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_ato_gebruiker (id, club_id, user_id) FROM stdin;
+1	1	2
+2	2	3
+3	3	1
+\.
+
+
+--
+-- Data for Name: report_ia_club; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_club (id, naam, naam_kort, locatie_id) FROM stdin;
+1	Kempische Aeroclub	KAC	1
+2	Vlaamse Zweefvlieg Academie	VZA	1
+3	Approved Training organization	ATO	3
+\.
+
+
+--
+-- Name: report_ia_club_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_club_id_seq', 3, true);
+
+
+--
+-- Data for Name: report_ia_opleiding; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_opleiding (id, naam) FROM stdin;
+1	LAPL(S)/SPL
+2	FI
+3	TMG
+\.
+
+
+--
+-- Name: report_ia_opleiding_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_opleiding_id_seq', 3, true);
+
+
+--
+-- Data for Name: report_ia_startwijze; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_startwijze (id, naam, naam_kort) FROM stdin;
+3	Bungee	B
+4	Self Launching	L
+2	Winch	W
+1	Aerotow	S
+\.
+
+
+--
+-- Name: report_ia_startwijze_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_startwijze_id_seq', 4, true);
+
+
+--
+-- Data for Name: report_ia_type_toestel; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_type_toestel (id, naam) FROM stdin;
+1	ASK-21
+2	ASK-13
+3	Twin Astir I (dikke Twin)
+4	Twin Astir II (dunne twin)
+5	Twin Astir III
+\.
+
+
+--
+-- Name: report_ia_type_toestel_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_type_toestel_id_seq', 5, true);
+
+
+--
+-- Data for Name: report_ia_type_voorval; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_type_voorval (id, naam) FROM stdin;
+1	incident
+2	ernstig incident
+3	accident
+\.
+
+
+--
+-- Name: report_ia_type_voorval_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_type_voorval_id_seq', 3, true);
+
+
+--
+-- Name: report_ia_userprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_userprofile_id_seq', 3, true);
+
+
+--
+-- Data for Name: report_ia_vliegveld; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_vliegveld (id, naam, afkorting_icao) FROM stdin;
+1	Weelde	EBWE
+2	Zoersel	EBZR
+3	ATO	All
+\.
+
+
+--
+-- Name: report_ia_vliegveld_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_vliegveld_id_seq', 3, true);
+
+
+--
+-- Data for Name: report_ia_voorval; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_voorval (id, ingave, datum, uur, synopsis, opleiding_id, startwijze_id, type_voorval_id, club_id) FROM stdin;
+1	2016-12-27 10:56:59.101874+01	2016-12-20	12:30:00	test test testjeeee	1	2	1	1
+3	2016-12-27 10:59:21.521315+01	2016-12-25	10:30:00	wat is er gebeurd.....	1	2	3	1
+2	2016-12-28 20:49:03.856325+01	2016-12-19	12:30:00	test je	1	2	1	1
+4	2016-12-29 14:19:04.638538+01	2016-12-01	12:00:00	test test dddddd	1	2	1	1
+5	2016-12-29 14:26:28.121163+01	2015-12-02	01:01:00	test	1	3	2	1
+6	2016-12-29 15:14:01.578016+01	2016-01-01	09:30:00	sdsdsd	1	3	1	1
+7	2016-12-29 15:29:54.49756+01	2016-02-01	10:20:00	wwwwwwwwwwwwwww	2	3	1	1
+8	2016-12-30 13:56:07.667607+01	2016-12-20	10:10:00	vza vza\r\nhallo	1	3	1	2
+\.
+
+
+--
+-- Name: report_ia_voorval_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_voorval_id_seq', 8, true);
+
+
+--
+-- Name: auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions_group_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission_content_type_id_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups_user_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type_app_label_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_app_label_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: report_ia_club_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_club
+    ADD CONSTRAINT report_ia_club_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_ia_opleiding_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_opleiding
+    ADD CONSTRAINT report_ia_opleiding_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_ia_startwijze_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_startwijze
+    ADD CONSTRAINT report_ia_startwijze_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_ia_type_toestel_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_type_toestel
+    ADD CONSTRAINT report_ia_type_toestel_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_ia_type_voorval_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_type_voorval
+    ADD CONSTRAINT report_ia_type_voorval_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_ia_userprofile_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_ato_gebruiker
+    ADD CONSTRAINT report_ia_userprofile_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_ia_userprofile_user_id_key; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_ato_gebruiker
+    ADD CONSTRAINT report_ia_userprofile_user_id_key UNIQUE (user_id);
+
+
+--
+-- Name: report_ia_vliegveld_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_vliegveld
+    ADD CONSTRAINT report_ia_vliegveld_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_ia_voorval_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_voorval
+    ADD CONSTRAINT report_ia_voorval_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_0e939a4f; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_0e939a4f ON auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_8373b171; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_8373b171 ON auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_417f1b1c; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX auth_permission_417f1b1c ON auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_0e939a4f; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_0e939a4f ON auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_e8701ad4; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_e8701ad4 ON auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_8373b171; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_8373b171 ON auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_e8701ad4; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_e8701ad4 ON auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_417f1b1c; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_417f1b1c ON django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_e8701ad4; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_e8701ad4 ON django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_de54fa62; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX django_session_de54fa62 ON django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: report_ia_club_c864c2c1; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX report_ia_club_c864c2c1 ON report_ia_club USING btree (locatie_id);
+
+
+--
+-- Name: report_ia_userprofile_7115697a; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX report_ia_userprofile_7115697a ON report_ia_ato_gebruiker USING btree (club_id);
+
+
+--
+-- Name: report_ia_voorval_3b7662bb; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX report_ia_voorval_3b7662bb ON report_ia_voorval USING btree (startwijze_id);
+
+
+--
+-- Name: report_ia_voorval_7115697a; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX report_ia_voorval_7115697a ON report_ia_voorval USING btree (club_id);
+
+
+--
+-- Name: report_ia_voorval_80e8607c; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX report_ia_voorval_80e8607c ON report_ia_voorval USING btree (opleiding_id);
+
+
+--
+-- Name: report_ia_voorval_be60e4fd; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX report_ia_voorval_be60e4fd ON report_ia_voorval USING btree (type_voorval_id);
+
+
+--
+-- Name: auth_group_permiss_permission_id_84c5c92e_fk_auth_permission_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permiss_permission_id_84c5c92e_fk_auth_permission_id FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permiss_content_type_id_2f476e4b_fk_django_content_type_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permiss_content_type_id_2f476e4b_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_per_permission_id_1fbb5f2c_fk_auth_permission_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_per_permission_id_1fbb5f2c_fk_auth_permission_id FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_content_type_id_c4bce8eb_fk_django_content_type_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_content_type_id_c4bce8eb_fk_django_content_type_id FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: report_ia_club_locatie_id_33f69f2e_fk_report_ia_vliegveld_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_club
+    ADD CONSTRAINT report_ia_club_locatie_id_33f69f2e_fk_report_ia_vliegveld_id FOREIGN KEY (locatie_id) REFERENCES report_ia_vliegveld(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: report_ia_type_voorval_id_ced031d4_fk_report_ia_type_voorval_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_voorval
+    ADD CONSTRAINT report_ia_type_voorval_id_ced031d4_fk_report_ia_type_voorval_id FOREIGN KEY (type_voorval_id) REFERENCES report_ia_type_voorval(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: report_ia_userprofile_club_id_a6ab9829_fk_report_ia_club_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_ato_gebruiker
+    ADD CONSTRAINT report_ia_userprofile_club_id_a6ab9829_fk_report_ia_club_id FOREIGN KEY (club_id) REFERENCES report_ia_club(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: report_ia_userprofile_user_id_44645e6c_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_ato_gebruiker
+    ADD CONSTRAINT report_ia_userprofile_user_id_44645e6c_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: report_ia_voo_startwijze_id_898833ff_fk_report_ia_startwijze_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_voorval
+    ADD CONSTRAINT report_ia_voo_startwijze_id_898833ff_fk_report_ia_startwijze_id FOREIGN KEY (startwijze_id) REFERENCES report_ia_startwijze(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: report_ia_voorv_opleiding_id_c335aa48_fk_report_ia_opleiding_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_voorval
+    ADD CONSTRAINT report_ia_voorv_opleiding_id_c335aa48_fk_report_ia_opleiding_id FOREIGN KEY (opleiding_id) REFERENCES report_ia_opleiding(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: report_ia_voorval_club_id_4bda7f1d_fk_report_ia_club_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_voorval
+    ADD CONSTRAINT report_ia_voorval_club_id_4bda7f1d_fk_report_ia_club_id FOREIGN KEY (club_id) REFERENCES report_ia_club(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+\connect postgres
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: postgres; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE postgres IS 'default administrative connection database';
+
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+\connect template1
+
+SET default_transaction_read_only = off;
+
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: template1; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE template1 IS 'default template for new databases';
+
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+--
+-- PostgreSQL database cluster dump complete
+--
+
