@@ -450,6 +450,39 @@ ALTER SEQUENCE report_ia_club_id_seq OWNED BY report_ia_club.id;
 
 
 --
+-- Name: report_ia_kern_activiteit; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_kern_activiteit (
+    id integer NOT NULL,
+    naam character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_kern_activiteit OWNER TO ato_admin;
+
+--
+-- Name: report_ia_kern_activiteit_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_kern_activiteit_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_kern_activiteit_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_kern_activiteit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_kern_activiteit_id_seq OWNED BY report_ia_kern_activiteit.id;
+
+
+--
 -- Name: report_ia_opleiding; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
 --
 
@@ -480,6 +513,39 @@ ALTER TABLE public.report_ia_opleiding_id_seq OWNER TO ato_admin;
 --
 
 ALTER SEQUENCE report_ia_opleiding_id_seq OWNED BY report_ia_opleiding.id;
+
+
+--
+-- Name: report_ia_schade; Type: TABLE; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE TABLE report_ia_schade (
+    id integer NOT NULL,
+    omschrijving text NOT NULL
+);
+
+
+ALTER TABLE public.report_ia_schade OWNER TO ato_admin;
+
+--
+-- Name: report_ia_schade_id_seq; Type: SEQUENCE; Schema: public; Owner: ato_admin
+--
+
+CREATE SEQUENCE report_ia_schade_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.report_ia_schade_id_seq OWNER TO ato_admin;
+
+--
+-- Name: report_ia_schade_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ato_admin
+--
+
+ALTER SEQUENCE report_ia_schade_id_seq OWNED BY report_ia_schade.id;
 
 
 --
@@ -650,7 +716,13 @@ CREATE TABLE report_ia_voorval (
     opleiding_id integer NOT NULL,
     startwijze_id integer NOT NULL,
     type_voorval_id integer NOT NULL,
-    club_id integer NOT NULL
+    club_id integer NOT NULL,
+    muopo character varying(3) NOT NULL,
+    kern_activiteit_id integer NOT NULL,
+    materiele_schade boolean NOT NULL,
+    menselijke_schade boolean NOT NULL,
+    schade_omschrijving text NOT NULL,
+    type_toestel_id integer NOT NULL
 );
 
 
@@ -758,7 +830,21 @@ ALTER TABLE ONLY report_ia_club ALTER COLUMN id SET DEFAULT nextval('report_ia_c
 -- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
 --
 
+ALTER TABLE ONLY report_ia_kern_activiteit ALTER COLUMN id SET DEFAULT nextval('report_ia_kern_activiteit_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
 ALTER TABLE ONLY report_ia_opleiding ALTER COLUMN id SET DEFAULT nextval('report_ia_opleiding_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_schade ALTER COLUMN id SET DEFAULT nextval('report_ia_schade_id_seq'::regclass);
 
 
 --
@@ -917,6 +1003,12 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 43	Can add ato_gebruiker	14	add_ato_gebruiker
 44	Can change ato_gebruiker	14	change_ato_gebruiker
 45	Can delete ato_gebruiker	14	delete_ato_gebruiker
+46	Can add kern_activiteit	15	add_kern_activiteit
+47	Can change kern_activiteit	15	change_kern_activiteit
+48	Can delete kern_activiteit	15	delete_kern_activiteit
+49	Can add schade	16	add_schade
+50	Can change schade	16	change_schade
+51	Can delete schade	16	delete_schade
 \.
 
 
@@ -924,7 +1016,7 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 45, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', 51, true);
 
 
 --
@@ -1011,6 +1103,12 @@ COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, cha
 29	2016-12-29 21:12:10.197442+01	3	ATO	1	[{"added": {}}]	8	1
 30	2016-12-29 21:12:49.843888+01	3	Approved Training organization	1	[{"added": {}}]	7	1
 31	2016-12-29 21:13:17.982159+01	3	Approved Training organization jpe	1	[{"added": {}}]	14	1
+32	2017-01-04 14:20:54.658188+01	1	cockpit check	1	[{"added": {}}]	15	1
+33	2017-01-04 14:21:07.134629+01	2	dagelijkse inspectie	1	[{"added": {}}]	15	1
+34	2017-01-04 14:21:18.511457+01	3	landings fase	1	[{"added": {}}]	15	1
+35	2017-01-04 14:21:23.809949+01	4	lier fase	1	[{"added": {}}]	15	1
+36	2017-01-04 14:21:34.244417+01	5	startbox fase lier	1	[{"added": {}}]	15	1
+37	2017-01-04 14:21:44.512434+01	6	startbox fase sleep	1	[{"added": {}}]	15	1
 \.
 
 
@@ -1018,7 +1116,7 @@ COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, cha
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
 --
 
-SELECT pg_catalog.setval('django_admin_log_id_seq', 31, true);
+SELECT pg_catalog.setval('django_admin_log_id_seq', 37, true);
 
 
 --
@@ -1040,6 +1138,8 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 12	report_ia	voorval
 13	report_ia	type_toestel
 14	report_ia	ato_gebruiker
+15	report_ia	kern_activiteit
+16	report_ia	schade
 \.
 
 
@@ -1047,7 +1147,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 14, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', 16, true);
 
 
 --
@@ -1078,6 +1178,9 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 21	report_ia	0008_voorval_club	2016-12-27 13:38:40.381875+01
 22	report_ia	0009_auto_20161229_0847	2016-12-29 09:47:08.382844+01
 23	report_ia	0010_auto_20161229_1413	2016-12-29 15:13:27.697792+01
+24	report_ia	0011_auto_20170104_1303	2017-01-04 14:03:52.014197+01
+25	report_ia	0012_auto_20170104_1319	2017-01-04 14:22:07.49545+01
+26	report_ia	0013_auto_20170104_1332	2017-01-04 14:32:31.280798+01
 \.
 
 
@@ -1085,7 +1188,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 23, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 26, true);
 
 
 --
@@ -1093,7 +1196,6 @@ SELECT pg_catalog.setval('django_migrations_id_seq', 23, true);
 --
 
 COPY django_session (session_key, session_data, expire_date) FROM stdin;
-oirt7ktiguwsdxhqvamuauy3gdgrx08k	YjlhN2IzY2ZmY2E2NmVmMTZlZDJmMjhiZGQ0OWQ2MDk2ZDljOTU5NDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYzI1NGE4MTNiNjFkYzBiZTE1YjA4MzE0ZjRhZjAyYTEyMzA3MDQ2NSIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=	2017-01-14 13:41:49.549868+01
 kovt3fypf6fkheum7ho4fohg7iyg6300	YjlhN2IzY2ZmY2E2NmVmMTZlZDJmMjhiZGQ0OWQ2MDk2ZDljOTU5NDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYzI1NGE4MTNiNjFkYzBiZTE1YjA4MzE0ZjRhZjAyYTEyMzA3MDQ2NSIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=	2016-12-29 16:39:40.949631+01
 i1h8c4891ao1yx4t220ju4qrn671sogt	NWVlYjFmNjhkYWJkZTFmNTIzZGEwZDNhYWY0YjY1NzU4MDJjNWVjNTp7fQ==	2017-01-13 08:47:23.483824+01
 5pashv84e6z5wctc30t2i4sqjg7fjk9b	NWVlYjFmNjhkYWJkZTFmNTIzZGEwZDNhYWY0YjY1NzU4MDJjNWVjNTp7fQ==	2017-01-13 09:21:00.915905+01
@@ -1133,6 +1235,27 @@ SELECT pg_catalog.setval('report_ia_club_id_seq', 3, true);
 
 
 --
+-- Data for Name: report_ia_kern_activiteit; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_kern_activiteit (id, naam) FROM stdin;
+1	cockpit check
+2	dagelijkse inspectie
+3	landings fase
+4	lier fase
+5	startbox fase lier
+6	startbox fase sleep
+\.
+
+
+--
+-- Name: report_ia_kern_activiteit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_kern_activiteit_id_seq', 6, true);
+
+
+--
 -- Data for Name: report_ia_opleiding; Type: TABLE DATA; Schema: public; Owner: ato_admin
 --
 
@@ -1148,6 +1271,21 @@ COPY report_ia_opleiding (id, naam) FROM stdin;
 --
 
 SELECT pg_catalog.setval('report_ia_opleiding_id_seq', 3, true);
+
+
+--
+-- Data for Name: report_ia_schade; Type: TABLE DATA; Schema: public; Owner: ato_admin
+--
+
+COPY report_ia_schade (id, omschrijving) FROM stdin;
+\.
+
+
+--
+-- Name: report_ia_schade_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
+--
+
+SELECT pg_catalog.setval('report_ia_schade_id_seq', 1, false);
 
 
 --
@@ -1236,15 +1374,16 @@ SELECT pg_catalog.setval('report_ia_vliegveld_id_seq', 3, true);
 -- Data for Name: report_ia_voorval; Type: TABLE DATA; Schema: public; Owner: ato_admin
 --
 
-COPY report_ia_voorval (id, ingave, datum, uur, synopsis, opleiding_id, startwijze_id, type_voorval_id, club_id) FROM stdin;
-1	2016-12-27 10:56:59.101874+01	2016-12-20	12:30:00	test test testjeeee	1	2	1	1
-3	2016-12-27 10:59:21.521315+01	2016-12-25	10:30:00	wat is er gebeurd.....	1	2	3	1
-2	2016-12-28 20:49:03.856325+01	2016-12-19	12:30:00	test je	1	2	1	1
-4	2016-12-29 14:19:04.638538+01	2016-12-01	12:00:00	test test dddddd	1	2	1	1
-5	2016-12-29 14:26:28.121163+01	2015-12-02	01:01:00	test	1	3	2	1
-6	2016-12-29 15:14:01.578016+01	2016-01-01	09:30:00	sdsdsd	1	3	1	1
-7	2016-12-29 15:29:54.49756+01	2016-02-01	10:20:00	wwwwwwwwwwwwwww	2	3	1	1
-8	2016-12-30 13:56:07.667607+01	2016-12-20	10:10:00	vza vza\r\nhallo	1	3	1	2
+COPY report_ia_voorval (id, ingave, datum, uur, synopsis, opleiding_id, startwijze_id, type_voorval_id, club_id, muopo, kern_activiteit_id, materiele_schade, menselijke_schade, schade_omschrijving, type_toestel_id) FROM stdin;
+1	2016-12-27 10:56:59.101874+01	2016-12-20	12:30:00	test test testjeeee	1	2	1	1	1	1	f	f	1	1
+3	2016-12-27 10:59:21.521315+01	2016-12-25	10:30:00	wat is er gebeurd.....	1	2	3	1	1	1	f	f	1	1
+2	2016-12-28 20:49:03.856325+01	2016-12-19	12:30:00	test je	1	2	1	1	1	1	f	f	1	1
+4	2016-12-29 14:19:04.638538+01	2016-12-01	12:00:00	test test dddddd	1	2	1	1	1	1	f	f	1	1
+5	2016-12-29 14:26:28.121163+01	2015-12-02	01:01:00	test	1	3	2	1	1	1	f	f	1	1
+6	2016-12-29 15:14:01.578016+01	2016-01-01	09:30:00	sdsdsd	1	3	1	1	1	1	f	f	1	1
+7	2016-12-29 15:29:54.49756+01	2016-02-01	10:20:00	wwwwwwwwwwwwwww	2	3	1	1	1	1	f	f	1	1
+8	2016-12-30 13:56:07.667607+01	2016-12-20	10:10:00	vza vza\r\nhallo	1	3	1	2	1	1	f	f	1	1
+9	2017-01-04 14:28:11.257049+01	2000-01-01	10:20:00	testjeeee	1	3	1	3	1	1	f	f		1
 \.
 
 
@@ -1252,7 +1391,7 @@ COPY report_ia_voorval (id, ingave, datum, uur, synopsis, opleiding_id, startwij
 -- Name: report_ia_voorval_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ato_admin
 --
 
-SELECT pg_catalog.setval('report_ia_voorval_id_seq', 8, true);
+SELECT pg_catalog.setval('report_ia_voorval_id_seq', 9, true);
 
 
 --
@@ -1400,11 +1539,27 @@ ALTER TABLE ONLY report_ia_club
 
 
 --
+-- Name: report_ia_kern_activiteit_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_kern_activiteit
+    ADD CONSTRAINT report_ia_kern_activiteit_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: report_ia_opleiding_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
 --
 
 ALTER TABLE ONLY report_ia_opleiding
     ADD CONSTRAINT report_ia_opleiding_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_ia_schade_pkey; Type: CONSTRAINT; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+ALTER TABLE ONLY report_ia_schade
+    ADD CONSTRAINT report_ia_schade_pkey PRIMARY KEY (id);
 
 
 --
@@ -1569,6 +1724,20 @@ CREATE INDEX report_ia_userprofile_7115697a ON report_ia_ato_gebruiker USING btr
 
 
 --
+-- Name: report_ia_voorval_270884bb; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX report_ia_voorval_270884bb ON report_ia_voorval USING btree (type_toestel_id);
+
+
+--
+-- Name: report_ia_voorval_33dd2e46; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
+--
+
+CREATE INDEX report_ia_voorval_33dd2e46 ON report_ia_voorval USING btree (kern_activiteit_id);
+
+
+--
 -- Name: report_ia_voorval_3b7662bb; Type: INDEX; Schema: public; Owner: ato_admin; Tablespace: 
 --
 
@@ -1669,11 +1838,27 @@ ALTER TABLE ONLY django_admin_log
 
 
 --
+-- Name: rep_kern_activiteit_id_eeaae7fa_fk_report_ia_kern_activiteit_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_voorval
+    ADD CONSTRAINT rep_kern_activiteit_id_eeaae7fa_fk_report_ia_kern_activiteit_id FOREIGN KEY (kern_activiteit_id) REFERENCES report_ia_kern_activiteit(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: report_ia_club_locatie_id_33f69f2e_fk_report_ia_vliegveld_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
 --
 
 ALTER TABLE ONLY report_ia_club
     ADD CONSTRAINT report_ia_club_locatie_id_33f69f2e_fk_report_ia_vliegveld_id FOREIGN KEY (locatie_id) REFERENCES report_ia_vliegveld(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: report_ia_type_toestel_id_b726e6a4_fk_report_ia_type_toestel_id; Type: FK CONSTRAINT; Schema: public; Owner: ato_admin
+--
+
+ALTER TABLE ONLY report_ia_voorval
+    ADD CONSTRAINT report_ia_type_toestel_id_b726e6a4_fk_report_ia_type_toestel_id FOREIGN KEY (type_toestel_id) REFERENCES report_ia_type_toestel(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
