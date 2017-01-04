@@ -7,7 +7,9 @@ class VoorvalForm(ModelForm):
 
     class Meta:
         model = Voorval
-        fields = ( 'datum', 'uur', 'type_voorval', 'synopsis', 'opleiding', 'startwijze')
+        fields = ( 'datum', 'uur', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' ,
+                   'type_toestel', 'kern_activiteit', 'muopo', 'menselijke_schade',
+                   'materiele_schade', 'schade_omschrijving')
         help_texts = {
             'datum': ('Datum van het voorval.'),
             'uur': ('Uur van het voorval.'),

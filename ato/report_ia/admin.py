@@ -9,6 +9,7 @@ from .models import Type_voorval
 from .models import Type_toestel
 from .models import Voorval
 from .models import Ato_gebruiker
+from .models import Kern_activiteit
 
 admin.site.register(Vliegveld)
 admin.site.register(Club)
@@ -18,3 +19,4 @@ admin.site.register(Opleiding)
 admin.site.register(Type_voorval)
 admin.site.register(Type_toestel)
 admin.site.register(Voorval)
+admin.site.register(Kern_activiteit)

@@ -23,9 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'e07rwrgj2_@ya^^@0lyi*21pjn^y2ls9)&rhr@96u%47^l228-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.uname()[1] == 'gimli':
+    DEBUG = False
+else:
+    DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'atoia.dyndns.org']
 
 
 # Application definition
@@ -40,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',
     'jquery',
+    'multiselectfield',
 ]
 
 MIDDLEWARE = [
@@ -130,9 +134,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = '/static/'
+if os.uname()[1] == 'gimli':
+    STATIC_ROOT = '/home/jpe/gliding/ato/static/'
+                
+    STATIC_URL = '/static/'
+                
+    STATICFILES_DIRS = [
+        '/home/jpe/atoenv/lib/python3.4/site-packages/django/contrib/admin/static/'
+        ]
+else:
+    STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    '/usr/lib/python3.4/site-packages/jquery/',
-]
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "static"),
+        '/usr/lib/python3.4/site-packages/jquery/',
+        ]
