@@ -17,6 +17,7 @@
 	<li><a href="{% url 'logout' %}">Afmelden</a></li>
 {% if user.is_superuser %}
 	<li><a href="{% url 'report_ia:voorval_overzicht' %}">Totalen</a></li>
+	<li><a href="{% url 'report_ia:voorval_export' %}">Exporteren</a></li>
 	<li><a href="{% url 'admin:index' %}">Administrator</a></li>
 {% endif %}
 </ul>

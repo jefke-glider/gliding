@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 def home(request):
     html = """
-    <h1>ATO incident/accident regeistraties</h1>
+    <h1>ATO incident/accident registraties</h1>
     <a href="/report_ia/">Registraties</a><br>
     """
     return HttpResponse(html)
