@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.db.models import Count, Avg
 from django import forms
 from django.db import connection
-import csv
+
+
 
 # Create your views here.
 from django.http import HttpResponse
@@ -17,6 +18,7 @@ from .forms import VoorvalForm, ExportForm
 from .models import Voorval
 from .models import Ato_gebruiker
 from .models import Club
+from .utilities import export
 
 #which club the web user is a member of
 def club(web_user):
@@ -95,20 +97,19 @@ def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
 
 @login_required
 def voorval_export(request, template_name="export_table.html"):
+    aclub = club(request.user)        
     ef = ExportForm(request.POST or None)
     if ef.is_valid():
         #retrieve the data
-        voorvallen = Voorval.objects.filter(club_id=request.POST['club_to_export']).values_list()
-        print(voorvallen)
-        # Create the HttpResponse object with the appropriate CSV header.
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="' + request.POST['filename'] + '"'
-        
-        writer = csv.writer(response)
-        for field in Voorval._meta.fields:
-            #writer.writerow(field)
-            print(field)
-        for row in voorvallen:
-            writer.writerow(row)        
-        return response
-    return render(request, template_name, {'form':ef})
+        if ef.cleaned_data['club_to_export']: 
+            voorvallen = Voorval.objects.filter(club_id=ef.cleaned_data['club_to_export'])
+        else:
+            voorvallen = Voorval.objects.all()
+        print (ef.cleaned_data['export_date_from'])
+        if ef.cleaned_data['export_date_from']:
+            voorvallen=voorvallen.filter(datum__gte=ef.cleaned_data['export_date_from'])
+        if ef.cleaned_data['export_date_till']:
+            voorvallen=voorvallen.filter(datum__lte=ef.cleaned_data['export_date_till'])
+        return export(voorvallen)
+    return render(request, template_name, {'form':ef, 'club':aclub})
+
