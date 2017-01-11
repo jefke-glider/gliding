@@ -38,6 +38,7 @@ def voorval_list(request, pk = None, template_name='voorval_lijst.html'):
             voorval = Voorval.objects.all()
     else:
         voorval = Voorval.objects.filter(club=ausr.club())
+    #recent voorval where ingave < 1 week
     data = {}
     data['object_list'] = voorval
     data['ausr'] = ausr

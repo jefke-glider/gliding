@@ -137,5 +137,14 @@ class Voorval(models.Model):
     def __str__(self):
         return self.ingave
 
+    @property
+    def is_recent(self):
+        #a voorval is recent if it has been entered less than a week ago
+        from datetime import datetime, timedelta
+        if self.ingave.replace(tzinfo=None) < (datetime.today() - timedelta(days = 7)):
+            return False
+        else:
+            return True
+
     class Meta:
         verbose_name_plural = 'Voorvallen'

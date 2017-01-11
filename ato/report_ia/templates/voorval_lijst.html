@@ -37,7 +37,11 @@
         </thead>
         <tbody>
 	  {% for voorval in object_list %}
-	  <tr>
+	  {% if voorval.is_recent %}
+	    <tr class="warning">
+	  {% else %}
+	    <tr>
+	  {% endif %}
 	    <td>{{ voorval.club }}</td>
 	    <td>{{ voorval.ingave }}</td>
 	    <td>{{ voorval.type_voorval }}</td>
