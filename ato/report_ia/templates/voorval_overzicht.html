@@ -15,7 +15,7 @@
 <ul class="breadcrumb">
 	<li><a href="{% url 'report_ia:voorval_create' %}">Nieuw voorval</a></li>
 	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-{% if user.is_superuser %}
+{% if ausr.is_super %}
 	<li><a href="{% url 'report_ia:voorval_overzicht' %}">Totalen</a></li>
 	<li><a href="{% url 'report_ia:voorval_list' %}">Overzicht</a></li>
 	<li><a href="{% url 'admin:index' %}">Administrator</a></li>

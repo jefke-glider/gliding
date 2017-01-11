@@ -15,7 +15,7 @@
 <ul class="breadcrumb">
 	<li><a href="{% url 'report_ia:voorval_create' %}">Nieuw voorval</a></li>
 	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-{% if user.is_superuser %}
+{% if ausr.is_super %}
 	<li><a href="{% url 'report_ia:voorval_overzicht' %}">Totalen</a></li>
 	<li><a href="{% url 'report_ia:voorval_export' %}">Exporteren</a></li>
 	<li><a href="{% url 'admin:index' %}">Administrator</a></li>
@@ -43,8 +43,8 @@
 	    <td>{{ voorval.type_voorval }}</td>
 	    <td>{{ voorval.opleiding }}</td>
 	    <td>{{ voorval.synopsis }}</td>
-	    <td><a href="{% url 'report_ia:voorval_update' voorval.id %}">edit</a></td>
-	    <td><a href="{% url 'report_ia:voorval_delete' voorval.id %}">delete</a></td>
+	    <td><a href="{% url 'report_ia:voorval_update' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
+	    <td><a href="{% url 'report_ia:voorval_delete' voorval.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a></td>
 	   </tr>
            {% endfor %}
 	  </tbody>

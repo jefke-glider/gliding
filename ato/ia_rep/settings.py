@@ -25,8 +25,10 @@ SECRET_KEY = 'e07rwrgj2_@ya^^@0lyi*21pjn^y2ls9)&rhr@96u%47^l228-'
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.uname()[1] == 'gimli':
     DEBUG = False
+    EMAIL_HOST='localhost'
 else:
     DEBUG = True
+    EMAIL_HOST = 'wall-e'
 
 ALLOWED_HOSTS = ['localhost', 'atoia.dyndns.org']
 

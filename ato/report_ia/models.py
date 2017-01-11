@@ -86,6 +86,24 @@ class Kern_activiteit(models.Model):
     
     class Meta:
         verbose_name_plural = 'Kern activiteit'
+
+class Kern_gevaar(models.Model):
+    naam = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.naam
+    
+    class Meta:
+        verbose_name_plural = 'Kern gevaar'
+    
+class Potentieel_risico(models.Model):
+    naam = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.naam
+    
+    class Meta:
+        verbose_name_plural = 'Potentieel_risico'
    
 
 class Schade(models.Model):
