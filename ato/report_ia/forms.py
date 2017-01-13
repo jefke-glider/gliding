@@ -1,9 +1,9 @@
 
-from django.forms import ModelForm
+from django.forms import ModelForm, Textarea
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Voorval, Club
+from .models import Voorval, Club, Maatregel
 
 class VoorvalForm(ModelForm):
 
@@ -13,16 +13,25 @@ class VoorvalForm(ModelForm):
                    'type_toestel', 'kern_activiteit', 'muopo', 'menselijke_schade',
                    'materiele_schade', 'schade_omschrijving')
         help_texts = {
-            'datum': ('Datum van het voorval.'),
-            'uur': ('Uur van het voorval.'),
-            'type_voorval': ('Wat soort voorval betreft het hier'),
-            'synopsis': ('Geeft een omschrijving van het voorval'),
-            'opleiding': ('De opleiding waarin de leerling zich momenteel bevindt'),
-            'startwijze': ('Geef de startwijze aan'),
+            'datum': _('Datum van het voorval.'),
+            'uur': _('Uur van het voorval.'),
+            'type_voorval': _('Wat soort voorval betreft het hier'),
+            'synopsis': _('Geeft een omschrijving van het voorval'),
+            'opleiding': _('De opleiding waarin de leerling zich momenteel bevindt'),
+            'startwijze': _('Geef de startwijze aan'),
             },
         widgets = {
             'datum': forms.DateInput(attrs={'class': 'datepicker'}),
         }
+
+class MaatregelForm(ModelForm):
+    synopsis = forms.CharField(label='synopsis voorval',
+                               required=False,
+                               widget=forms.Textarea(attrs={'cols': '80', 'rows':'10', 'disabled':True}))
+    class Meta:
+        model = Maatregel
+        fields = ('synopsis', 'omschrijving',)
+        labels = {'omschrijving' : 'omschrijving maatregel'}
 
 
 class ExportForm(forms.Form):

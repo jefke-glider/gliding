@@ -40,7 +40,11 @@
 	  {% if voorval.is_recent %}
 	    <tr class="warning">
 	  {% else %}
-	    <tr>
+	     {% if voorval.has_maatregel  %}
+	      <tr class="info">
+	     {% else %}
+              <tr class="danger">
+	     {% endif %}
 	  {% endif %}
 	    <td>{{ voorval.club }}</td>
 	    <td>{{ voorval.ingave }}</td>
@@ -49,6 +53,9 @@
 	    <td>{{ voorval.synopsis }}</td>
 	    <td><a href="{% url 'report_ia:voorval_update' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
 	    <td><a href="{% url 'report_ia:voorval_delete' voorval.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a></td>
+{% if ausr.is_admin or ausr.is_super%}
+	<td><a href="{% url 'report_ia:maatregel_create' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-tasks"></span></a></td>
+{% endif %}
 	   </tr>
            {% endfor %}
 	  </tbody>

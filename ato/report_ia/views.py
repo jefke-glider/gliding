@@ -13,7 +13,7 @@ from django.shortcuts import render_to_response
 from django.views.generic import ListView
 from django.forms import ModelChoiceField
 
-from .forms import VoorvalForm, ExportForm
+from .forms import VoorvalForm, ExportForm, MaatregelForm
 from .models import Voorval
 
 from .models import Club
@@ -73,7 +73,7 @@ def voorval_create(request, template_name="voorval_ingave.html"):
         send_mail(
             'Voorval geregistreerd',
             message,
-            'from@example.com',
+            'eia@gmail.com',
             email_to,
             fail_silently=False,
             )
@@ -122,3 +122,30 @@ def voorval_export(request, template_name="export_table.html"):
         return export(voorvallen)
     return render(request, template_name, {'form':ef, 'club':ausr.club_naam()})
 
+@login_required
+def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.html"):
+    ausr = Ato(request.user)
+    voorval = get_object_or_404(Voorval, pk=voorval_pk)
+    form = MaatregelForm(request.POST or None, initial={'synopsis':voorval.synopsis})
+    if form.is_valid():
+        my_model = form.save(commit=False)
+        my_model.voorval = voorval
+        my_model.save()
+        #we send an email to responsable persons
+        email_to = ausr.email_admins() + ausr.email_supers()
+        message = 'Er werd een nieuwe maatregel geregistreerd voor de club ' + ausr.club_naam()
+        send_mail(
+            'Maatregel geregistreerd',
+            message,
+            'eia@gmail.com',
+            email_to,
+            fail_silently=False,
+            )
+        return redirect('report_ia:maatregel_toegevoegd')
+    return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam()})
+    
+@login_required
+def maatregel_toegevoegd(request, template_name="maatregel_ingave_bevestiging.html"):
+    ausr = Ato(request.user)
+    emails = ausr.email_admins() + ausr.email_supers()
+    return render(request, template_name, {'emails' : emails, 'club':ausr.club_naam()})

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block content %}
+<style type="text/css">
+    .ingave-class{
+    	margin: 20px;
+	body: 900px;
+    }
+</style>
+  </script>
+<div class="page-header">
+	{% if action == 'create' %}
+	<h4><span class="label label-default"> Aanmaken Maatregel</span></h4>
+	{% elif action == 'update' %}
+	<h4><span class="label label-default"> Aanpassen Maatregel</span></h4>
+	{% endif %}
+	<h4><span class="label label-default"> {{user.username}} </span></h4>
+	<h4><span class="label label-default"> {{club}} </span></h4>
+</div>
+
+<div class="page-menu">
+<ul class="breadcrumb">
+	<li><a href="{% url 'report_ia:voorval_list' %}">Overzicht</a></li>
+	<li><a href="{% url 'logout' %}">Afmelden</a></li>
+</ul>
+</div>
+<div class="ingave-class">
+   <form  class="form-vertical" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form layout="vertical" %}
+	<button type="submit" class="btn btn-primary">
+	  {% bootstrap_icon "star" %} Opslaan
+	</button>
+	<button type="Reset" class="btn">
+	  Reset
+	</button>
+
+    </form>
+
+
+</div>
+{% endblock %}

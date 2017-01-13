@@ -133,6 +133,7 @@ class Voorval(models.Model):
                              max_length=3)
     type_toestel = models.ForeignKey(Type_toestel, on_delete=models.CASCADE)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.CASCADE)
+    aantal_maatregelen = models.IntegerField(default=0)
     
     def __str__(self):
         return self.ingave
@@ -146,5 +147,24 @@ class Voorval(models.Model):
         else:
             return True
 
+    @property
+    def has_maatregel(self):
+        if self.aantal_maatregelen > 0:
+            return True
+        else:
+            return False
+        
     class Meta:
         verbose_name_plural = 'Voorvallen'
+
+
+class Maatregel(models.Model):
+    ingave =  models.DateTimeField(auto_now=True)
+    omschrijving = models.TextField()
+    voorval = models.ForeignKey(Voorval, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Maatregelen'
+
+    def __str__(self):
+        return self.ingave
