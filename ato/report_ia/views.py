@@ -14,7 +14,7 @@ from django.views.generic import ListView
 from django.forms import ModelChoiceField
 
 from .forms import VoorvalForm, ExportForm, MaatregelForm
-from .models import Voorval
+from .models import Voorval, Maatregel
 
 from .models import Club
 from .utilities import export, Ato
@@ -149,3 +149,40 @@ def maatregel_toegevoegd(request, template_name="maatregel_ingave_bevestiging.ht
     ausr = Ato(request.user)
     emails = ausr.email_admins() + ausr.email_supers()
     return render(request, template_name, {'emails' : emails, 'club':ausr.club_naam()})
+
+@login_required
+def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
+    ausr = Ato(request.user)        
+    if ausr.is_super:
+        if pk:
+            maatregel = Maatregel.objects.filter(voorval__club_id=pk)
+        else:
+            maatregel = Maatregel.objects.all()
+    else:
+        maatregel = Maatregel.objects.filter(voorval__club=ausr.club())
+    #recent voorval where ingave < 1 week
+    data = {}
+    data['object_list'] = maatregel
+    data['ausr'] = ausr
+    data['club'] = ausr.club_naam()
+    return render(request, template_name, data)
+
+@login_required
+def maatregel_delete(request, pk, template_name="maatregel_confirm_delete.html"):
+    maatregel = get_object_or_404(Maatregel, pk=pk)    
+    if request.method=='POST':
+        maatregel.delete()
+        return redirect('report_ia:maatregel_lijst')
+    return render(request, template_name, {'object':maatregel})
+    
+@login_required
+def maatregel_update(request, pk, template_name='maatregel_ingave.html'):
+    ausr = Ato(request.user)
+    maatregel = get_object_or_404(Maatregel, pk=pk)
+    form = MaatregelForm(request.POST or None, instance = maatregel, initial={'synopsis':maatregel.voorval.synopsis})
+    if form.is_valid():
+        form.save()
+        return redirect('report_ia:maatregel_lijst')
+    return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam()})
+
+

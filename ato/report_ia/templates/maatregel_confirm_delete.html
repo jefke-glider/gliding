@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+<style type="text/css">
+    .ingave-class{
+    	margin: 20px;
+	body: 900px;
+    }
+</style>
+<div class="page-header">
+Verwijderen maatregel
+</div>
+<div class="page-menu">
+<ul class="breadcrumb">
+	<li><a href="{% url 'report_ia:maatregel_lijst' %}">Overzicht</a></li>
+	<li><a href="{% url 'logout' %}">Afmelden</a></li>
+</ul>
+</div>
+<div class="ingave-class">
+   <form  class="form-vertical" "method="POST">{% csrf_token %}
+	  Are you sure you want to delete "{{ maatregel.ingave }}" ?
+        {% buttons submit='Verwijderen' reset="Cancel" layout='horizontal' %}{% endbuttons %}
+    </form>
+</div>
+{% endblock %}

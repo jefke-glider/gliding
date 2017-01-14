@@ -16,6 +16,7 @@
 	<li><a href="{% url 'report_ia:voorval_create' %}">Nieuw voorval</a></li>
 	<li><a href="{% url 'logout' %}">Afmelden</a></li>
 {% if ausr.is_super %}
+	<li><a href="{% url 'report_ia:maatregel_lijst'  %}">Maatregelen</a></li>
 	<li><a href="{% url 'report_ia:voorval_overzicht' %}">Totalen</a></li>
 	<li><a href="{% url 'report_ia:voorval_export' %}">Exporteren</a></li>
 	<li><a href="{% url 'admin:index' %}">Administrator</a></li>
@@ -25,14 +26,20 @@
       
 {% if object_list %}
     <div class="ingave-lijst">
+{% if ausr.is_super %}
+ <h3>should show all clubs here (only superuser)</h3>
+{% endif %}
 	<table class="table table-bordered">
         <thead>
             <tr>
 	        <th>Club</th>
-                <th>Datum ingave</th>
+                <th>Datum voorval</th>
                 <th>Type voorval</th>
+	        <th>Type toestel</th>
                 <th>Opleiding</th>
                 <th>Synopsis</th>
+	        <th colspan="2">Acties Voorval</th>
+	        <th colspan="2">Acties Maatregel</th>
             </tr>
         </thead>
         <tbody>
@@ -47,14 +54,20 @@
 	     {% endif %}
 	  {% endif %}
 	    <td>{{ voorval.club }}</td>
-	    <td>{{ voorval.ingave }}</td>
+	    <td>{{ voorval.datum }}</td>
 	    <td>{{ voorval.type_voorval }}</td>
+	    <td>{{ voorval.type_toestel }}</td>
 	    <td>{{ voorval.opleiding }}</td>
 	    <td>{{ voorval.synopsis }}</td>
 	    <td><a href="{% url 'report_ia:voorval_update' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            {% if voorval.aantal_maatregelen %}
+	    <td><a href="{% url 'report_ia:voorval_delete' voorval.id %}" class="btn btn-danger btn-sm disabled"><span class="glyphicon glyphicon-trash"></span></a></td>
+            {% else %}
 	    <td><a href="{% url 'report_ia:voorval_delete' voorval.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a></td>
+            {% endif %}
 {% if ausr.is_admin or ausr.is_super%}
-	<td><a href="{% url 'report_ia:maatregel_create' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-tasks"></span></a></td>
+	<td><a href="{% url 'report_ia:maatregel_create' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span></a></td>
+	<td><a href="{% url 'report_ia:maatregel_lijst' voorval.id %}" class="btn btn-success btn-sm"><span class="badge">{{ voorval.aantal_maatregelen }}</span></a></td>
 {% endif %}
 	   </tr>
            {% endfor %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+<style type="text/css">
+    .ingave-lijst{
+    	margin: 20px;
+    }
+</style>
+
+<div class="ingave-lijst">
+<h4><span class="label label-default"> {{user.username}} </span></h4>
+<h4><span class="label label-default"> {{club}} </span></h4>
+</div>
+<div class="page-menu">
+<ul class="breadcrumb">
+	<li><a href="{% url 'logout' %}">Afmelden</a></li>
+{% if ausr.is_super %}
+	<li><a href="{% url 'report_ia:voorval_list' %}">Overzicht</a></li>
+	<li><a href="{% url 'report_ia:voorval_export' %}">Exporteren</a></li>
+	<li><a href="{% url 'admin:index' %}">Administrator</a></li>
+{% endif %}
+</ul>
+</div>
+      
+{% if object_list %}
+    <div class="ingave-lijst">
+{% if ausr.is_super %}
+ <h3>should show all clubs here (only superuser)</h3>
+{% endif %}
+	<table class="table table-bordered">
+        <thead>
+            <tr>
+	        <th>Club</th>
+                <th>Datum voorval</th>
+                <th>Synopsis</th>
+                <th>Maatregel omschrijving</th>
+            </tr>
+        </thead>
+        <tbody>
+	  {% for maatregel in object_list %}
+	    <td>{{ maatregel.voorval.club }}</td>
+	    <td>{{ maatregel.voorval.datum }}</td>
+	    <td>{{ maatregel.voorval.synopsis }}</td>
+	    <td>{{ maatregel.omschrijving }}</td>
+	    <td><a href="{% url 'report_ia:maatregel_update' maatregel.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
+	    <td><a href="{% url 'report_ia:maatregel_delete' maatregel.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a></td>
+	   </tr>
+           {% endfor %}
+	  </tbody>
+         </table>
+	</div>
+{% else %}
+    <p>Er zijn nog geen maatregelen geregistreerd.</p>
+{% endif %}
+
+{% endblock %}
