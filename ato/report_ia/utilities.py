@@ -2,7 +2,8 @@ from django.http import HttpResponse
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User, Group
 from django.core.mail import send_mail
-from .models import Ato_gebruiker
+from .models import Ato_gebruiker, Maatregel, Voorval, VoorvalMaatregel
+from django.db import connection
 
 import csv
 from datetime import datetime
@@ -24,6 +25,7 @@ def export(qs, fields=None):
         headers = []
         for field in model._meta.fields:
             headers.append(field.name)
+    print(headers)
     writer.writerow(headers)
     # Write data to CSV file
     for obj in qs:
@@ -37,6 +39,15 @@ def export(qs, fields=None):
         writer.writerow(row)
     # Return CSV file to browser as download
     return response
+
+def export_sql():
+    with connection.cursor() as cursor:
+        cursor.execute("""
+        select * from report_ia_voorval vv left join report_ia_maatregel ma on (ma.voorval_id = vv.id);
+        """)
+        rows = cursor.fetchall()
+    return rows
+
 
 
 class Ato:
@@ -128,3 +139,6 @@ def test_ato():
             fail_silently=False,
             )
 
+def test_export():
+    vm = VoorvalMaatregel.objects.all()
+    print(vm.values())

@@ -14,7 +14,7 @@ from django.views.generic import ListView
 from django.forms import ModelChoiceField
 
 from .forms import VoorvalForm, ExportForm, MaatregelForm
-from .models import Voorval, Maatregel
+from .models import Voorval, Maatregel, VoorvalMaatregel
 
 from .models import Club
 from .utilities import export, Ato
@@ -109,18 +109,39 @@ def voorval_export(request, template_name="export_table.html"):
     ausr = Ato(request.user)        
     ef = ExportForm(request.POST or None)
     if ef.is_valid():
-        #retrieve the data
-        if ef.cleaned_data['club_to_export']: 
-            voorvallen = Voorval.objects.filter(club_id=ef.cleaned_data['club_to_export'])
+        print('ef is valid')
+        print(ef.cleaned_data['tabel_to_export'])
+        if ef.cleaned_data['tabel_to_export'] == '1':
+            print('table to export is voorvallen')
+            #retrieve the data
+            if ef.cleaned_data['club_to_export']: 
+                voorvallen = Voorval.objects.filter(club_id=ef.cleaned_data['club_to_export'])
+            else:
+                voorvallen = Voorval.objects.all()
+            print (ef.cleaned_data['export_date_from'])
+            if ef.cleaned_data['export_date_from']:
+                voorvallen=voorvallen.filter(datum__gte=ef.cleaned_data['export_date_from'])
+            if ef.cleaned_data['export_date_till']:
+                voorvallen=voorvallen.filter(datum__lte=ef.cleaned_data['export_date_till'])
+            return export(voorvallen)
+        elif ef.cleaned_data['tabel_to_export'] == '2':
+            print('table to export is voorvalmaatregelen')
+            if ef.cleaned_data['club_to_export']:
+                vm = VoorvalMaatregel.objects.filter(club_id=ef.cleaned_data['club_to_export'])
+            else:
+                vm = VoorvalMaatregel.objects.all()
+            if ef.cleaned_data['export_date_from']:
+                vm=vm.filter(datum__gte=ef.cleaned_data['export_date_from'])
+            if ef.cleaned_data['export_date_till']:
+                vm=vm.filter(datum__lte=ef.cleaned_data['export_date_till'])
+            return export(vm)
+        elif ef.cleaned_data['tabel_to_export'] == '3':
+            all_rows = export_sql()
         else:
-            voorvallen = Voorval.objects.all()
-        print (ef.cleaned_data['export_date_from'])
-        if ef.cleaned_data['export_date_from']:
-            voorvallen=voorvallen.filter(datum__gte=ef.cleaned_data['export_date_from'])
-        if ef.cleaned_data['export_date_till']:
-            voorvallen=voorvallen.filter(datum__lte=ef.cleaned_data['export_date_till'])
-        return export(voorvallen)
+            print('no matching choice for table to export')
     return render(request, template_name, {'form':ef, 'club':ausr.club_naam()})
+
+
 
 @login_required
 def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.html"):

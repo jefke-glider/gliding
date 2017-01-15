@@ -135,8 +135,8 @@ class Voorval(models.Model):
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.CASCADE)
     aantal_maatregelen = models.IntegerField(default=0)
     
-    def __str__(self):
-        return self.ingave
+#    def __str__(self):
+#        return self.datum
 
     @property
     def is_recent(self):
@@ -166,5 +166,32 @@ class Maatregel(models.Model):
     class Meta:
         verbose_name_plural = 'Maatregelen'
 
-    def __str__(self):
-        return self.ingave
+#    def __str__(self):
+#        return self.voorval.datum
+
+#
+# this models refers to a view!!!
+# -> extra meta attributes need to be specified
+#
+class VoorvalMaatregel(models.Model):
+    id = models.IntegerField(primary_key=True)
+    datum = models.DateField()
+    uur = models.TimeField()
+    type_voorval = models.ForeignKey(Type_voorval, on_delete=models.DO_NOTHING)    
+    synopsis = models.TextField()
+    opleiding = models.ForeignKey(Opleiding, on_delete=models.DO_NOTHING)
+    startwijze = models.ForeignKey(Startwijze, on_delete=models.DO_NOTHING)
+    club = models.ForeignKey(Club, on_delete=models.DO_NOTHING)
+    menselijke_schade = models.BooleanField(default=False)
+    materiele_schade = models.BooleanField(default=False)
+    schade_omschrijving = models.TextField()
+    muopo = MultiSelectField(choices=OORZAKEN_KEUZES,
+                             max_choices=3,
+                             max_length=3)
+    type_toestel = models.ForeignKey(Type_toestel, on_delete=models.DO_NOTHING)
+    kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.DO_NOTHING)
+    omschrijving =  models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'voorval_maatregel'

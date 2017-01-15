@@ -53,12 +53,12 @@
               <tr class="danger">
 	     {% endif %}
 	  {% endif %}
-	    <td>{{ voorval.club }}</td>
-	    <td>{{ voorval.datum }}</td>
+	    <td>{{ voorval.club.naam_kort }}</td>
+	    <td>{{ voorval.datum|date:"SHORT_DATE_FORMAT" }}</td>
 	    <td>{{ voorval.type_voorval }}</td>
 	    <td>{{ voorval.type_toestel }}</td>
 	    <td>{{ voorval.opleiding }}</td>
-	    <td>{{ voorval.synopsis }}</td>
+	    <td>{{ voorval.synopsis|truncatewords:20 }}</td>
 	    <td><a href="{% url 'report_ia:voorval_update' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
             {% if voorval.aantal_maatregelen %}
 	    <td><a href="{% url 'report_ia:voorval_delete' voorval.id %}" class="btn btn-danger btn-sm disabled"><span class="glyphicon glyphicon-trash"></span></a></td>
