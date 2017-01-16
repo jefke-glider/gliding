@@ -14,8 +14,10 @@ The safety manager can query the database, and make reports in different formats
 * django 1.10
 * bootstrap 3.0
 * jQuery
+* PostGresql 9.x
 
 #ToDO
-* send email to Ahot and safety manager 
-* corrective actions registration
+* send email to Ahot and safety manager OK
+* corrective actions registration OK
 * complete registration fields
+* add some filtering possibilities e.g. only show records for the current year

@@ -98,24 +98,23 @@ def voorval_update(request, pk, template_name='voorval_ingave.html'):
 
 @login_required
 def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
-    voorval = get_object_or_404(Voorval, pk=pk)    
+    voorval = get_object_or_404(Voorval, pk=pk)
+    ausr = Ato(request.user)
     if request.method=='POST':
         voorval.delete()
         return redirect('report_ia:voorval_list')
-    return render(request, template_name, {'object':voorval})
+    return render(request, template_name, {'object':voorval, 'club':ausr.club_naam()})
 
 @login_required
 def voorval_export(request, template_name="export_table.html"):
     ausr = Ato(request.user)        
     ef = ExportForm(request.POST or None)
     if ausr.is_admin:
+        #fix this choicefield for club to the admins club
         ef.fields['club_to_export'].initial=ausr.club_id()
         ef.fields['club_to_export'].disabled=True
     if ef.is_valid():
-        print('ef is valid')
-        print(ef.cleaned_data['tabel_to_export'])
         if ef.cleaned_data['tabel_to_export'] == '1':
-            print('table to export is voorvalmaatregelen')
             if ef.cleaned_data['club_to_export']:
                 vm = VoorvalMaatregel.objects.filter(club_id=ef.cleaned_data['club_to_export'])
             else:
@@ -128,8 +127,6 @@ def voorval_export(request, template_name="export_table.html"):
         else:
             print('no matching choice for table to export')
     return render(request, template_name, {'form':ef, 'club':ausr.club_naam()})
-
-
 
 @login_required
 def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.html"):
@@ -180,11 +177,12 @@ def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
 
 @login_required
 def maatregel_delete(request, pk, template_name="maatregel_confirm_delete.html"):
-    maatregel = get_object_or_404(Maatregel, pk=pk)    
+    ausr = Ato(request.user)
+    maatregel = get_object_or_404(Maatregel, pk=pk)
     if request.method=='POST':
         maatregel.delete()
         return redirect('report_ia:maatregel_lijst')
-    return render(request, template_name, {'object':maatregel})
+    return render(request, template_name, {'maatregel':maatregel, 'club':ausr.club_naam()})
     
 @login_required
 def maatregel_update(request, pk, template_name='maatregel_ingave.html'):
