@@ -84,6 +84,12 @@ class Ato:
         else:
             return ('')
 
+    def club_id(self):
+        if self.ato:
+            return (self.ato.club.id)
+        else:
+            return ('')
+
     def user(self):
         return (self.ato_user)
 
@@ -124,6 +130,7 @@ def test_ato():
         print(ato.user())
         print(ato.club())
         print(ato.club_naam())
+        print(ato.club_id())
         print(ato.email_admins())
         print(ato.email_supers())
         print(ato.is_user)

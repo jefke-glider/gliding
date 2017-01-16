@@ -108,23 +108,13 @@ def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
 def voorval_export(request, template_name="export_table.html"):
     ausr = Ato(request.user)        
     ef = ExportForm(request.POST or None)
+    if ausr.is_admin:
+        ef.fields['club_to_export'].initial=ausr.club_id()
+        ef.fields['club_to_export'].disabled=True
     if ef.is_valid():
         print('ef is valid')
         print(ef.cleaned_data['tabel_to_export'])
         if ef.cleaned_data['tabel_to_export'] == '1':
-            print('table to export is voorvallen')
-            #retrieve the data
-            if ef.cleaned_data['club_to_export']: 
-                voorvallen = Voorval.objects.filter(club_id=ef.cleaned_data['club_to_export'])
-            else:
-                voorvallen = Voorval.objects.all()
-            print (ef.cleaned_data['export_date_from'])
-            if ef.cleaned_data['export_date_from']:
-                voorvallen=voorvallen.filter(datum__gte=ef.cleaned_data['export_date_from'])
-            if ef.cleaned_data['export_date_till']:
-                voorvallen=voorvallen.filter(datum__lte=ef.cleaned_data['export_date_till'])
-            return export(voorvallen)
-        elif ef.cleaned_data['tabel_to_export'] == '2':
             print('table to export is voorvalmaatregelen')
             if ef.cleaned_data['club_to_export']:
                 vm = VoorvalMaatregel.objects.filter(club_id=ef.cleaned_data['club_to_export'])
@@ -135,8 +125,6 @@ def voorval_export(request, template_name="export_table.html"):
             if ef.cleaned_data['export_date_till']:
                 vm=vm.filter(datum__lte=ef.cleaned_data['export_date_till'])
             return export(vm)
-        elif ef.cleaned_data['tabel_to_export'] == '3':
-            all_rows = export_sql()
         else:
             print('no matching choice for table to export')
     return render(request, template_name, {'form':ef, 'club':ausr.club_naam()})
@@ -176,11 +164,13 @@ def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
     ausr = Ato(request.user)        
     if ausr.is_super:
         if pk:
-            maatregel = Maatregel.objects.filter(voorval__club_id=pk)
+            maatregel = Maatregel.objects.filter(voorval__id=pk)
         else:
             maatregel = Maatregel.objects.all()
-    else:
+    elif ausr.is_admin:
         maatregel = Maatregel.objects.filter(voorval__club=ausr.club())
+    else:
+        print('shouldnt reach this')
     #recent voorval where ingave < 1 week
     data = {}
     data['object_list'] = maatregel
