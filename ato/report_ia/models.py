@@ -185,7 +185,7 @@ class Maatregel(models.Model):
 #
 class VoorvalMaatregel(models.Model):
     id = models.IntegerField(primary_key=True)
-    datum = models.DateField()
+    datum_voorval = models.DateField()
     uur = models.TimeField()
     ato = models.IntegerField()
     type_voorval = models.ForeignKey(Type_voorval, on_delete=models.DO_NOTHING)    
@@ -199,7 +199,7 @@ class VoorvalMaatregel(models.Model):
     muopo = MultiSelectField()
     type_toestel = models.ForeignKey(Type_toestel, on_delete=models.DO_NOTHING)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.DO_NOTHING)
-    omschrijving =  models.TextField()
+    maatregel_omschrijving =  models.TextField()
     in_werking = models.DateField()
 
     class Meta:
