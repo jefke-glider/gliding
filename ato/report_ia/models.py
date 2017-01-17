@@ -4,12 +4,6 @@ from django.contrib.auth.models import User
 from multiselectfield import MultiSelectField
 
 
-OORZAKEN_KEUZES = (
-    (1, 'Mens'),
-    (2, 'Uitrusting'),
-    (3, 'Omgeving'),
-    (4, 'Product'),
-    (5, 'Organisatie'))
 
 # Create your models here.
 
@@ -114,11 +108,22 @@ class Schade(models.Model):
     
     class Meta:
         verbose_name_plural = 'Schade'
-     
-
+   
 class Voorval(models.Model):
+    ATO_VOORVAL = (
+        (1, 'ATO voorval'),
+        (2, 'niet ATO voorval'),
+        )
+    
+    OORZAKEN_KEUZES = (
+        (1, 'Mens'),
+        (2, 'Uitrusting'),
+        (3, 'Omgeving'),
+        (4, 'Product'),
+        (5, 'Organisatie'))
+    
     ingave = models.DateTimeField(auto_now=True)
-    datum = models.DateField()
+    datum = models.DateField(help_text='Datum van het voorval')
     uur = models.TimeField()
     type_voorval = models.ForeignKey(Type_voorval, on_delete=models.CASCADE)    
     synopsis = models.TextField()
@@ -129,11 +134,13 @@ class Voorval(models.Model):
     materiele_schade = models.BooleanField(default=False)
     schade_omschrijving = models.TextField()
     muopo = MultiSelectField(choices=OORZAKEN_KEUZES,
-                             max_choices=3,
-                             max_length=3)
+                             max_choices=5,
+                             max_length=5)
     type_toestel = models.ForeignKey(Type_toestel, on_delete=models.CASCADE)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.CASCADE)
     aantal_maatregelen = models.IntegerField(default=0)
+    ato = models.IntegerField(choices=ATO_VOORVAL, default=1)
+    potentieel_risico = models.ForeignKey(Potentieel_risico, on_delete=models.CASCADE)
     
 #    def __str__(self):
 #        return self.datum
@@ -156,16 +163,19 @@ class Voorval(models.Model):
         
     class Meta:
         verbose_name_plural = 'Voorvallen'
+        ordering = ['-datum']
 
 
 class Maatregel(models.Model):
     ingave =  models.DateTimeField(auto_now=True)
     omschrijving = models.TextField()
     voorval = models.ForeignKey(Voorval, on_delete=models.CASCADE)
+    in_werking = models.DateField(null=True)
 
     class Meta:
         verbose_name_plural = 'Maatregelen'
-
+        ordering = ['-ingave']
+        
 #    def __str__(self):
 #        return self.voorval.datum
 
@@ -177,6 +187,7 @@ class VoorvalMaatregel(models.Model):
     id = models.IntegerField(primary_key=True)
     datum = models.DateField()
     uur = models.TimeField()
+    ato = models.IntegerField()
     type_voorval = models.ForeignKey(Type_voorval, on_delete=models.DO_NOTHING)    
     synopsis = models.TextField()
     opleiding = models.ForeignKey(Opleiding, on_delete=models.DO_NOTHING)
@@ -185,12 +196,11 @@ class VoorvalMaatregel(models.Model):
     menselijke_schade = models.BooleanField(default=False)
     materiele_schade = models.BooleanField(default=False)
     schade_omschrijving = models.TextField()
-    muopo = MultiSelectField(choices=OORZAKEN_KEUZES,
-                             max_choices=3,
-                             max_length=3)
+    muopo = MultiSelectField()
     type_toestel = models.ForeignKey(Type_toestel, on_delete=models.DO_NOTHING)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.DO_NOTHING)
     omschrijving =  models.TextField()
+    in_werking = models.DateField()
 
     class Meta:
         managed = False

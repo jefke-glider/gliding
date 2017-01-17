@@ -1,4 +1,3 @@
-
 from django.forms import ModelForm, Textarea
 from django import forms
 from django.utils.translation import ugettext_lazy as _
@@ -8,29 +7,41 @@ class VoorvalForm(ModelForm):
 
     class Meta:
         model = Voorval
+
+        ordering = ['-datum']
         fields = ( 'datum', 'uur', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' ,
                    'type_toestel', 'kern_activiteit', 'muopo', 'menselijke_schade',
-                   'materiele_schade', 'schade_omschrijving')
-        help_texts = {
-            'datum': _('Datum van het voorval.'),
-            'uur': _('Uur van het voorval.'),
-            'type_voorval': _('Wat soort voorval betreft het hier'),
-            'synopsis': _('Geeft een omschrijving van het voorval'),
-            'opleiding': _('De opleiding waarin de leerling zich momenteel bevindt'),
-            'startwijze': _('Geef de startwijze aan'),
-            },
+                   'materiele_schade', 'schade_omschrijving', 'ato', 'potentieel_risico')
+        help_texts = { 'uur' : 'uur van het voorval in formaat hh:mm',
+                       'type_voorval' : 'Duid aan welk type voorval het is',
+                       'synopsis' : 'omschrijving van het voorval',
+                      }
         widgets = {
             'datum': forms.DateInput(attrs={'class': 'datepicker'}),
         }
+
+        def __init__(self, *args, **kwargs):
+            super(VoorvalForm, self).__init__(*args, **kwargs)
+            for field in self.fields:
+                help_text = self.fields[field].help_text
+                self.fields[field].help_text = ''
+                if help_text != '':
+                    self.fields[field].widget.attrs.update(
+                        {'class':'has-popover', 'data-content':help_text, 'data-placement':'right',
+                         'data-container':'body'})
 
 class MaatregelForm(ModelForm):
     synopsis = forms.CharField(label='synopsis voorval',
                                required=False,
                                widget=forms.Textarea(attrs={'cols': '80', 'rows':'10', 'disabled':True}))
+    in_werking = forms.DateField(required=False,
+                                 widget=forms.DateInput(attrs={'format':'%m/%d/%Y', 'class': 'datepicker'}))
+    
     class Meta:
         model = Maatregel
-        fields = ('synopsis', 'omschrijving',)
+        fields = ('synopsis', 'omschrijving', 'in_werking')
         labels = {'omschrijving' : 'omschrijving maatregel'}
+        help_texts = { 'synopsis' : 'Omschrijving van het voorval' , },
 
 
 class ExportForm(forms.Form):
@@ -53,15 +64,20 @@ class ExportForm(forms.Form):
                                     help_text='geef het type bestand aan')
     tabel_to_export = forms.ChoiceField(TABLES, label='tabel', 
                                         help_text='welke tabel exporteren')
-    export_date_from = forms.DateField(label='datum vanaf', widget=forms.DateInput(format='%m/%d/%Y'),
-                                       input_formats=('%m/%d/%Y',), required=False)
-    export_date_till = forms.DateField(label='datum tot', required=False)
+    export_date_from = forms.DateField(label='datum vanaf', required=False,
+                                       widget=forms.DateInput(attrs={'format':'%m/%d/%Y',
+                                                                     'class':'datepicker'}),
+                                                                                          
+                                       )
+    export_date_till = forms.DateField(label='datum tot', required=False,
+                                       widget=forms.DateInput(attrs={'format':'%m/%d/%Y','class': 'datepicker'}))
     #we autogenerate the filename for now
 #    filename = forms.CharField(label='bestandsnaam', max_length=100,
 #                               help_text='geef bestandsnaam met juiste extentie (.csv)')
     club_to_export = forms.ModelChoiceField(queryset=clubs, empty_label="Alle clubs", required=False,
                                             help_text='selecteer de club of geen voor alle clubs',
                                             )
+    
 
 
 

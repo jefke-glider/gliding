@@ -137,6 +137,7 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
         my_model = form.save(commit=False)
         my_model.voorval = voorval
         my_model.save()
+        print(my_model.voorval.id)
         #we send an email to responsable persons
         email_to = ausr.email_admins() + ausr.email_supers()
         message = 'Er werd een nieuwe maatregel geregistreerd voor de club ' + ausr.club_naam()
@@ -147,14 +148,15 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
             email_to,
             fail_silently=False,
             )
-        return redirect('report_ia:maatregel_toegevoegd')
-    return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam()})
+        return redirect('report_ia:maatregel_toegevoegd', voorval_id=my_model.voorval.id)
+    return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam(),
+                                           'voorval_id':''})
     
 @login_required
-def maatregel_toegevoegd(request, template_name="maatregel_ingave_bevestiging.html"):
+def maatregel_toegevoegd(request, voorval_id, template_name="maatregel_ingave_bevestiging.html"):
     ausr = Ato(request.user)
     emails = ausr.email_admins() + ausr.email_supers()
-    return render(request, template_name, {'emails' : emails, 'club':ausr.club_naam()})
+    return render(request, template_name, {'emails' : emails, 'club':ausr.club_naam(), 'voorval_id':voorval_id})
 
 @login_required
 def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
@@ -165,7 +167,7 @@ def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
         else:
             maatregel = Maatregel.objects.all()
     elif ausr.is_admin:
-        maatregel = Maatregel.objects.filter(voorval__club=ausr.club())
+        maatregel = Maatregel.objects.filter(voorval__id=pk)
     else:
         print('shouldnt reach this')
     #recent voorval where ingave < 1 week
@@ -179,19 +181,22 @@ def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
 def maatregel_delete(request, pk, template_name="maatregel_confirm_delete.html"):
     ausr = Ato(request.user)
     maatregel = get_object_or_404(Maatregel, pk=pk)
+    voorval_id = maatregel.voorval.id
     if request.method=='POST':
         maatregel.delete()
-        return redirect('report_ia:maatregel_lijst')
-    return render(request, template_name, {'maatregel':maatregel, 'club':ausr.club_naam()})
+        return redirect('report_ia:maatregel_lijst', pk=voorval_id)
+    return render(request, template_name, {'maatregel':maatregel, 'club':ausr.club_naam(), 'voorval_id':voorval_id})
     
 @login_required
 def maatregel_update(request, pk, template_name='maatregel_ingave.html'):
     ausr = Ato(request.user)
     maatregel = get_object_or_404(Maatregel, pk=pk)
     form = MaatregelForm(request.POST or None, instance = maatregel, initial={'synopsis':maatregel.voorval.synopsis})
+    #print (form.fields['voorval_.id)
     if form.is_valid():
         form.save()
-        return redirect('report_ia:maatregel_lijst')
-    return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam()})
+        return redirect('report_ia:maatregel_lijst', pk=maatregel.voorval.id )
+    return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam(),
+                                           'voorval_id':maatregel.voorval.id})
 
 

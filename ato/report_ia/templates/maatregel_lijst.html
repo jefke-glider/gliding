@@ -34,6 +34,7 @@
                 <th>Datum voorval</th>
                 <th>Synopsis</th>
                 <th>Maatregel omschrijving</th>
+	        <th>In werking</td>
             </tr>
         </thead>
         <tbody>
@@ -42,6 +43,7 @@
 	    <td>{{ maatregel.voorval.datum|date:"SHORT_DATE_FORMAT" }}</td>
 	    <td>{{ maatregel.voorval.synopsis|truncatewords:20 }}</td>
 	    <td>{{ maatregel.omschrijving|truncatewords:20 }}</td>
+	    <td>{{ maatregel.in_werking|date:"SHORT_DATE_FORMAT" }}</td>
 	    <td><a href="{% url 'report_ia:maatregel_update' maatregel.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
 	    <td><a href="{% url 'report_ia:maatregel_delete' maatregel.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a></td>
 	   </tr>

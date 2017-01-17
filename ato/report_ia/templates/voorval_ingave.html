@@ -8,10 +8,10 @@
 	body: 900px;
     }
 </style>
-	  <script type="text/javascript" src="{% static "js/jquery.js" %}" />
  <script>
 $(document).ready(function() {
-    $('.datepicker').datepicker();
+	$('.has-popover').popover({'trigger':'hover'});
+	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 });
   </script>
 <div class="page-header">
@@ -33,9 +33,12 @@ $(document).ready(function() {
 <div class="ingave-class">
    <form  class="form-vertical" method="POST">
         {% csrf_token %}
-        {% bootstrap_form form layout="vertical" %}
+	{% for field in form %}
+	  {% bootstrap_label field.label_tag  %}
+	  {% bootstrap_field field show_label=False  %}
+        {% endfor %}
 	<button type="submit" class="btn btn-primary">
-	  {% bootstrap_icon "star" %} Opslaan
+	  {% bootstrap_icon "star" %} Opslaan en verzenden
 	</button>
 	<button type="Reset" class="btn">
 	  Reset
