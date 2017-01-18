@@ -28,7 +28,7 @@ $(document).ready(function() {
 <div class="page-menu">
 <ul class="breadcrumb">
       {% if action == 'create' %}	
-	<li><a href="{% url 'report_ia:maatregel_lijst' %} ">Overzicht</a></li>
+	<li><a href="{% url 'report_ia:maatregel_lijst' voorval_id %} ">Overzicht</a></li>
       {% elif action == 'update' %}
 	<li><a href="{% url 'report_ia:maatregel_lijst' voorval_id %} ">Overzicht</a></li>
       {% endif %}

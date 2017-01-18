@@ -157,8 +157,8 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
         #we send an email to responsable persons
         email_to = ausr.email_admins() + ausr.email_supers()
         message = 'Er werd een nieuwe maatregel geregistreerd voor de club ' + ausr.club_naam()
+        mail_failed = False
         try:
-            mail_failed = False
             send_mail(
                 'Maatregel geregistreerd',
                 message,
@@ -173,7 +173,7 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
             mail_failed = True
         return redirect('report_ia:maatregel_toegevoegd', voorval_id=my_model.voorval.id)
     return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam(),
-                                           'voorval_id':'', 'mail_failed':mail_failed})
+                                           'voorval_id': voorval_pk})
     
 @login_required
 def maatregel_toegevoegd(request, voorval_id, template_name="maatregel_ingave_bevestiging.html"):
