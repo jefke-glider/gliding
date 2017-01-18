@@ -15,6 +15,7 @@ from .models import Kern_activiteit
 from .models import Kern_gevaar
 from .models import Potentieel_risico
 from .models import Ato_gebruiker
+from .models import Nieuws
 
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
@@ -31,12 +32,6 @@ class UserAdmin(BaseUserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
-
-
-
-
-
-
 admin.site.register(Vliegveld)
 admin.site.register(Club)
 admin.site.register(Ato_gebruiker)
@@ -48,3 +43,4 @@ admin.site.register(Voorval)
 admin.site.register(Kern_activiteit)
 admin.site.register(Kern_gevaar)
 admin.site.register(Potentieel_risico)
+admin.site.register(Nieuws)

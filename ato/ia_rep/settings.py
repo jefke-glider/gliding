@@ -127,9 +127,17 @@ LANGUAGE_CODE = 'nl-nl'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
-DATE_FORMAT = "d/m/Y"
 USE_L10N = False
+DATE_FORMAT = "d/m/Y"
+SHORT_DATE_FORMAT = "d/m/Y"
+DATE_INPUT_FORMATS = (
+    '%d/%m/%Y',  # '25/10/2006'
+    # '%b %d %Y', '%b %d, %Y',            # 'Oct 25 2006', 'Oct 25, 2006'
+    # '%d %b %Y', '%d %b, %Y',            # '25 Oct 2006', '25 Oct, 2006'
+    # '%B %d %Y', '%B %d, %Y',            # 'October 25 2006', 'October 25, 2006'
+    # '%d %B %Y', '%d %B, %Y',            # '25 October 2006', '25 October, 2006'
+    )
+
 
 USE_TZ = True
 

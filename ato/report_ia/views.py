@@ -14,19 +14,35 @@ from django.views.generic import ListView
 from django.forms import ModelChoiceField
 
 from .forms import VoorvalForm, ExportForm, MaatregelForm
-from .models import Voorval, Maatregel, VoorvalMaatregel
+from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws
 
 from .models import Club
 from .utilities import export, Ato
 
-        
+import markdown
 
-def index(request):
-    laatste_voorvallen_lijst = Voorval.objects.order_by('-ingave')[:5]
-    context = {
-        'laatste_voorvallen_lijst': laatste_voorvallen_lijst,
-    }
-    return render(request, 'index.html', context, request)
+        
+@login_required
+def index(request, template_name='home.html'):
+    ausr = Ato(request.user)
+    nieuws = Nieuws.objects.filter(online=True)
+    #we first check if a group is specified
+    if ausr.is_admin:
+        fresh_news = nieuws.filter(groep__name='ato_admin')
+    elif ausr.is_user:
+        fresh_news = nieuws.filter(groep__name='ato_user')
+    else:
+        fresh_news = nieuws.filter(groep__name='ato_super')
+    #if no specific news found for a group, then we check for a specific user
+    nieuws_html=[]
+    if len(fresh_news) == 0:
+        fresh_news = nieuws.filter(user=ausr.user())
+    if len(fresh_news) > 0:
+        for art in fresh_news:
+            nieuws_html.append(markdown.markdown(art.bericht))
+    else:
+        nieuws_html.append("<h4>Geen berichten")
+    return render(request, template_name, {'data' : nieuws_html, 'club':ausr.club_naam(), 'ausr':ausr})
 
 @login_required
 def voorval_list(request, pk = None, template_name='voorval_lijst.html'):
@@ -141,16 +157,23 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
         #we send an email to responsable persons
         email_to = ausr.email_admins() + ausr.email_supers()
         message = 'Er werd een nieuwe maatregel geregistreerd voor de club ' + ausr.club_naam()
-        send_mail(
-            'Maatregel geregistreerd',
-            message,
-            'eia@gmail.com',
-            email_to,
-            fail_silently=False,
-            )
+        try:
+            mail_failed = False
+            send_mail(
+                'Maatregel geregistreerd',
+                message,
+                'eia@gmail.com',
+                email_to,
+                fail_silently=False,
+                )
+        except:
+            mail_failed = True
+        else:
+            print('mail message could not be send')
+            mail_failed = True
         return redirect('report_ia:maatregel_toegevoegd', voorval_id=my_model.voorval.id)
     return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam(),
-                                           'voorval_id':''})
+                                           'voorval_id':'', 'mail_failed':mail_failed})
     
 @login_required
 def maatregel_toegevoegd(request, voorval_id, template_name="maatregel_ingave_bevestiging.html"):

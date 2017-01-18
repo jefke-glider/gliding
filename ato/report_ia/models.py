@@ -1,6 +1,6 @@
 from django.db import models
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from multiselectfield import MultiSelectField
 
 
@@ -205,3 +205,13 @@ class VoorvalMaatregel(models.Model):
     class Meta:
         managed = False
         db_table = 'voorval_maatregel'
+
+
+class Nieuws(models.Model):
+    bericht = models.TextField()
+    groep = models.OneToOneField(Group, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    online = models.BooleanField(default=False)
+    
+    class Meta:
+        verbose_name_plural = 'Berichten'

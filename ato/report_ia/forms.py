@@ -35,7 +35,7 @@ class MaatregelForm(ModelForm):
                                required=False,
                                widget=forms.Textarea(attrs={'cols': '80', 'rows':'10', 'disabled':True}))
     in_werking = forms.DateField(required=False,
-                                 widget=forms.DateInput(attrs={'class': 'datepicker'}))
+                                 widget=forms.DateInput(attrs={'format':'%d/%m/%Y','class': 'datepicker'}))
     
     class Meta:
         model = Maatregel
@@ -70,7 +70,7 @@ class ExportForm(forms.Form):
                                                                                           
                                        )
     export_date_till = forms.DateField(label='datum tot', required=False,
-                                       widget=forms.DateInput(attrs={'class': 'datepicker'}))
+                                       widget=forms.DateInput(attrs={'format':'%m/%d/%Y','class': 'datepicker'}))
     #we autogenerate the filename for now
 #    filename = forms.CharField(label='bestandsnaam', max_length=100,
 #                               help_text='geef bestandsnaam met juiste extentie (.csv)')

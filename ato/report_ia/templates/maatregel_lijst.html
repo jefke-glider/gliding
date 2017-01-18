@@ -13,9 +13,12 @@
 </div>
 <div class="page-menu">
 <ul class="breadcrumb">
+	<li><a href="{% url 'report_ia:home' %}">Start pagina</a></li>
 	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-	<li><a href="{% url 'report_ia:voorval_list' %}">Voorvallen</a></li>
+{% if ausr.is_super or ausr.is_admin%}
+	<li><a href="{% url 'report_ia:voorval_lijst' %}">Voorvallen</a></li>
 	<li><a href="{% url 'report_ia:voorval_export' %}">Exporteren</a></li>
+{% endif %}
 {% if ausr.is_super %}
 	<li><a href="{% url 'admin:index' %}">Administrator</a></li>
 {% endif %}

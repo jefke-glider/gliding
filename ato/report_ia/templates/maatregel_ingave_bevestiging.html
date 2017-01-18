@@ -25,6 +25,7 @@
 </ul>
 </div>
 <div class="ingave-class">
+{% if not mail_failed %}
 <p><h2>Uw maatregel werd opgeslagen
 	 en een email verzonden naar de verantwoordelijke
 	 ATO safety en AHoT's van uw club</h2>
@@ -34,6 +35,9 @@
 	    <li class="list-group-item" >{{ email }}
 	  {% endfor %}
 	  </ul>
+ {% endif %}
+{% else %}
+<p><h2>Uw maatregel werd opgeslagen
 {% endif %}
 
 </div>
