@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404,render,redirect
-from django.template import loader
+from django.shortcuts import get_object_or_404,render,redirect,reverse
+from django.template import loader, Context
 from django.contrib.auth.models import User
 from django.db.models import Count, Avg
 from django import forms
@@ -83,16 +83,27 @@ def voorval_create(request, template_name="voorval_ingave.html"):
         my_model = form.save(commit=False)
         my_model.club = ausr.club()
         my_model.save()
+        # ok, new voorval has been saved to the database
+        new_voorval_link = request.build_absolute_uri(reverse('report_ia:voorval_update',
+                                                              args=[my_model.pk]))
+
         #we send an email to responsable persons
+        subject = "Voorval geregistreerd"
         email_to = ausr.email_admins() + ausr.email_supers()
-        message = 'Er werd een nieuw voorval geregistreerd voor de club ' + ausr.club_naam()
-        send_mail(
-            'Voorval geregistreerd',
-            message,
-            'eia@gmail.com',
-            email_to,
-            fail_silently=False,
-            )
+        try:
+            #we get the email txt from a template
+            t = loader.get_template('nieuwe_registratie_email.txt')
+            c= Context({'club': ausr.club_naam(), 'user': request.user, 'link': new_voorval_link})
+            message = t.render(c)
+            send_mail(
+                subject,
+                message,
+                'eia@gmail.com',
+                email_to,
+                fail_silently=False,
+                )
+        except:
+            pass
         return redirect('report_ia:voorval_toegevoegd')
     return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam()})
 
@@ -109,7 +120,7 @@ def voorval_update(request, pk, template_name='voorval_ingave.html'):
     form = VoorvalForm(request.POST or None, instance=voorval)
     if form.is_valid():
         form.save()
-        return redirect('report_ia:voorval_list')
+        return redirect('report_ia:voorval_lijst')
     return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam()})
 
 @login_required
@@ -118,7 +129,7 @@ def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
     ausr = Ato(request.user)
     if request.method=='POST':
         voorval.delete()
-        return redirect('report_ia:voorval_list')
+        return redirect('report_ia:voorval_lijst')
     return render(request, template_name, {'object':voorval, 'club':ausr.club_naam()})
 
 @login_required
@@ -153,12 +164,19 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
         my_model = form.save(commit=False)
         my_model.voorval = voorval
         my_model.save()
-        print(my_model.voorval.id)
+
+        # ok, new voorval has been saved to the database
+        new_link = request.build_absolute_uri(reverse('report_ia:maatregel_update',
+                                                      args=[my_model.pk]))
+
+        print(new_link)
         #we send an email to responsable persons
         email_to = ausr.email_admins() + ausr.email_supers()
-        message = 'Er werd een nieuwe maatregel geregistreerd voor de club ' + ausr.club_naam()
-        mail_failed = False
         try:
+            #we get the email txt from a template
+            t = loader.get_template('nieuwe_maatregel_email.txt')
+            c= Context({'club': ausr.club_naam(), 'user': request.user, 'link': new_link})
+            message = t.render(c)            
             send_mail(
                 'Maatregel geregistreerd',
                 message,
@@ -167,10 +185,7 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
                 fail_silently=False,
                 )
         except:
-            mail_failed = True
-        else:
-            print('mail message could not be send')
-            mail_failed = True
+            pass
         return redirect('report_ia:maatregel_toegevoegd', voorval_id=my_model.voorval.id)
     return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam(),
                                            'voorval_id': voorval_pk})

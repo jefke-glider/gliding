@@ -1,0 +1,10 @@
+Hallo,
+
+Er werd een nieuwe maatregel aangemaakt voor {{club}} door {{user.username}}.
+Volg deze link om de registratie vd maatregel te bekijken.
+{{link}}
+
+Greetz
+
+ATO eIA superuser
+Have a nice day!
