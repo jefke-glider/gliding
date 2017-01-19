@@ -209,8 +209,8 @@ class VoorvalMaatregel(models.Model):
 
 class Nieuws(models.Model):
     bericht = models.TextField()
-    groep = models.OneToOneField(Group, on_delete=models.CASCADE, null=True, blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    groep = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     online = models.BooleanField(default=False)
     
     class Meta:

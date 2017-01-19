@@ -20,6 +20,7 @@ from .models import Club
 from .utilities import export, Ato
 
 import markdown
+import markdown.extensions.tables
 
         
 @login_required
