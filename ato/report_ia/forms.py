@@ -1,7 +1,8 @@
 from django.forms import ModelForm, Textarea
+from django.core.exceptions import ValidationError
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from .models import Voorval, Club, Maatregel
+from .models import Voorval, Club, Maatregel, AantalStarts
 
 class VoorvalForm(ModelForm):
 
@@ -33,9 +34,11 @@ class VoorvalForm(ModelForm):
 class MaatregelForm(ModelForm):
     synopsis = forms.CharField(label='synopsis voorval',
                                required=False,
-                               widget=forms.Textarea(attrs={'cols': '80', 'rows':'10', 'disabled':True}))
+                               widget=forms.Textarea(attrs={'cols': '80',
+                                                            'rows':'10', 'disabled':True}))
     in_werking = forms.DateField(required=False,
-                                 widget=forms.DateInput(attrs={'format':'%d/%m/%Y','class': 'datepicker'}))
+                                 widget=forms.DateInput(attrs={'format':'%d/%m/%Y',
+                                                               'class': 'datepicker'}))
     
     class Meta:
         model = Maatregel
@@ -70,15 +73,40 @@ class ExportForm(forms.Form):
                                                                                           
                                        )
     export_date_till = forms.DateField(label='datum tot', required=False,
-                                       widget=forms.DateInput(attrs={'format':'%m/%d/%Y','class': 'datepicker'}))
+                                       widget=forms.DateInput(attrs={'format':'%m/%d/%Y',
+                                                                     'class': 'datepicker'}))
     #we autogenerate the filename for now
 #    filename = forms.CharField(label='bestandsnaam', max_length=100,
 #                               help_text='geef bestandsnaam met juiste extentie (.csv)')
-    club_to_export = forms.ModelChoiceField(queryset=clubs, empty_label="Alle clubs", required=False,
+    club_to_export = forms.ModelChoiceField(queryset=clubs, empty_label="Alle clubs",
+                                            required=False,
                                             help_text='selecteer de club of geen voor alle clubs',
                                             )
     
+class StartsForm(ModelForm):
+    op_datum = forms.DateField(required=True,
+                               widget=forms.DateInput(attrs={'format':'%d/%m/%Y',
+                                                             'class': 'datepicker'}))
 
+    def clean(self, *args, **kwargs):
+        cleaned_data = super(StartsForm, self).clean()
+        totaal=0
+        totaal+=int(cleaned_data.get('lier'))
+        totaal+=int(cleaned_data.get('ato_lier'))
+        totaal+=int(cleaned_data.get('sleep'))
+        totaal+=int(cleaned_data.get('ato_sleep'))
+        totaal+=int(cleaned_data.get('zelf'))
+        totaal+=int(cleaned_data.get('ato_zelf'))
+        if totaal <= 0:
+            raise forms.ValidationError("Gelieve aantal starts in te vullen")
+        else:
+            print(self.cleaned_data)
+            self.cleaned_data['totaal'] = totaal
+            return self.cleaned_data
+
+    class Meta:
+        model = AantalStarts
+        fields = ('club', 'lier', 'ato_lier', 'sleep', 'ato_sleep', 'zelf', 'ato_zelf', 'totaal')
 
 
            

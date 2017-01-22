@@ -16,6 +16,7 @@ from .models import Kern_gevaar
 from .models import Potentieel_risico
 from .models import Ato_gebruiker
 from .models import Nieuws
+from .models import AantalStarts
 
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
@@ -44,3 +45,4 @@ admin.site.register(Kern_activiteit)
 admin.site.register(Kern_gevaar)
 admin.site.register(Potentieel_risico)
 admin.site.register(Nieuws)
+admin.site.register(AantalStarts)

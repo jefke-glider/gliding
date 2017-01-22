@@ -26,6 +26,8 @@ $(document).ready(function() {
 	<li><a href="{% url 'report_ia:voorval_lijst' %}">Voorvallen</a></li>
 	<li><a href="{% url 'logout' %}">Afmelden</a></li>
 {% if ausr.is_super or ausr.is_admin %}
+	<li><a href="{% url 'report_ia:starts_create' %}">Starts ingeven</a></li>
+	<li><a href="{% url 'report_ia:starts_list' %}">Starts</a></li>
 	<li><a href="{% url 'report_ia:voorval_export' %}">Exporteren</a></li>
 {% endif %}
 {% if ausr.is_super %}

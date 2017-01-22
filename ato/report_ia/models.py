@@ -215,3 +215,18 @@ class Nieuws(models.Model):
     
     class Meta:
         verbose_name_plural = 'Berichten'
+
+class AantalStarts(models.Model):
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    op_datum = models.DateField(auto_now=True)
+    lier = models.IntegerField(blank=True, default=0)
+    ato_lier = models.IntegerField(blank=True, default=0)
+    sleep = models.IntegerField(blank=True, default=0)
+    ato_sleep = models.IntegerField(blank=True, default=0)
+    zelf = models.IntegerField(blank=True, default=0)
+    ato_zelf = models.IntegerField(blank=True, default=0)
+    totaal = models.IntegerField(blank=True, default=0)
+
+    
+    class Meta:
+        verbose_name_plural = 'Aantal starts'

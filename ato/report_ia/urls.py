@@ -18,4 +18,6 @@ urlpatterns = [
     url(r'^maatregel/created/(?P<voorval_id>\d+$)', views.maatregel_toegevoegd, name='maatregel_toegevoegd'),
     url(r'^maatregel/delete/(?P<pk>\d+$)', views.maatregel_delete, name='maatregel_delete'),
     url(r'^maatregel/edit/(?P<pk>\d+$)', views.maatregel_update, name='maatregel_update'),
+    url(r'^starts/create/$', views.starts_create, name='starts_create'),
+    url(r'^starts/lijst/$', views.starts_list, name='starts_list'),
 ]

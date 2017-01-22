@@ -1,37 +1,48 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
+{% load staticfiles %}
 {% block content %}
 <style type="text/css">
-    .export-class{
+    .ingave-class{
     	margin: 20px;
 	body: 900px;
     }
 </style>
-<script>
+ <script>
 $(document).ready(function() {
 	$('.has-popover').popover({'trigger':'hover'});
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 });
-</script>
+  </script>
 <div class="page-header">
-	<h4><span class="label label-default"> Exporteren </span></h4>
+	{% if action == 'create' %}
+	<h4><span class="label label-default"> Starts ingeven </span></h4>
+	{% elif action == 'update' %}
+	<h4><span class="label label-default"> Starts Aanpassen </span></h4>
+	{% endif %}
 	<h4><span class="label label-default"> {{user.username}} </span></h4>
 	<h4><span class="label label-default"> {{club}} </span></h4>
 </div>
 
 <div class="page-menu">
 <ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:home' %}">Home pagina</a></li>
-	<li><a href="{% url 'report_ia:voorval_lijst' %}">Voorvallen</a></li>
+	<li><a href="{% url 'report_ia:home' %}">Home</a></li>
 	<li><a href="{% url 'logout' %}">Afmelden</a></li>
 </ul>
 </div>
-
-<div class="export-class">
+<div class="ingave-class">
    <form  class="form-vertical" method="POST">
         {% csrf_token %}
-        {% bootstrap_form form layout="vertical" %}
-        {% buttons submit='Uitvoeren' reset="Cancel" layout='horizontal' %}{% endbuttons %}
+	{% for field in form %}
+	  {% bootstrap_label field.label_tag  %}
+	  {% bootstrap_field field show_label=False  %}
+        {% endfor %}
+	<button type="submit" class="btn btn-primary">
+	  {% bootstrap_icon "star" %} Opslaan
+	</button>
+	<button type="Reset" class="btn">
+	  Reset
+	</button>
     </form>
 </div>
 {% endblock %}

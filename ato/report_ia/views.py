@@ -13,14 +13,11 @@ from django.shortcuts import render_to_response
 from django.views.generic import ListView
 from django.forms import ModelChoiceField
 
-from .forms import VoorvalForm, ExportForm, MaatregelForm
-from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws
-
-from .models import Club
+from .forms import VoorvalForm, ExportForm, MaatregelForm, StartsForm
+from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws, AantalStarts, Club
 from .utilities import export, Ato
 
 import markdown
-import markdown.extensions.tables
 
         
 @login_required
@@ -239,3 +236,45 @@ def maatregel_update(request, pk, template_name='maatregel_ingave.html'):
                                            'voorval_id':maatregel.voorval.id})
 
 
+@login_required
+def starts_create(request, template_name="starts_ingave.html"):
+    ausr = Ato(request.user)
+    form = StartsForm(request.POST or None)
+    form.fields['totaal'].editable = False
+    if ausr.is_admin:
+        #fix this choicefield for club to the admins club
+        form.fields['club'].initial=ausr.club_id()
+        form.fields['club'].disabled=True
+    if form.is_valid():
+        my_model = form.save(commit=False)
+        #my_model.club = ausr.club()
+        my_model.save()
+
+        return redirect('report_ia:home')
+    return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam()})
+
+
+@login_required
+def starts_toegevoegd(request, id, template_name="starts_ingave_bevestiging.html"):
+    ausr = Ato(request.user)
+    emails = ausr.email_admins() + ausr.email_supers()
+    return render(request, template_name, {'emails' : emails, 'club':ausr.club_naam(),
+                                           'voorval_id':voorval_id})
+
+@login_required
+def starts_list(request, pk = None, template_name='starts_lijst.html'):
+    ausr = Ato(request.user)        
+    if ausr.is_super:
+        if pk:
+            starts = AantalStarts.objects.filter(club__id=pk)
+        else:
+            starts = AantalStarts.objects.all()
+    else:
+        starts = AantalStarts.objects.filter(club=ausr.club())
+    print(starts.count())
+    #recent voorval where ingave < 1 week
+    data = {}
+    data['object_list'] = starts
+    data['ausr'] = ausr
+    data['club'] = ausr.club_naam()
+    return render(request, template_name, data)

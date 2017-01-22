@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+<style type="text/css">
+    .ingave-lijst{
+    	margin: 20px;
+    }
+</style>
+
+<div class="ingave-lijst">
+<h4><span class="label label-default"> {{user.username}} </span></h4>
+<h4><span class="label label-default"> {{club}} </span></h4>
+</div>
+<div class="page-menu">
+<ul class="breadcrumb">
+	<li><a href="{% url 'report_ia:home' %}">Home pagina</a></li>
+	<li><a href="{% url 'logout' %}">Afmelden</a></li>
+</ul>
+</div>
+      
+{% if object_list %}
+    <div class="ingave-lijst">
+	<table class="table table-bordered">
+        <thead>
+            <tr>
+	        <th>Club</th>
+	        <th>Op datum</th>
+                <th>lier</th>
+                <th>lier-ATO</th>
+	        <th>sleep</th>
+                <th>sleep-ATO</th>
+                <th>zelf</th>
+                <th>zelf-ATO</th>
+	        <th>totaal</th>
+            </tr>
+        </thead>
+        <tbody>
+	  {% for start in object_list %}
+          <tr>
+	    <td>{{ start.club.naam_kort }}</td>
+	    <td>{{ start.op_datum|date:"SHORT_DATE_FORMAT" }}</td>
+	    <td>{{ start.lier }}</td>
+	    <td>{{ start.ato_lier }}</td>
+	    <td>{{ start.sleep }}</td>
+	    <td>{{ start.ato_sleep }}</td>
+	    <td>{{ start.zelf }}</td>
+	    <td>{{ start.ato_zelf }}</td>
+	    <td>{{ start.totaal }}</td>
+	   </tr>
+           {% endfor %}
+	  </tbody>
+         </table>
+	</div>
+{% else %}
+    <p>Er zijn nog geen starts geregistreerd.</p>
+{% endif %}
+
+{% endblock %}
