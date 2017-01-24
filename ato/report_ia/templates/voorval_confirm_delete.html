@@ -1,23 +1,8 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% block content %}
-<style type="text/css">
-    .ingave-class{
-    	margin: 20px;
-	body: 900px;
-    }
-</style>
-<div class="ingave-lijst">
-<h4><span class="label label-default"> {{user.username}} </span></h4>
-<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
+{% include "navbar_simpel.html" with lijst="voorval_create" %}
 
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:voorval_lijst' %}">Overzicht voorvallen</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-</ul>
-</div>
 <div class="ingave-class">
    <form  class="form-vertical" method="POST">{% csrf_token %}
 	  Bent u zeker dat u het voorval met omschrijving <br> 

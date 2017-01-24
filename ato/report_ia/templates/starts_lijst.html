@@ -1,22 +1,9 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% block content %}
-<style type="text/css">
-    .ingave-lijst{
-    	margin: 20px;
-    }
-</style>
 
 <div class="ingave-lijst">
-<h4><span class="label label-default"> {{user.username}} </span></h4>
-<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:home' %}">Home pagina</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-</ul>
-</div>
+{% include "navbar_simpel.html"  %}      
       
 {% if object_list %}
     <div class="ingave-lijst">

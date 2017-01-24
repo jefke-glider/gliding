@@ -8,28 +8,7 @@
 	body: 900px;
     }
 </style>
-	  <script type="text/javascript" src="{% static "js/jquery.js" %}" />
- <script>
-$(document).ready(function() {
-    $('.datepicker').datepicker();
-});
-  </script>
-<div class="page-header">
-	{% if action == 'create' %}
-	<h4><span class="label label-default"> Aanmaken </span></h4>
-	{% elif action == 'update' %}
-	<h4><span class="label label-default"> Aanpassen </span></h4>
-	{% endif %}
-	<h4><span class="label label-default"> {{user.username}} </span></h4>
-	<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
-
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:voorval_lijst' %}">Overzicht</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-</ul>
-</div>
+{% include "navbar_simpel.html" with lijst="voorval_create" %}
 <div class="ingave-class">
 <p><h2>Uw voorval werd opgeslagen
 	 en een email verzonden naar de verantwoordelijke

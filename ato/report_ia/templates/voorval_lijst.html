@@ -1,31 +1,10 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% block content %}
-<style type="text/css">
-    .ingave-lijst{
-    	margin: 20px;
-    }
-</style>
 
-<div class="ingave-lijst">
-<h4><span class="label label-default"> {{user.username}} </span></h4>
-<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:home' %}">Home pagina</a></li>
-	<li><a href="{% url 'report_ia:voorval_create' %}">Nieuw voorval</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-{% if ausr.is_super or ausr.is_admin%}
-	<li><a href="{% url 'report_ia:voorval_lijst'  %}">Voorvallen</a></li>
-{% endif %}
-{% if ausr.is_super %}
-	<li><a href="{% url 'report_ia:voorval_overzicht' %}">Totalen</a></li>
-	<li><a href="{% url 'admin:index' %}">Administrator</a></li>
-{% endif %}
-</ul>
-</div>
-      
+
+<div class="ingave-class">
+{% include "navbar_simpel.html" with lijst="voorval" %}      
 {% if object_list %}
     <div class="ingave-lijst">
 	<table class="table table-bordered">
@@ -38,7 +17,7 @@
                 <th>Opleiding</th>
                 <th>Synopsis</th>
 {% if ausr.is_admin or ausr.is_super%}
-	        <th colspan="1>Acties Voorval</th>
+	        <th colspan="1">Acties Voorval</th>
 	        <th colspan="2">Acties Maatregel</th>
 {% endif %}
             </tr>

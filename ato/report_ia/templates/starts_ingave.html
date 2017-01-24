@@ -2,34 +2,14 @@
 {% load bootstrap3 %}
 {% load staticfiles %}
 {% block content %}
-<style type="text/css">
-    .ingave-class{
-    	margin: 20px;
-	body: 900px;
-    }
-</style>
  <script>
 $(document).ready(function() {
 	$('.has-popover').popover({'trigger':'hover'});
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 });
   </script>
-<div class="page-header">
-	{% if action == 'create' %}
-	<h4><span class="label label-default"> Starts ingeven </span></h4>
-	{% elif action == 'update' %}
-	<h4><span class="label label-default"> Starts Aanpassen </span></h4>
-	{% endif %}
-	<h4><span class="label label-default"> {{user.username}} </span></h4>
-	<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
+{% include "navbar_simpel.html" with lijst="start" %}
 
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:home' %}">Home</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-</ul>
-</div>
 <div class="ingave-class">
    <form  class="form-vertical" method="POST">
         {% csrf_token %}

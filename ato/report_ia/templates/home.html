@@ -2,42 +2,15 @@
 {% load bootstrap3 %}
 {% load staticfiles %}
 {% block content %}
-<style type="text/css">
-    .ingave-class{
-    	margin: 20px;
-	body: 900px;
-    }
-</style>
  <script>
 $(document).ready(function() {
 	$('.has-popover').popover({'trigger':'hover'});
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 });
   </script>
-<div class="page-header">
-	<h4><span class="label label-default"> Start pagina </span></h4>
-	<h4><span class="label label-default"> {{user.username}} </span></h4>
-	<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
-
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:voorval_create' %}">Nieuw voorval</a></li>
-	<li><a href="{% url 'report_ia:voorval_lijst' %}">Voorvallen</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-{% if ausr.is_super or ausr.is_admin %}
-	<li><a href="{% url 'report_ia:starts_create' %}">Starts ingeven</a></li>
-	<li><a href="{% url 'report_ia:starts_list' %}">Starts</a></li>
-	<li><a href="{% url 'report_ia:voorval_export' %}">Exporteren</a></li>
-{% endif %}
-{% if ausr.is_super %}
-	<li><a href="{% url 'report_ia:voorval_overzicht' %}">Totalen</a></li>
-	<li><a href="{% url 'admin:index' %}">Administrator</a></li>
-{% endif %}
-</ul>
-</div>
 
 <div class="ingave-class">
+{% include "navbar.html" %}
 {% for artikel in data %}
   {{ artikel|safe }}
 {% endfor %}

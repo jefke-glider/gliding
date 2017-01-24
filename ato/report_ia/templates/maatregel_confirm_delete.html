@@ -1,23 +1,7 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% block content %}
-<style type="text/css">
-    .ingave-class{
-    	margin: 20px;
-	body: 900px;
-    }
-</style>
-<div class="ingave-lijst">
-<h4><span class="label label-default"> {{user.username}} </span></h4>
-<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
-
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:maatregel_lijst' voorval_id%}">Overzicht maatregelen</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-</ul>
-</div>
+{% include "navbar_simpel.html" with lijst="maatregel_create" %}
 <div class="ingave-class">
    <form  class="form-vertical" method="POST">{% csrf_token %}
 	  Bent u zeker dat u de maatregel met omschrijving <br> 

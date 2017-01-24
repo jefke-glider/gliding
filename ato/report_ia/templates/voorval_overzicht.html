@@ -7,21 +7,8 @@
     }
 </style>
 
-<div class="ingave-lijst">
-<h4><span class="label label-default"> {{user.username}} </span></h4>
-<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:voorval_create' %}">Nieuw voorval</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-{% if ausr.is_super %}
-	<li><a href="{% url 'report_ia:voorval_overzicht' %}">Totalen</a></li>
-	<li><a href="{% url 'report_ia:voorval_lijst' %}">Overzicht</a></li>
-	<li><a href="{% url 'admin:index' %}">Administrator</a></li>
-{% endif %}
-</ul>
-</div>
+{% include "navbar_simpel.html" with lijst='voorval_create' %}      
+
 {% if object_list %}
     <div class="ingave-lijst">
 	<table class="table table-bordered">

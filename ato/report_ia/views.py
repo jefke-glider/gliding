@@ -203,7 +203,9 @@ def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
         else:
             maatregel = Maatregel.objects.all()
     elif ausr.is_admin:
-        maatregel = Maatregel.objects.filter(voorval__id=pk)
+        maatregel = Maatregel.objects.filter(voorval__club=ausr.club())
+        if pk:
+            maatregel = maatregel.filter(voorval__id = pk)
     else:
         print('shouldnt reach this')
     #recent voorval where ingave < 1 week
@@ -211,6 +213,7 @@ def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
     data['object_list'] = maatregel
     data['ausr'] = ausr
     data['club'] = ausr.club_naam()
+    data['voorval_id'] = pk
     return render(request, template_name, data)
 
 @login_required

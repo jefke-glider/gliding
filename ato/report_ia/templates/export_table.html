@@ -1,32 +1,13 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% block content %}
-<style type="text/css">
-    .export-class{
-    	margin: 20px;
-	body: 900px;
-    }
-</style>
 <script>
 $(document).ready(function() {
 	$('.has-popover').popover({'trigger':'hover'});
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 });
 </script>
-<div class="page-header">
-	<h4><span class="label label-default"> Exporteren </span></h4>
-	<h4><span class="label label-default"> {{user.username}} </span></h4>
-	<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
-
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:home' %}">Home pagina</a></li>
-	<li><a href="{% url 'report_ia:voorval_lijst' %}">Voorvallen</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-</ul>
-</div>
-
+{% include "navbar_simpel.html" %}
 <div class="export-class">
    <form  class="form-vertical" method="POST">
         {% csrf_token %}

@@ -1,0 +1,37 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'report_ia:home' %}"><span class="glyphicon glyphicon-menu-left"></span>e-IA LVZC</a>
+    </div>
+	  <ul class="nav navbar-nav">
+	    <li class="dropdown">
+	      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Voorval<span class="caret"></span></a>
+	  <ul class="dropdown-menu">
+	    <li><a href="{% url 'report_ia:voorval_create' %}">Ingeven</a></li>
+	    <li><a href="{% url 'report_ia:voorval_lijst' %}">Overzicht</a></li>
+{% if ausr.is_super %}
+	  <li><a href="{% url 'report_ia:voorval_overzicht' %}">Totalen</a></li>
+{% endif %}
+	  </ul>
+	</li>
+{% if ausr.is_super or ausr.is_admin %}
+	    <li class="dropdown">
+	      <a class="dropdown-toggle" data-toggle="dropdown" href="#">Starts<span class="caret"></span></a>
+	  <ul class="dropdown-menu">
+	    <li><a href="{% url 'report_ia:starts_create' %}">Ingeven</a></li>
+	    <li><a href="{% url 'report_ia:starts_list' %}">Overzicht</a></li>
+          </ul>
+          </li>
+	  <li><a href="{% url 'report_ia:voorval_export' %}">Exporteren</a></li>
+{% endif %}
+{% if ausr.is_super %}
+	  <li><a href="{% url 'admin:index' %}">Administrator</a></li>
+{% endif %}
+	</ul>
+	  <ul class="nav navbar-nav navbar-right">
+	      <p class="navbar-text">{{club}}</p>
+	      <p class="navbar-text">{{user.username}}</p>
+	  <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>Afmelden</a></li>
+	</ul>
+   </div>
+</nav>

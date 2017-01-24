@@ -80,7 +80,7 @@ class Ato:
         
     def club_naam(self):
         if self.ato:
-            return (self.ato.club.naam)
+            return (self.ato.club.naam_kort)
         else:
             return ('')
 

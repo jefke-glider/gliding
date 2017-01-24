@@ -2,28 +2,7 @@
 {% load bootstrap3 %}
 {% load staticfiles %}
 {% block content %}
-<style type="text/css">
-    .ingave-class{
-    	margin: 20px;
-	body: 900px;
-    }
-</style>
-<div class="page-header">
-	{% if action == 'create' %}
-	<h4><span class="label label-default"> Aanmaken </span></h4>
-	{% elif action == 'update' %}
-	<h4><span class="label label-default"> Aanpassen </span></h4>
-	{% endif %}
-	<h4><span class="label label-default"> {{user.username}} </span></h4>
-	<h4><span class="label label-default"> {{club}} </span></h4>
-</div>
-
-<div class="page-menu">
-<ul class="breadcrumb">
-	<li><a href="{% url 'report_ia:maatregel_lijst' voorval_id%}">Maatregelen</a></li>
-	<li><a href="{% url 'logout' %}">Afmelden</a></li>
-</ul>
-</div>
+{% include "navbar_simpel.html" with lijst="maatregel" %}
 <div class="ingave-class">
 <p><h2>Uw maatregel werd opgeslagen
 	 en een email verzonden naar de verantwoordelijke
