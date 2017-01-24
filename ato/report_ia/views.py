@@ -149,6 +149,16 @@ def voorval_export(request, template_name="export_table.html"):
             if ef.cleaned_data['export_date_till']:
                 vm=vm.filter(datum__lte=ef.cleaned_data['export_date_till'])
             return export(vm)
+        elif ef.cleaned_data['tabel_to_export'] == '2':
+            if ef.cleaned_data['club_to_export']:
+                st = AantalStarts.objects.filter(club_id=ef.cleaned_data['club_to_export'])
+            else:
+                st = AantalStarts.objects.all()
+            if ef.cleaned_data['export_date_from']:
+                st=st.filter(op_datum__gte=ef.cleaned_data['export_date_from'])
+            if ef.cleaned_data['export_date_till']:
+                st=st.filter(op_datum__lte=ef.cleaned_data['export_date_till'])
+            return export(st)            
         else:
             print('no matching choice for table to export')
     return render(request, template_name, {'form':ef, 'club':ausr.club_naam()})

@@ -53,9 +53,8 @@ class ExportForm(forms.Form):
         )
     
     TABLES = (
-#        (1, 'Voorvallen'),
         (1, 'Voorvallen - Maatregelen'),
-#        (3, 'Voorvallen-maatregelen'),
+        (2, 'Starts'),
         )
 ##         (2, 'Vliegvelden'),
 ##         (3, 'Clubs'),
