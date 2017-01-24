@@ -10,6 +10,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     {% load bootstrap3 %}
     {% bootstrap_css %}
+    {% load staticfiles %}
     {% bootstrap_javascript %}
   </head>
   <body>
@@ -19,8 +20,19 @@
 	body: 900px;
     }
 </style>
-
-   <div class="container">
+<!-- Left-aligned -->
+<div class="ingave-class">
+<div class="media">
+  <div class="media-left">
+    <img src="{% static "Logo_LVZC_blauw.jpg" %}" class="media-object" style="width:300px">
+  </div>
+  <div class="media-body">
+    <h4 class="media-heading">LVZC e-IA </h4>
+    <p>Het nieuwe electronisch meldings systeem voor incidenten/accidenten...</p>
+  </div>
+</div>
+</div>
+   <div class="container-fluid">
     {% block content %}
     {% endblock %}
    </div>

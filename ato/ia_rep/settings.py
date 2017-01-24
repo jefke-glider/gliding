@@ -160,5 +160,6 @@ else:
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "static"),
         '/usr/lib/python3.4/site-packages/jquery/',
+        '/home/jpe/proj/ato/ato/static/'
         ]
 
