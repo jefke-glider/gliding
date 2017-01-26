@@ -1,23 +1,28 @@
-<div class="ingave-class">
-<nav class="navbar navbar-default">
-<div class="container-fluid">
+<nav role="navigation" class="navbar navbar-default">
  <div class="navbar-header">
+        <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+      <a class="navbar-brand" href="{% url 'report_ia:home' %}"><span class="glyphicon glyphicon-menu-left"></span>e-IA LVZC</a>
+     </div>
+    <div id="navbarCollapse" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
 	{% if lijst == 'voorval' %}
-          <a class="navbar-brand" href="{% url 'report_ia:home' %}"><span class="glyphicon glyphicon-menu-left"></span>e-IA LVZC</a>
-	  <a href="{% url 'report_ia:voorval_create' %}" class="btn btn-info navbar-btn" role="button">Voorval Ingeven</a>
+	  <li><a href="{% url 'report_ia:voorval_create' %}" class="btn btn-info navbar-btn" role="button">Voorval Ingeven</a></li>
 	{% elif lijst == 'voorval_create' %}
-          <a class="navbar-brand" href="{% url 'report_ia:voorval_lijst' %}"><span class="glyphicon glyphicon-menu-left"></span>Overzicht voorvallen</a>
+          <li><a class="navbar-brand" href="{% url 'report_ia:voorval_lijst' %}">Overzicht voorvallen</a></li>
         {% elif lijst == 'maatregel' %}
-	  <a class="navbar-brand" href="{% url 'report_ia:voorval_lijst' %} "><span class="glyphicon glyphicon-menu-left"></span>Overzicht voorvallen</a>
-	  <a href="{% url 'report_ia:maatregel_create' voorval_id %}" class="btn btn-info navbar-btn" role="button">Maatregel Ingeven</a>
+	  <li><a class="navbar-brand" href="{% url 'report_ia:voorval_lijst' %} ">Overzicht voorvallen</a></li>
+	  <li><a href="{% url 'report_ia:maatregel_create' voorval_id %}" class="btn btn-info navbar-btn" role="button">Maatregel Ingeven</a></li>
         {% elif lijst == 'maatregel_create' %}
-	  <a class="navbar-brand" href="{% url 'report_ia:maatregel_lijst' voorval_id %}"><span class="glyphicon glyphicon-menu-left"></span>Overzicht Maatregelen</a>
+	  <li><a class="navbar-brand" href="{% url 'report_ia:maatregel_lijst' voorval_id %}">Overzicht Maatregelen</a></li>
         {% elif lijst == 'start' %}
-	  <a class="navbar-brand" href="{% url 'report_ia:starts_list' %} "><span class="glyphicon glyphicon-menu-left"></span>Overzicht starts</a>
-        {% else %}
-   	  <a class="navbar-brand" href="{% url 'report_ia:home' %}"><span class="glyphicon glyphicon-menu-left"></span>e-IA LVZC</a> 	  
+	  <li><a class="navbar-brand" href="{% url 'report_ia:starts_list' %} ">Overzicht starts</a></li>
         {% endif %} 
-  </div>
+     </ul>
     <ul class="nav navbar-nav navbar-right"> 
 	{% if action == 'create' %}
 	<p class="navbar-text"> Aanmaken </p>
@@ -28,6 +33,6 @@
 	<p class="navbar-text"> {{user.username}} </p>
 	<li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>Afmelden</a></li>    
     </ul>
-</div>
+  </div>
 </nav>
 

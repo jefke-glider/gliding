@@ -6,6 +6,7 @@
 {% include "navbar_simpel.html" with lijst="maatregel" %}      
 {% if object_list %}
     <div class="ingave-lijst">
+      <div class="table-responsive">
 	<table class="table table-bordered">
         <thead>
             <tr>
@@ -29,7 +30,8 @@
            {% endfor %}
 	  </tbody>
          </table>
-	</div>
+        </div>
+       </div>
 {% else %}
     <p>Er zijn nog geen maatregelen geregistreerd.</p>
 {% endif %}
