@@ -5,15 +5,17 @@ A user should be able to register an incident anonymously. Each anonymous user s
 We have 3 **categories of users**: the normal user, the administration user (AHot, safety manager), and the superusers: these are all defined by 3 groups :
 * ato_user
 * ato_admin
-* ato_super
+* ato_super  
 We use the standard user model that comes with django. Thus it needed to be extended. In the models.py file you will find the model **Ato_gebruiker**, which couples a user from django with a glider-club (model **Club**).
-To reflect this extention, an **AToGebruiker** class had to be defined inlined in admin.py
+To reflect this extension, an **AToGebruiker** class had to be defined inlined in admin.py
 
 So when you define a user, don't forget to select the correct club, and assign a group to the user. Only one group must be assigned to a user.
 
 # Messages
 
 One or more message can be put on the first page of the application, depending on the user or group of the user, logging in. The model reflecting this is called **Nieuws**. A message can be coupled to a user or a group (one of the 3 groups defined by app). Don't forget to put the message **online**!
+The messages can be created with the markdown syntax. 
+[Desccription of the mardown syntax](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
 # Voorval(incident/accident) & Maatregel(action)
 
