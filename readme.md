@@ -21,3 +21,5 @@ The safety manager can query the database, and make reports in different formats
 * corrective actions registration OK
 * complete registration fields
 * add some filtering possibilities e.g. only show records for the current year
+* upload of all kinds of files (photo, document, etc..)
+* 

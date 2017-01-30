@@ -143,7 +143,7 @@ class Voorval(models.Model):
     potentieel_risico = models.ForeignKey(Potentieel_risico, on_delete=models.CASCADE)
     
 #    def __str__(self):
-#        return self.datum
+#        return self.club.naam_kort + ' ' + self.id + ' ' + self.uur
 
     @property
     def is_recent(self):
@@ -176,8 +176,8 @@ class Maatregel(models.Model):
         verbose_name_plural = 'Maatregelen'
         ordering = ['-ingave']
         
-#    def __str__(self):
-#        return self.voorval.datum
+    def __str__(self):
+        return self.club.naam_kort + ' ' + self.voorval.datum + ' ' + self.voorval.uur
 
 #
 # this models refers to a view!!!
@@ -230,3 +230,8 @@ class AantalStarts(models.Model):
     
     class Meta:
         verbose_name_plural = 'Aantal starts'
+
+class Bestanden(models.Model):
+    voorval = models.ForeignKey(Voorval, on_delete=models.CASCADE)
+    op =  models.DateTimeField(auto_now=True)
+    bestand = models.FileField()
