@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
-
+import os
 from . import views
 
 urlpatterns = [
@@ -27,4 +27,7 @@ url(r'^accounts/login/$', auth_views.login, {'template_name': 'login.html'}, nam
 url(r'^accounts/logout/$', auth_views.logout, {'template_name': 'logout.html'}, name='logout'),
 url(r'^report_ia/', include('report_ia.urls', namespace='report_ia')),
 url(r'^$', views.home),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if os.uname()[1] != 'gimli':
+    urlpatterns +=  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
