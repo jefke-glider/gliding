@@ -2,7 +2,7 @@ from django.forms import ModelForm, Textarea
 from django.core.exceptions import ValidationError
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from .models import Voorval, Club, Maatregel, AantalStarts
+from .models import Voorval, Club, Maatregel, AantalStarts, Bestand
 
 class VoorvalForm(ModelForm):
 
@@ -45,6 +45,17 @@ class MaatregelForm(ModelForm):
         fields = ('synopsis', 'omschrijving', 'in_werking')
         labels = {'omschrijving' : 'omschrijving maatregel'}
         help_texts = { 'synopsis' : 'Omschrijving van het voorval' , },
+
+class UploadFileForm(ModelForm):
+    synopsis = forms.CharField(label='synopsis voorval',
+                               required=False,
+                               widget=forms.Textarea(attrs={'cols': '80',
+                                                            'rows':'10', 'disabled':True}))
+
+    class Meta:
+        model = Bestand
+        fields = ('synopsis', 'bestand', 'opmerking')
+        labels = {'Selecteer Bestand', 'Geef eventueel een omschrijving' }
 
 
 class ExportForm(forms.Form):

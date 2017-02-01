@@ -8,13 +8,13 @@ from django.db import connection
 from django.core.mail import send_mail
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.views.generic import ListView
 from django.forms import ModelChoiceField
 
-from .forms import VoorvalForm, ExportForm, MaatregelForm, StartsForm
-from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws, AantalStarts, Club
+from .forms import VoorvalForm, ExportForm, MaatregelForm, StartsForm, UploadFileForm
+from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws, AantalStarts, Club, Bestand
 from .utilities import export, Ato
 
 import markdown
@@ -291,3 +291,50 @@ def starts_list(request, pk = None, template_name='starts_lijst.html'):
     data['ausr'] = ausr
     data['club'] = ausr.club_naam()
     return render(request, template_name, data)
+
+@login_required
+def upload_bestand(request, voorval_id, template_name="upload_bestand.html"):
+    voorval = get_object_or_404(Voorval, pk=voorval_id)
+    form = UploadFileForm(request.POST or None, request.FILES or None, initial={'synopsis':voorval.synopsis})
+    if request.method == 'POST':
+        if form.is_valid():
+            my_form = form.save(commit=False)
+            my_form.voorval = voorval
+            my_form.save()
+            #handle_uploaded_file(request.FILES['file'])
+            return redirect('report_ia:bestand_lijst', pk=my_form.voorval.id)
+    #else:
+    #    form = UploadFileForm()
+    return render(request, template_name, {'form': form})
+
+@login_required
+def bestand_list(request, pk = None, template_name='bestand_lijst.html'):
+    ausr = Ato(request.user)        
+    if ausr.is_super:
+        if pk:
+            bestand = Bestand.objects.filter(voorval__id=pk)
+        else:
+            bestand = Bestand.objects.all()
+    elif ausr.is_admin or ausr.is_user:
+        bestand = Bestand.objects.filter(voorval__club=ausr.club())
+        if pk:
+            bestand = bestand.filter(voorval__id = pk)
+    else:
+        print('should never be here!')
+    #recent voorval where ingave < 1 week
+    data = {}
+    data['object_list'] = bestand
+    data['ausr'] = ausr
+    data['club'] = ausr.club_naam()
+    data['bestand_id'] = pk
+    return render(request, template_name, data)
+
+@login_required
+def bestand_delete(request, pk, template_name="bestand_confirm_delete.html"):
+    ausr = Ato(request.user)
+    bestand = get_object_or_404(Bestand, pk=pk)
+    voorval_id = bestand.voorval.id
+    if request.method=='POST':
+        bestand.delete()
+        return redirect('report_ia:bestand_lijst', pk=voorval_id)
+    return render(request, template_name, {'bestand':bestand, 'club':ausr.club_naam(), 'voorval_id':voorval_id})

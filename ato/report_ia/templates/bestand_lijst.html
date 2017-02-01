@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+
+<div class="ingave-class">
+{% include "navbar_simpel.html" with lijst="voorval_create" %}      
+{% if object_list %}
+    <div class="ingave-lijst">
+      <div class="table-responsive">
+	<table class="table table-bordered">
+        <thead>
+            <tr>
+	        <th>Club</th>
+                <th>Datum voorval</th>
+                <th>Synopsis</th>
+                <th>Bestand omschrijving</th>
+                <th>Naam vh bestand</th>
+		<th>Bestand</th>
+	        <th>Geupload op</td>
+		<th>Acties</th>
+            </tr>
+        </thead>
+        <tbody>
+	  {% for bestand in object_list %}
+	    <td>{{ bestand.voorval.club.naam_kort }}</td>
+	    <td>{{ bestand.voorval.datum|date:"SHORT_DATE_FORMAT" }}</td>
+	    <td>{{ bestand.voorval.synopsis|truncatewords:20 }}</td>
+	    <td>{{ bestand.opmerking|truncatewords:20 }}</td>
+	    <td>{{ bestand.bestand }} </td>
+	    <td><img src = "{{ bestand.bestand.url }}" class="img-responsive" ></td>
+	    <td>{{ bestand.op|date:"SHORT_DATE_FORMAT" }}</td>
+	    <td><a href="{% url 'report_ia:bestand_delete' bestand.id %}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a></td>
+
+	   </tr>
+           {% endfor %}
+	  </tbody>
+         </table>
+        </div>
+       </div>
+{% else %}
+    <p>Er zijn nog geen bestanden ge-upload.</p>
+{% endif %}
+
+{% endblock %}

@@ -14,7 +14,7 @@ The safety manager can query the database, and make reports in different formats
 * django 1.10
 * bootstrap 3.0
 * jQuery
-* PostGresql 9.x
+* PostgreSQL 9.x
 
 #ToDO
 * send email to Ahot and safety manager OK
@@ -24,6 +24,6 @@ The safety manager can query the database, and make reports in different formats
 * upload of all kinds of files (photo, document, etc..)
 *
 
-#[More Documentation](docs/general.md)
+#[General Info](docs/general.md)
 
  

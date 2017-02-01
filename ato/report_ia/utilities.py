@@ -8,10 +8,6 @@ from django.db import connection
 import csv
 from datetime import datetime
 
-
-    
-
-
 def export(qs, fields=None):
     model = qs.model
     response = HttpResponse(content_type='text/csv')
@@ -149,3 +145,9 @@ def test_ato():
 def test_export():
     vm = VoorvalMaatregel.objects.all()
     print(vm.values())
+
+def handle_uploaded_file(f):
+    with open('some/file/name.txt', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+

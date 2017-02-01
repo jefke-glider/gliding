@@ -147,9 +147,9 @@ USE_TZ = True
 
 if os.uname()[1] == 'gimli':
     STATIC_ROOT = '/home/jpe/gliding/ato/static/'
-                
+    MEDIA_ROOT = '/home/jpe/gliding/ato/media/'            
     STATIC_URL = '/static/'
-                
+    MEDIA_URL = '/media/'                
     STATICFILES_DIRS = [
         '/home/jpe/atoenv/lib/python3.4/site-packages/django/contrib/admin/static/'
         ]
@@ -162,4 +162,7 @@ else:
         '/usr/lib/python3.4/site-packages/jquery/',
         '/home/jpe/proj/ato/ato/static/'
         ]
+    MEDIA_ROOT = '/home/jpe/proj/ato/ato/media/'
+    MEDIA_URL = '/media/'
+
 

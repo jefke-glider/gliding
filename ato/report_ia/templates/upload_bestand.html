@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block content %}
+ <script>
+$(document).ready(function() {
+	$('.has-popover').popover({'trigger':'hover'});
+	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
+});
+  </script>
+{% include "navbar_simpel.html" with lijst="voorval_create" %}
+   <form  class="form-vertical" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+	{% for field in form %}
+	  {% bootstrap_label field.label_tag  %}
+	  {% bootstrap_field field show_label=False  %}
+        {% endfor %}
+	<button type="submit" class="btn btn-primary">
+	  {% bootstrap_icon "star" %} Opslaan
+	</button>
+	<button type="Reset" class="btn">
+	  Reset
+	</button>
+
+    </form>
+
+
+</div>
+{% endblock %}

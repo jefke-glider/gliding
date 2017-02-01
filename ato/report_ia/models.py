@@ -3,8 +3,6 @@ from django import forms
 from django.contrib.auth.models import User, Group
 from multiselectfield import MultiSelectField
 
-
-
 # Create your models here.
 
 class Vliegveld(models.Model):
@@ -139,6 +137,7 @@ class Voorval(models.Model):
     type_toestel = models.ForeignKey(Type_toestel, on_delete=models.CASCADE)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.CASCADE)
     aantal_maatregelen = models.IntegerField(default=0)
+    aantal_bestanden = models.IntegerField(default=0)
     ato = models.IntegerField(choices=ATO_VOORVAL, default=1)
     potentieel_risico = models.ForeignKey(Potentieel_risico, on_delete=models.CASCADE)
     
@@ -181,6 +180,8 @@ class Maatregel(models.Model):
 
 #
 # this models refers to a view!!!
+# this view is called voorval_maatregel, and is needed
+# to export the combination (join) of the tables Voorval & Maatregel
 # -> extra meta attributes need to be specified
 #
 class VoorvalMaatregel(models.Model):
@@ -231,7 +232,17 @@ class AantalStarts(models.Model):
     class Meta:
         verbose_name_plural = 'Aantal starts'
 
-class Bestanden(models.Model):
+def club_directory_path(instance, filename):
+    short_club_name = instance.voorval.club.naam_kort.lower()
+    return 'club/{0}/{1:%Y}/{2}'.format(short_club_name, instance.voorval.datum, filename)
+
+
+class Bestand(models.Model):
     voorval = models.ForeignKey(Voorval, on_delete=models.CASCADE)
     op =  models.DateTimeField(auto_now=True)
-    bestand = models.FileField()
+    bestand = models.FileField(upload_to=club_directory_path)
+    opmerking = models.TextField()
+
+    class Meta:
+        verbose_name_plural = 'Bestanden'
+
