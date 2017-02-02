@@ -7,3 +7,4 @@
 *.tar
 *.dll
 __pycache__/
+media/
