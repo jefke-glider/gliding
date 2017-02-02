@@ -121,7 +121,7 @@ class Voorval(models.Model):
         (5, 'Organisatie'))
     
     ingave = models.DateTimeField(auto_now=True)
-    datum = models.DateField(help_text='Datum van het voorval')
+    datum = models.DateField()
     uur = models.TimeField()
     type_voorval = models.ForeignKey(Type_voorval, on_delete=models.CASCADE)    
     synopsis = models.TextField()

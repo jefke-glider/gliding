@@ -16,20 +16,26 @@ class VoorvalForm(ModelForm):
         help_texts = { 'uur' : 'uur van het voorval in formaat hh:mm',
                        'type_voorval' : 'Duid aan welk type voorval het is',
                        'synopsis' : 'omschrijving van het voorval',
+                       'datum':'kies een datum',
                       }
-        widgets = {
-            'datum': forms.DateInput(attrs={'class': 'datepicker'}),
-        }
+##         widgets = {
+##             'datum': forms.DateInput(),
+##         }
 
-        def __init__(self, *args, **kwargs):
-            super(VoorvalForm, self).__init__(*args, **kwargs)
-            for field in self.fields:
-                help_text = self.fields[field].help_text
-                self.fields[field].help_text = ''
-                if help_text != '':
-                    self.fields[field].widget.attrs.update(
-                        {'class':'has-popover', 'data-content':help_text, 'data-placement':'right',
-                         'data-container':'body'})
+    def __init__(self, *args, **kwargs):
+        print('init voorvalform')
+        super(VoorvalForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            print(help_text)
+            self.fields[field].help_text = ''
+            if help_text != '':
+                self.fields[field].widget.attrs.update(
+                    {'class':'has-popover', 'data-content':help_text, 'data-placement':'bottom',
+                     'data-container':'body', 'title':'ingave voorval'})
+        self.fields['datum'].widget.attrs.update({
+            'class': 'has-popover datepicker'
+        })
 
 class MaatregelForm(ModelForm):
     synopsis = forms.CharField(label='synopsis voorval',
@@ -44,7 +50,26 @@ class MaatregelForm(ModelForm):
         model = Maatregel
         fields = ('synopsis', 'omschrijving', 'in_werking')
         labels = {'omschrijving' : 'omschrijving maatregel'}
-        help_texts = { 'synopsis' : 'Omschrijving van het voorval' , },
+        help_texts = { 'synopsis' : 'Omschrijving van het voorval' ,
+                       'omschrijving' : 'beschrijf de genomen maatregel (1 per keer)',
+                       'in_werking' : 'vanaf wanneer is deze maatregel in werking getreden?'
+                       }
+
+    def __init__(self, *args, **kwargs):
+        print('init maatregelform')
+        super(MaatregelForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            print(help_text)
+            self.fields[field].help_text = ''
+            if help_text != '':
+                self.fields[field].widget.attrs.update(
+                    {'class':'has-popover', 'data-content':help_text, 'data-placement':'bottom',
+                     'data-container':'body', 'title':'ingave maatregel'})
+            self.fields['in_werking'].widget.attrs.update({
+                'class': 'has-popover datepicker'
+                })
+    
 
 class UploadFileForm(ModelForm):
     synopsis = forms.CharField(label='synopsis voorval',

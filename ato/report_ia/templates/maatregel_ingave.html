@@ -2,12 +2,12 @@
 {% load bootstrap3 %}
 {% load staticfiles %}
 {% block content %}
- <script>
+<script>
 $(document).ready(function() {
 	$('.has-popover').popover({'trigger':'hover'});
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 });
-  </script>
+</script>
 
 {% include "navbar_simpel.html" with lijst="maatregel_create"%}
 <div class="ingave-class">
