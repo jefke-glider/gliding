@@ -18,6 +18,8 @@ from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws, AantalStarts, 
 from .utilities import export, Ato
 
 import markdown
+from templated_docs import fill_template
+from templated_docs.http import FileResponse
 
         
 @login_required
@@ -122,7 +124,8 @@ def voorval_update(request, pk, template_name='voorval_ingave.html'):
     return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam()})
 
 @login_required
-def voorval_detail(request, pk, template_name="voorval_overview.html"):
+def voorval_detail(request, pk, action=None, template_name="voorval_overview.html",
+                   odt_template="voorval_detail.odt"):
     ausr = Ato(request.user)
     voorval = get_object_or_404(Voorval, pk=pk)
     if voorval.aantal_maatregelen > 0:
@@ -139,7 +142,12 @@ def voorval_detail(request, pk, template_name="voorval_overview.html"):
     data['obj_bestanden'] = bestanden
     data['ausr'] = ausr
     data['club'] = ausr.club_naam()
-    return render(request, template_name, data)
+    if action == 'doc':
+        filename = fill_template(odt_template, data, output_format='odt')
+        visible_filename = 'voorval_detail.odt'
+        return FileResponse(filename, visible_filename)
+    else:
+        return render(request, template_name, data)
 
 @login_required
 def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):

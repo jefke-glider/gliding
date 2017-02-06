@@ -46,6 +46,7 @@
 {% if ausr.is_admin or ausr.is_super%}
 	    <td><a href="{% url 'report_ia:voorval_update' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
 	    <td><a href="{% url 'report_ia:voorval_detail' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+	    <td><a href="{% url 'report_ia:voorval_detail_doc' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-file"></span></a></td>
 {% if ausr.is_super %}
             {% if voorval.aantal_maatregelen %}
 	    <td><a href="{% url 'report_ia:voorval_delete' voorval.id %}" class="btn btn-danger btn-sm disabled"><span class="glyphicon glyphicon-trash"></span></a></td>

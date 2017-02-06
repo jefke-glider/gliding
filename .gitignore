@@ -6,5 +6,6 @@
 *.exe
 *.tar
 *.dll
+*.directory
 __pycache__/
 media/
