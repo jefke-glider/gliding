@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+
+
+<div class="ingave-class">
+{% include "navbar_simpel.html" with lijst="voorval_create" %}      
+{% if obj_voorval %}
+    <div class="ingave-lijst">
+      <div class="table-responsive">
+	<h2> Voorval voor club {{ club }}</h2>
+	<table class="table table-bordered">
+        <thead>
+            <tr>
+	        <th>Item</th>
+                <th>Omschrijving</th>
+            </tr>
+        </thead>
+        <tbody>
+	  {% for field, value in obj_voorval %}
+           {% if value != Null %}
+           <tr>
+            <td>{{ field }}</td>
+	    <td>{{ value }}</td>
+	   </tr>
+           {% endif %}
+           {% endfor %}
+	  </tbody>
+         </table>
+	{% if obj_maatregelen %}
+        <h3> Maatregelen </h3>
+        {% for maatregel in obj_maatregelen %}
+	<table class="table table-bordered">
+        <thead>
+            <tr>
+	        <th>Item</th>
+                <th>Omschrijving</th>
+            </tr>
+        </thead>
+        <tbody>
+	  {% for field, value in maatregel %}
+           {% if value != Null %}
+           <tr>
+            <td>{{ field }}</td>
+	    <td>{{ value }}</td>
+	   </tr>
+           {% endif %}
+           {% endfor %}
+	  </tbody>
+         </table>
+        {% endfor %}
+	{% endif %}
+	{% if obj_bestanden %}
+        <h3> Bestanden </h3>
+        {% for bestand in obj_bestanden %}
+	<table class="table table-bordered">
+        <thead>
+            <tr>
+	        <th>Item</th>
+                <th>Omschrijving</th>
+            </tr>
+        </thead>
+        <tbody>
+	  {% for field, value in bestand %}
+           {% if value != Null %}
+           <tr>
+            <td>{{ field }}</td>
+	    <td>{{ value }}</td>
+	   </tr>
+           {% endif %}
+           {% endfor %}
+	  </tbody>
+         </table>
+        {% endfor %}
+	{% endif %}
+	</div>
+       </div>
+{% else %}
+    <p>Er zijn nog geen voorvallen geregistreerd.</p>
+{% endif %}
+
+{% endblock %}

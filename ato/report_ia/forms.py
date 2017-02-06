@@ -23,11 +23,9 @@ class VoorvalForm(ModelForm):
 ##         }
 
     def __init__(self, *args, **kwargs):
-        print('init voorvalform')
         super(VoorvalForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             help_text = self.fields[field].help_text
-            print(help_text)
             self.fields[field].help_text = ''
             if help_text != '':
                 self.fields[field].widget.attrs.update(
@@ -56,11 +54,9 @@ class MaatregelForm(ModelForm):
                        }
 
     def __init__(self, *args, **kwargs):
-        print('init maatregelform')
         super(MaatregelForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             help_text = self.fields[field].help_text
-            print(help_text)
             self.fields[field].help_text = ''
             if help_text != '':
                 self.fields[field].widget.attrs.update(
@@ -135,7 +131,6 @@ class StartsForm(ModelForm):
         if totaal <= 0:
             raise forms.ValidationError("Gelieve aantal starts in te vullen")
         else:
-            print(self.cleaned_data)
             self.cleaned_data['totaal'] = totaal
             return self.cleaned_data
 

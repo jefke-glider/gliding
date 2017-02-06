@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404,render,redirect,reverse
+from django.shortcuts import get_object_or_404,render,redirect,reverse, get_list_or_404
 from django.template import loader, Context
 from django.contrib.auth.models import User
 from django.db.models import Count, Avg
@@ -82,7 +82,7 @@ def voorval_create(request, template_name="voorval_ingave.html"):
         my_model.club = ausr.club()
         my_model.save()
         # ok, new voorval has been saved to the database
-        new_voorval_link = request.build_absolute_uri(reverse('report_ia:voorval_update',
+        new_voorval_link = request.build_absolute_uri(reverse('report_ia:voorval_detail',
                                                               args=[my_model.pk]))
 
         #we send an email to responsable persons
@@ -120,6 +120,26 @@ def voorval_update(request, pk, template_name='voorval_ingave.html'):
         form.save()
         return redirect('report_ia:voorval_lijst')
     return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam()})
+
+@login_required
+def voorval_detail(request, pk, template_name="voorval_overview.html"):
+    ausr = Ato(request.user)
+    voorval = get_object_or_404(Voorval, pk=pk)
+    if voorval.aantal_maatregelen > 0:
+        maatregelen = get_list_or_404(Maatregel, voorval__id = pk)
+    else:
+        maatregelen = None
+    if voorval.aantal_bestanden > 0:
+        bestanden =  get_list_or_404(Bestand, voorval__id = pk)
+    else:
+        bestanden = None
+    data = {}
+    data['obj_voorval'] = voorval
+    data['obj_maatregelen'] = maatregelen
+    data['obj_bestanden'] = bestanden
+    data['ausr'] = ausr
+    data['club'] = ausr.club_naam()
+    return render(request, template_name, data)
 
 @login_required
 def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
@@ -174,10 +194,10 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
         my_model.save()
 
         # ok, new voorval has been saved to the database
-        new_link = request.build_absolute_uri(reverse('report_ia:maatregel_update',
+        new_link = request.build_absolute_uri(reverse('report_ia:voorval_detail',
                                                       args=[my_model.pk]))
 
-        print(new_link)
+        #print(new_link)
         #we send an email to responsable persons
         email_to = ausr.email_admins() + ausr.email_supers()
         try:
@@ -284,7 +304,7 @@ def starts_list(request, pk = None, template_name='starts_lijst.html'):
             starts = AantalStarts.objects.all()
     else:
         starts = AantalStarts.objects.filter(club=ausr.club())
-    print(starts.count())
+    #print(starts.count())
     #recent voorval where ingave < 1 week
     data = {}
     data['object_list'] = starts

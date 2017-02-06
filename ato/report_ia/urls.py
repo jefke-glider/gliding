@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^$', views.index, name='home'),
     url(r'^lijst/$', views.voorval_list, name='voorval_lijst'),
     url(r'^lijst/(?P<pk>\d*$)', views.voorval_list, name='voorval_lijst'),
+    url(r'^detail/(?P<pk>\d*$)', views.voorval_detail, name='voorval_detail'),
     url(r'^overzicht$', views.voorval_overzicht, name='voorval_overzicht'),
     url(r'^export$', views.voorval_export, name='voorval_export'),    
     url(r'^create$', views.voorval_create, name='voorval_create'),

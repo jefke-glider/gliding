@@ -140,6 +140,12 @@ class Voorval(models.Model):
     aantal_bestanden = models.IntegerField(default=0)
     ato = models.IntegerField(choices=ATO_VOORVAL, default=1)
     potentieel_risico = models.ForeignKey(Potentieel_risico, on_delete=models.CASCADE)
+
+    def __iter__(self):
+        fieldnames = [f.name for f in self._meta.get_fields()]
+        for field_name in fieldnames:
+            value = getattr(self, field_name, None)
+            yield (field_name, value)
     
 #    def __str__(self):
 #        return self.club.naam_kort + ' ' + self.id + ' ' + self.uur
@@ -177,6 +183,13 @@ class Maatregel(models.Model):
         
     def __str__(self):
         return self.club.naam_kort + ' ' + self.voorval.datum + ' ' + self.voorval.uur
+
+    def __iter__(self):
+        fieldnames = [f.name for f in self._meta.get_fields()]
+        for field_name in fieldnames:
+            value = getattr(self, field_name, None)
+            yield (field_name, value)
+
 
 #
 # this models refers to a view!!!
@@ -246,3 +259,8 @@ class Bestand(models.Model):
     class Meta:
         verbose_name_plural = 'Bestanden'
 
+    def __iter__(self):
+        fieldnames = [f.name for f in self._meta.get_fields()]
+        for field_name in fieldnames:
+            value = getattr(self, field_name, None)
+            yield (field_name, value)
