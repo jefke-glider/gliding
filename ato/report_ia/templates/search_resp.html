@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block content %}
+{% include "navbar_simpel.html" with lijst="voorval_create" %}
+<script>
+$(function() {
+  $("#zwever").autocomplete({
+    source: "/report_ia/zwevers/",
+    minLength: 2,
+    select: function( event, ui ) {
+        $("#zwever-id").val(ui.item.id) ;
+    }
+  });
+});
+</script>
+<div class="ingave-class">
+<div class="ui-widget">
+  <label for="zwever">Zwever: </label>
+  <input id="zwever">
+  <input id="zwever-id">
+</div>
+
+
+</div>
+{% endblock %}

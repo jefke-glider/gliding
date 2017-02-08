@@ -7,6 +7,16 @@ $(document).ready(function() {
 	$('.has-popover').popover({'trigger':'hover'});
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 });
+$(function() {
+  $("#id_zoek_type_toestel").autocomplete({
+    source: "/report_ia/zwevers/",
+    minLength: 2,
+    select: function( event, ui ) {
+        $("#id_type_toestel").val(ui.item.id) ;
+    }
+  });
+});
+
   </script>
 {% include "navbar_simpel.html" with lijst="voorval_create" %}
    <form  class="form-vertical" method="POST">

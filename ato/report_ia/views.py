@@ -7,14 +7,16 @@ from django import forms
 from django.db import connection
 from django.core.mail import send_mail
 
+
 # Create your views here.
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.views.generic import ListView
 from django.forms import ModelChoiceField
 
 from .forms import VoorvalForm, ExportForm, MaatregelForm, StartsForm, UploadFileForm
 from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws, AantalStarts, Club, Bestand
+from .models import Type_toestel
 from .utilities import export, Ato
 
 import markdown
@@ -362,7 +364,38 @@ def bestand_delete(request, pk, template_name="bestand_confirm_delete.html"):
     ausr = Ato(request.user)
     bestand = get_object_or_404(Bestand, pk=pk)
     voorval_id = bestand.voorval.id
-    if request.method=='POST':
+    if request.method == 'POST':
         bestand.delete()
         return redirect('report_ia:bestand_lijst', pk=voorval_id)
     return render(request, template_name, {'bestand':bestand, 'club':ausr.club_naam(), 'voorval_id':voorval_id})
+
+@login_required
+def search_gliders(request, glider = None, template_name="search_resp.html"):
+    ausr = Ato(request.user)
+    data = {}
+    if glider != None:
+        gliders = Type_toestel.objects.filter(naam__icontains=glider)
+        if len(gliders) > 0:
+            data['gliders'] = list(gliders)
+            data['error'] = None
+        else:
+            data['gliders'] = None
+            data['error'] = 'No matching gliders found in database table Type_toestel'
+        render(request, template_name, data)
+    else:
+        data['error'] = 'nothing specified in search string!'
+    return render(request, template_name, data)
+
+@login_required
+def search_gliders(request, template_name="search_resp.html"):
+    if request.method == "GET":
+        q = request.GET.get('term', '')
+        if q:
+            gliders = Type_toestel.objects.filter(naam__icontains=q)
+            results = [ {'id': x.id , 'label' : x.naam, 'value': x.naam } for x in gliders ]
+            response = JsonResponse(results, safe=False)
+        else:
+            return render(request, template_name)
+    return HttpResponse(response, content_type='application/json')
+
+

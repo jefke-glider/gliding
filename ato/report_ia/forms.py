@@ -5,12 +5,14 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Voorval, Club, Maatregel, AantalStarts, Bestand
 
 class VoorvalForm(ModelForm):
-
+    zoek_type_toestel = forms.CharField(label="zoek type toestel", required = False)
+#    type_toestel = forms.CharField(label='', widget = forms.HiddenInput(), required = False)
+                                   
     class Meta:
         model = Voorval
 
         ordering = ['-datum']
-        fields = ( 'datum', 'uur', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' ,
+        fields = ( 'datum', 'uur', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' , 'zoek_type_toestel',
                    'type_toestel', 'kern_activiteit', 'muopo', 'menselijke_schade',
                    'materiele_schade', 'schade_omschrijving', 'ato', 'potentieel_risico')
         help_texts = { 'uur' : 'uur van het voorval in formaat hh:mm',
