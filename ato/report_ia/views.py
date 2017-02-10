@@ -80,7 +80,7 @@ def voorval_overzicht(request,template_name='voorval_overzicht.html'):
 @login_required
 def voorval_create(request, template_name="voorval_ingave.html"):
     ausr = Ato(request.user)
-    form = VoorvalForm(request.POST or None)
+    form = VoorvalForm(request.POST or None, initial={'locatie':ausr.club().locatie})
     if form.is_valid():
         my_model = form.save(commit=False)
         my_model.club = ausr.club()
@@ -368,23 +368,6 @@ def bestand_delete(request, pk, template_name="bestand_confirm_delete.html"):
         bestand.delete()
         return redirect('report_ia:bestand_lijst', pk=voorval_id)
     return render(request, template_name, {'bestand':bestand, 'club':ausr.club_naam(), 'voorval_id':voorval_id})
-
-@login_required
-def search_gliders(request, glider = None, template_name="search_resp.html"):
-    ausr = Ato(request.user)
-    data = {}
-    if glider != None:
-        gliders = Type_toestel.objects.filter(naam__icontains=glider)
-        if len(gliders) > 0:
-            data['gliders'] = list(gliders)
-            data['error'] = None
-        else:
-            data['gliders'] = None
-            data['error'] = 'No matching gliders found in database table Type_toestel'
-        render(request, template_name, data)
-    else:
-        data['error'] = 'nothing specified in search string!'
-    return render(request, template_name, data)
 
 @login_required
 def search_gliders(request, template_name="search_resp.html"):

@@ -7,18 +7,21 @@ from .models import Voorval, Club, Maatregel, AantalStarts, Bestand
 class VoorvalForm(ModelForm):
     zoek_type_toestel = forms.CharField(label="zoek type toestel", required = False)
 #    type_toestel = forms.CharField(label='', widget = forms.HiddenInput(), required = False)
+#    type_toestel = forms.CharField(label='geselecteerd type toestel', required = False)
                                    
     class Meta:
         model = Voorval
 
         ordering = ['-datum']
-        fields = ( 'datum', 'uur', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' , 'zoek_type_toestel',
-                   'type_toestel', 'kern_activiteit', 'muopo', 'menselijke_schade',
+        fields = ( 'datum', 'uur', 'locatie', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' ,
+                   'zoek_type_toestel', 'type_toestel', 'kern_activiteit', 'menselijke_schade',
+                   'mens', 'uitrusting', 'omgeving', 'product', 'organisatie',
                    'materiele_schade', 'schade_omschrijving', 'ato', 'potentieel_risico')
         help_texts = { 'uur' : 'uur van het voorval in formaat hh:mm',
                        'type_voorval' : 'Duid aan welk type voorval het is',
                        'synopsis' : 'omschrijving van het voorval',
                        'datum':'kies een datum',
+                       'mens' : 'een menselijke fout ligt aan de oorzaak',
                       }
 ##         widgets = {
 ##             'datum': forms.DateInput(),

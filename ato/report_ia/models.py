@@ -42,7 +42,7 @@ class Opleiding(models.Model):
 
 class Startwijze(models.Model):
     naam = models.CharField(max_length=30)
-    naam_kort = models.CharField(max_length=1, default='S')
+    naam_kort = models.CharField(max_length=1)
 
     def __str__(self):
         return self.naam
@@ -123,6 +123,7 @@ class Voorval(models.Model):
     ingave = models.DateTimeField(auto_now=True)
     datum = models.DateField()
     uur = models.TimeField()
+    locatie = models.ForeignKey(Vliegveld, on_delete=models.CASCADE, null=True)
     type_voorval = models.ForeignKey(Type_voorval, on_delete=models.CASCADE)    
     synopsis = models.TextField()
     opleiding = models.ForeignKey(Opleiding, on_delete=models.CASCADE)
@@ -131,9 +132,11 @@ class Voorval(models.Model):
     menselijke_schade = models.BooleanField(default=False)
     materiele_schade = models.BooleanField(default=False)
     schade_omschrijving = models.TextField()
-    muopo = MultiSelectField(choices=OORZAKEN_KEUZES,
-                             max_choices=5,
-                             max_length=5)
+    mens = models.BooleanField(default=False)
+    uitrusting =  models.BooleanField(default=False)
+    omgeving =  models.BooleanField(default=False)
+    product =  models.BooleanField(default=False)
+    organisatie =  models.BooleanField(default=False)
     type_toestel = models.ForeignKey(Type_toestel, on_delete=models.CASCADE)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.CASCADE)
     aantal_maatregelen = models.IntegerField(default=0)
