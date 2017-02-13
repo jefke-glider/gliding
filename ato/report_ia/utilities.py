@@ -2,8 +2,10 @@ from django.http import HttpResponse
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User, Group
 from django.core.mail import send_mail
-from .models import Ato_gebruiker, Maatregel, Voorval, VoorvalMaatregel
+from .models import Ato_gebruiker, Maatregel, Voorval, VoorvalMaatregel, Club
 from django.db import connection
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 
 import csv
 from datetime import datetime
@@ -150,4 +152,30 @@ def handle_uploaded_file(f):
     with open('some/file/name.txt', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+
+def create_ato_users(apps, schema_editor):
+    clubs = Club.objects.all()
+    admin_group = Group.objects.get(name='ato_admin')
+    user_group = Group.objects.get(name='ato_user')
+    ato_gebruiker = Ato_gebruiker
+    for club in clubs:
+        username =  club.naam_kort.lower() + '_admin'
+        print('creating user ', username)
+        user = User.objects.create_user(username=username,
+                                        email=None,
+                                        password='Soth{og2')
+        print('adding ', username , ' to group ato_admin')
+        user.groups.add(admin_group)
+        Ato_gebruiker.objects.create(club=club, user=user)
+        username =  club.naam_kort.lower() + '_user'
+        print('creating user ', username)        
+        user = User.objects.create_user(username=username,
+                                        email=None,
+                                        password='Soth{og2')
+        print('adding ', username , ' to group ato_user')
+        user.groups.add(user_group)
+        Ato_gebruiker.objects.create(club=club, user=user)
+
+
+
 
