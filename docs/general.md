@@ -3,13 +3,16 @@
 
 A user should be able to register an incident anonymously. Each anonymous user should be coupled to a club.
 We have 3 **categories of users**: the normal user, the administration user (AHot, safety manager), and the superusers: these are all defined by 3 groups :
-* ato_user
+* __ato_user__
+
   this user can only register an incident/accident, and can have an overview of all 
   registered incident.accidents for his specific club. He cannot modify and/or delete an incident
   /accident.
-* ato_admin
+* __ato_admin__
+
   Ahot/safety manager. They can register an action coupled with an incident/accident. Export to a csv file. 
-* ato_super
+* __ato_super__
+
   has access to eveything, as well as the administrator interface to edit/insert/delete  all tables 
 We use the standard user model that comes with django. Thus it needed to be extended. In the models.py file you will find the model **Ato_gebruiker**, which couples a user from django with a glider-club (model **Club**).
 To reflect this extension, an **AToGebruiker** class had to be defined inlined in admin.py
