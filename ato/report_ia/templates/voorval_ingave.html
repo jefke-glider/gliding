@@ -22,8 +22,24 @@ $(function() {
    <form  class="form-vertical" method="POST">
         {% csrf_token %}
 	{% for field in form %}
-	  {% bootstrap_label field.label_tag  %}
+         {% if field.name == 'mens' %}
+           <div class="form-inline">
+           <fieldset>
+             <legend>MUOPO</legend>
+         {% endif %}          
+         {% if field.name == 'menselijke_schade' %}
+           <div class="form-inline">
+           <fieldset>
+             <legend>Schade</legend>
+         {% endif %}          
+          {% if field.name not in form.boolean_set %}
+   	    {% bootstrap_label field.label_tag  %}
+          {% endif %}
 	  {% bootstrap_field field show_label=False  %}
+         {% if field.name == 'organisatie' or field.name == 'materiele_schade' %}
+           </fieldset>
+           </div>
+         {% endif %}
         {% endfor %}
 	<button type="submit" class="btn btn-primary">
 	  {% bootstrap_icon "star" %} Opslaan en verzenden

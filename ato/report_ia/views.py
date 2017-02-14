@@ -81,6 +81,7 @@ def voorval_overzicht(request,template_name='voorval_overzicht.html'):
 def voorval_create(request, template_name="voorval_ingave.html"):
     ausr = Ato(request.user)
     form = VoorvalForm(request.POST or None, initial={'locatie':ausr.club().locatie})
+    fieldset = ( 'mens', 'uitrusting', 'omgeving', 'product', 'organisatie' ) 
     if form.is_valid():
         my_model = form.save(commit=False)
         my_model.club = ausr.club()
@@ -107,7 +108,8 @@ def voorval_create(request, template_name="voorval_ingave.html"):
         except:
             pass
         return redirect('report_ia:voorval_toegevoegd')
-    return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam()})
+    return render(request, template_name, {'form':form, 'action':'create', 'fieldset' : fieldset,
+                                           'club':ausr.club_naam()})
 
 @login_required
 def voorval_toegevoegd(request, template_name="voorval_ingave_bevestiging.html"):
