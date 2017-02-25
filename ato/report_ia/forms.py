@@ -70,7 +70,7 @@ class MaatregelForm(ModelForm):
                 self.fields[field].widget.attrs.update(
                     {'class':'has-popover', 'data-content':help_text, 'data-placement':'bottom',
                      'data-container':'body', 'title':'ingave maatregel'})
-            self.fields['in_werking'].widget.attrs.update({
+        self.fields['in_werking'].widget.attrs.update({
                 'class': 'has-popover datepicker'
                 })
     

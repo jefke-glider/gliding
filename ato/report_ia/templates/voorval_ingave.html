@@ -24,20 +24,17 @@ $(function() {
 	{% for field in form %}
          {% if field.name == 'mens' %}
            <div class="form-inline">
-           <fieldset>
-             <legend>MUOPO</legend>
+             <h4>MUOPO</h4>
          {% endif %}          
          {% if field.name == 'menselijke_schade' %}
            <div class="form-inline">
-           <fieldset>
-             <legend>Schade</legend>
+             <h4>Schade</h4>
          {% endif %}          
           {% if field.name not in form.boolean_set %}
    	    {% bootstrap_label field.label_tag  %}
           {% endif %}
 	  {% bootstrap_field field show_label=False  %}
          {% if field.name == 'organisatie' or field.name == 'materiele_schade' %}
-           </fieldset>
            </div>
          {% endif %}
         {% endfor %}

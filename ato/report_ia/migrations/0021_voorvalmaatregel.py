@@ -34,8 +34,9 @@ class Migration(migrations.Migration):
         migrations.RunSQL(["""
  CREATE OR REPLACE VIEW voorval_maatregel AS 
  SELECT row_number() OVER () AS id,
-    vv.datum,
+    vv.datum AS datum_voorval,
     vv.uur,
+    vv.ato,
     vv.type_voorval_id,
     vv.synopsis,
     vv.opleiding_id,
@@ -43,11 +44,16 @@ class Migration(migrations.Migration):
     vv.club_id,
     vv.menselijke_schade,
     vv.materiele_schade,
-    vv.muopo,
+    vv.mens,
+    vv.uitrusting,
+    vv.omgeving,
+    vv.product,
+    vv.organisatie,
     vv.type_toestel_id,
     vv.kern_activiteit_id,
     vv.schade_omschrijving,
-    ma.omschrijving
+    ma.omschrijving AS maatregel_omschrijving,
+    ma.in_werking
    FROM report_ia_voorval vv
      LEFT JOIN report_ia_maatregel ma ON ma.voorval_id = vv.id;
 
