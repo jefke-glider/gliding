@@ -106,11 +106,22 @@ class Schade(models.Model):
     
     class Meta:
         verbose_name_plural = 'Schade'
+
+class Type_schade(models.Model):
+    naam = models.CharField(max_length = 30)
+
+    def __str__(self):
+        return self.naam
+    
+    class Meta:
+        verbose_name_plural = 'Type schades'
+    
    
 class Voorval(models.Model):
     ATO_VOORVAL = (
         (1, 'ATO voorval'),
         (2, 'niet ATO voorval'),
+        (3, 'onduidelijk (ATO/niet ATO)')
         )
     
     OORZAKEN_KEUZES = (
@@ -123,15 +134,15 @@ class Voorval(models.Model):
     ingave = models.DateTimeField(auto_now=True)
     datum = models.DateField()
     uur = models.TimeField()
-    locatie = models.ForeignKey(Vliegveld, on_delete=models.CASCADE, null=True)
+    locatie = models.ForeignKey(Vliegveld, on_delete=models.CASCADE, null=True, blank=True)
+    andere_locatie = models.TextField(null=True, blank=True)
     type_voorval = models.ForeignKey(Type_voorval, on_delete=models.CASCADE)    
     synopsis = models.TextField()
     opleiding = models.ForeignKey(Opleiding, on_delete=models.CASCADE)
     startwijze = models.ForeignKey(Startwijze, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
-    menselijke_schade = models.BooleanField(default=False)
-    materiele_schade = models.BooleanField(default=False)
-    schade_omschrijving = models.TextField()
+    type_schade = models.ForeignKey(Type_schade, on_delete=models.CASCADE)
+    schade_omschrijving = models.TextField(null=True, blank=True)
     mens = models.BooleanField(default=False)
     uitrusting =  models.BooleanField(default=False)
     omgeving =  models.BooleanField(default=False)
@@ -210,8 +221,8 @@ class VoorvalMaatregel(models.Model):
     opleiding = models.ForeignKey(Opleiding, on_delete=models.DO_NOTHING)
     startwijze = models.ForeignKey(Startwijze, on_delete=models.DO_NOTHING)
     club = models.ForeignKey(Club, on_delete=models.DO_NOTHING)
-    menselijke_schade = models.BooleanField(default=False)
-    materiele_schade = models.BooleanField(default=False)
+    type_schade = models.ForeignKey(Type_schade, on_delete=models.DO_NOTHING)
+    schade_omschrijving = models.TextField()
     mens = models.BooleanField(default=False)
     uitrusting =  models.BooleanField(default=False)
     omgeving =  models.BooleanField(default=False)
@@ -219,7 +230,6 @@ class VoorvalMaatregel(models.Model):
     organisatie =  models.BooleanField(default=False)
     type_toestel = models.ForeignKey(Type_toestel, on_delete=models.DO_NOTHING)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.DO_NOTHING)
-    schade_omschrijving = models.TextField()
     maatregel_omschrijving =  models.TextField()
     in_werking = models.DateField()
 

@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='home'),
+    url(r'^faq$', views.faq, name='faq'),
     url(r'^lijst/$', views.voorval_list, name='voorval_lijst'),
     url(r'^lijst/(?P<pk>\d*$)', views.voorval_list, name='voorval_lijst'),
     url(r'^detail/(?P<pk>\d*$)', views.voorval_detail, {'action':'view'}, name='voorval_detail'),

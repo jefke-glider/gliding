@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404,render,redirect,reverse, get_list_or_404
 from django.template import loader, Context
+from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from django.db.models import Count, Avg
 from django import forms
@@ -23,7 +24,11 @@ import markdown
 from templated_docs import fill_template
 from templated_docs.http import FileResponse
 
-        
+@login_required
+def faq(request, template_name='faq.html'):
+    faq_html = markdown.markdown(render_to_string('faq.md'))
+    return render(request, template_name, {'data':faq_html})
+            
 @login_required
 def index(request, template_name='home.html'):
     ausr = Ato(request.user)

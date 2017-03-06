@@ -8,17 +8,18 @@ class VoorvalForm(ModelForm):
     zoek_type_toestel = forms.CharField(label="zoek type toestel", required = False)
 #    type_toestel = forms.CharField(label='', widget = forms.HiddenInput(), required = False)
 #    type_toestel = forms.CharField(label='geselecteerd type toestel', required = False)
-    boolean_set = ( 'mens', 'uitrusting', 'omgeving', 'product', 'organisatie' , 'menselijke_schade', 'materiele_schade') 
+    boolean_set = ( 'mens', 'uitrusting', 'omgeving', 'product', 'organisatie' )
                                
     class Meta:
         model = Voorval
 
         ordering = ['-datum']
-        fields = ( 'datum', 'uur', 'locatie', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' ,
+        fields = ( 'datum', 'uur', 'locatie', 'andere_locatie',
+                   'ato', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' ,
                    'zoek_type_toestel', 'type_toestel', 'kern_activiteit', 
                    'mens', 'uitrusting', 'omgeving', 'product', 'organisatie',
-                   'menselijke_schade', 'materiele_schade',
-                   'schade_omschrijving', 'ato', 'potentieel_risico')
+                   'type_schade', 'schade_omschrijving',
+                   'potentieel_risico')
         help_texts = { 'uur' : 'uur van het voorval in formaat hh:mm',
                        'type_voorval' : 'Duid aan welk type voorval het is',
                        'synopsis' : 'omschrijving van het voorval',
@@ -42,6 +43,8 @@ class VoorvalForm(ModelForm):
         self.fields['datum'].widget.attrs.update({
             'class': 'has-popover datepicker'
         })
+        self.fields['andere_locatie'].required = False;
+        self.fields['schade_omschrijving'].required = False;
 
 class MaatregelForm(ModelForm):
     synopsis = forms.CharField(label='synopsis voorval',

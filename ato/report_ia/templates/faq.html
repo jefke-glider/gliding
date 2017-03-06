@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block content %}
+ <script>
+$(document).ready(function() {
+	$('.has-popover').popover({'trigger':'hover'});
+	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
+});
+  </script>
+
+<div class="ingave-class">
+{% include "navbar.html" %}
+  {{ data|safe }}
+</div>
+{% endblock %}

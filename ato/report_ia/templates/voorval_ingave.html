@@ -6,6 +6,37 @@
 $(document).ready(function() {
 	$('.has-popover').popover({'trigger':'hover'});
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
+	//hide textarea if there is no damage (geen schade = 1)
+	//$('#id_schade_omschrijving').hide();
+        //$("label[for='id_schade_omschrijving']").hide();
+	$('#id_type_schade').on('change', function() {         
+	   var selectedValue = $(this).val();
+	   if (selectedValue != 1){
+              $('#id_schade_omschrijving').show();
+              $("label[for='id_schade_omschrijving']").show();
+           }else{
+	      $('#id_schade_omschrijving').hide();
+              $("label[for='id_schade_omschrijving']").hide();
+	      $('#id_schade_omschrijving').val("");
+           }
+        });
+	//show andere_locatie if a locatie has been empty (--  = null)
+	//$('#id_andere_locatie').hide();
+        //$("label[for='id_andere_locatie']").hide();
+	$('#id_locatie').on('change', function() {         
+	   var selectedValue = $(this).val();
+	   if (selectedValue){
+              $('#id_andere_locatie').hide();
+              $("label[for='id_andere_locatie']").hide();
+               $('#id_andere_locatie').val("");
+           }else{
+	      $('#id_andere_locatie').show();
+              $("label[for='id_andere_locatie']").show(); 
+           }
+         });
+	$('#id_type_schade').trigger('change');
+	$('#id_locatie').trigger('change');
+  
 });
 $(function() {
   $("#id_zoek_type_toestel").autocomplete({
@@ -16,7 +47,7 @@ $(function() {
     }
   });
 });
-
+      
   </script>
 {% include "navbar_simpel.html" with lijst="voorval_create" %}
    <form  class="form-vertical" method="POST">
@@ -26,15 +57,11 @@ $(function() {
            <div class="form-inline">
              <h4>MUOPO</h4>
          {% endif %}          
-         {% if field.name == 'menselijke_schade' %}
-           <div class="form-inline">
-             <h4>Schade</h4>
-         {% endif %}          
           {% if field.name not in form.boolean_set %}
    	    {% bootstrap_label field.label_tag  %}
           {% endif %}
 	  {% bootstrap_field field show_label=False  %}
-         {% if field.name == 'organisatie' or field.name == 'materiele_schade' %}
+         {% if field.name == 'organisatie'  %}
            </div>
          {% endif %}
         {% endfor %}
