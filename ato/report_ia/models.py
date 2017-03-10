@@ -10,7 +10,7 @@ class Vliegveld(models.Model):
     afkorting_icao = models.CharField(max_length=4)
 
     def __str__(self):
-        return self.naam
+        return self.afkorting_icao + ' ' + self.naam
 
     class Meta:
         verbose_name_plural = 'Vliegvelden'
@@ -21,7 +21,7 @@ class Club(models.Model):
     locatie = models.ForeignKey(Vliegveld, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.naam
+        return self.naam_kort + ' ' + self.naam
 
 class Ato_gebruiker(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
@@ -256,7 +256,13 @@ class AantalStarts(models.Model):
     ato_sleep = models.IntegerField(blank=True, default=0)
     zelf = models.IntegerField(blank=True, default=0)
     ato_zelf = models.IntegerField(blank=True, default=0)
+    auto  = models.IntegerField(blank=True, default=0)
+    ato_auto = models.IntegerField(blank=True, default=0)
+    bungee  = models.IntegerField(blank=True, default=0)
+    ato_bungee = models.IntegerField(blank=True, default=0)
     totaal = models.IntegerField(blank=True, default=0)
+    vliegdagen  = models.IntegerField(blank=True, default=0)
+    ato_vliegdagen  = models.IntegerField(blank=True, default=0)
 
     
     class Meta:

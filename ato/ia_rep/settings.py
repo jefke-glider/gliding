@@ -153,7 +153,7 @@ if os.uname()[1] == 'gimli':
     STATICFILES_DIRS = [
         '/home/jpe/atoenv/lib/python3.4/site-packages/django/contrib/admin/static/'
         ]
-    SESSION_COOKIE_AGE = 900
+    SESSION_COOKIE_AGE = 1800
 else:
     STATIC_URL = '/static/'
 

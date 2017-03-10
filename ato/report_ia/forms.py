@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Voorval, Club, Maatregel, AantalStarts, Bestand
 
 class VoorvalForm(ModelForm):
-    zoek_type_toestel = forms.CharField(label="zoek type toestel", required = False)
+#    zoek_type_toestel = forms.CharField(label="zoek type toestel", required = False)
 #    type_toestel = forms.CharField(label='', widget = forms.HiddenInput(), required = False)
 #    type_toestel = forms.CharField(label='geselecteerd type toestel', required = False)
     boolean_set = ( 'mens', 'uitrusting', 'omgeving', 'product', 'organisatie' )
@@ -16,15 +16,24 @@ class VoorvalForm(ModelForm):
         ordering = ['-datum']
         fields = ( 'datum', 'uur', 'locatie', 'andere_locatie',
                    'ato', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' ,
-                   'zoek_type_toestel', 'type_toestel', 'kern_activiteit', 
+                   'type_toestel', 'kern_activiteit', 
                    'mens', 'uitrusting', 'omgeving', 'product', 'organisatie',
                    'type_schade', 'schade_omschrijving',
                    'potentieel_risico')
         help_texts = { 'uur' : 'uur van het voorval in formaat hh:mm',
-                       'type_voorval' : 'Duid aan welk type voorval het is',
-                       'synopsis' : 'omschrijving van het voorval',
+                       'type_voorval' : """
+Een incident is een voorval dat verband houdt met het functioneren van een luchtvaartuig en dat afbreuk doet of zou kunnen doen aan veilige vluchtuitvoering,met uitzondering van een ongeval – OFWEL EEN ONVEILIGE SITUATIE
+Een ernstig incident is een incident dat zich voordoet onder omstandigheden die erop wijzen dat bijna een ongeval heeft plaatsgevonden – OFWEL EEN SCHIERONGEVAL
+Een ongeval is een voorval dat verband houdt met het gebruik van een luchtvaartuig waarbij:
+- een persoon dodelijk of ernstig gewond raakt 
+- het luchtvaartuig schade of een structureel defect oploop
+- het luchtvaartuig vermist of volledig onbereikbaar is
+	OFWEL EEN ACCIDENT
+""",
+                       'synopsis' : 'omschrijf hier chronologisch en objectief wat er gebeurd is',
                        'datum':'kies een datum',
                        'mens' : 'een menselijke fout ligt aan de oorzaak',
+                       'kern_activiteit': 'de activiteit die werd uitgevoerd op het moment dat het fout is gelopen',
                       }
 ##        labels = { 'mens' : 'M', }
 ##         widgets = {
@@ -147,7 +156,11 @@ class StartsForm(ModelForm):
 
     class Meta:
         model = AantalStarts
-        fields = ('club', 'lier', 'ato_lier', 'sleep', 'ato_sleep', 'zelf', 'ato_zelf', 'totaal')
+        fields = ('club', 'lier', 'ato_lier', 'sleep', 'ato_sleep', 'zelf', 'ato_zelf',
+                  'auto', 'ato_auto', 'bungee', 'ato_bungee', 'totaal',
+                  'vliegdagen', 'ato_vliegdagen')
+
+        help_texts = {'vliegdagen' : 'geldt voor elke dag waarvoor het vliegplein werd geopend, dit ongeacht de duurtijd van de dag en het aantal starten', }
 
 
            

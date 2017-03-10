@@ -50,6 +50,7 @@ $(function() {
       
   </script>
 {% include "navbar_simpel.html" with lijst="voorval_create" %}
+  <h3>Feitelijke gegevens over het voorval : </h3> 
    <form  class="form-vertical" method="POST">
         {% csrf_token %}
 	{% for field in form %}
