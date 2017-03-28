@@ -96,7 +96,7 @@ class Potentieel_risico(models.Model):
     
     class Meta:
         verbose_name_plural = 'Potentieel_risico'
-   
+
 
 class Schade(models.Model):
     omschrijving = models.TextField()
@@ -115,6 +115,64 @@ class Type_schade(models.Model):
     
     class Meta:
         verbose_name_plural = 'Type schades'
+
+class Windsterkte(models.Model):
+    kts = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.kts
+
+    class Meta:
+        verbose_name_plural = 'Wind sterktes'
+        
+class Windrichting(models.Model):
+    uit = models.CharField(max_length=3)
+
+    def __str__(self):
+        return self.uit
+
+    class Meta:
+        verbose_name_plural = 'Wind richtingen'
+
+class Wolken(models.Model):
+    okta = models.CharField(max_length=5)
+    metar_code = models.CharField(max_length=3)
+    omschrijving = models.TextField()
+
+    def __str__(self):
+        return self.okta + " " + self.metar_code + " " + self.omschrijving
+
+    class Meta:
+        verbose_name_plural = 'Wolken'
+
+class Wolkenbasis(models.Model):
+    feet = models.CharField(max_length=15)
+    
+    def __str__(self):
+        return self.feet
+
+    class Meta:
+        verbose_name_plural = 'Wolkenbasissen'
+
+class Thermiek(models.Model):
+    sterkte = models.CharField(max_length=3)
+    omschrijving = models.TextField()
+    
+    def __str__(self):
+        return self.sterkte + " " + self.omschrijving
+
+    class Meta:
+        verbose_name_plural = 'Thermiek-sterktes'
+
+class Zichtbaarheid(models.Model):
+    km = models.CharField(max_length=5)
+    omschrijving = models.TextField()
+    
+    def __str__(self):
+        return self.km + " " + self.omschrijving
+
+    class Meta:
+        verbose_name_plural = 'Zichtbaarheden'
     
    
 class Voorval(models.Model):
@@ -154,6 +212,12 @@ class Voorval(models.Model):
     aantal_bestanden = models.IntegerField(default=0)
     ato = models.IntegerField(choices=ATO_VOORVAL, default=1)
     potentieel_risico = models.ForeignKey(Potentieel_risico, on_delete=models.CASCADE)
+    windsterkte = models.ForeignKey(Windsterkte, on_delete=models.CASCADE)
+    windrichting = models.ForeignKey(Windrichting, on_delete=models.CASCADE)
+    wolken = models.ForeignKey(Wolken, on_delete=models.CASCADE)
+    thermiek = models.ForeignKey(Thermiek, on_delete=models.CASCADE)
+    wolkenbasis = models.ForeignKey(Wolkenbasis, on_delete=models.CASCADE)
+    zichtbaarheid = models.ForeignKey(Zichtbaarheid, on_delete=models.CASCADE)
 
     def __iter__(self):
         fieldnames = [f.name for f in self._meta.get_fields()]
@@ -230,6 +294,12 @@ class VoorvalMaatregel(models.Model):
     organisatie =  models.BooleanField(default=False)
     type_toestel = models.ForeignKey(Type_toestel, on_delete=models.DO_NOTHING)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.DO_NOTHING)
+    windsterkte = models.ForeignKey(Windsterkte, on_delete=models.DO_NOTHING)
+    windrichting = models.ForeignKey(Windrichting, on_delete=models.DO_NOTHING)
+    wolken = models.ForeignKey(Wolken, on_delete=models.DO_NOTHING)
+    wolkenbasis = models.ForeignKey(Wolkenbasis, on_delete=models.DO_NOTHING)
+    thermiek = models.ForeignKey(Thermiek, on_delete=models.DO_NOTHING)
+    zichtbaarheid = models.ForeignKey(Zichtbaarheid, on_delete=models.DO_NOTHING)
     maatregel_omschrijving =  models.TextField()
     in_werking = models.DateField()
 

@@ -16,11 +16,12 @@
                 <th>Type voorval</th>
 		<th>Locatie</th>
 	        <th>Type toestel</th>
+		<th>ATO</th>
                 <th>Opleiding</th>
                 <th>Synopsis</th>
 	        <th colspan="2">Acties Bestand</th>
 {% if ausr.is_admin or ausr.is_super%}
-	        <th colspan="3">Acties Voorval</th>
+	        <th colspan="4">Acties Voorval</th>
 	        <th colspan="2">Acties Maatregel</th>
 {% endif %}
             </tr>
@@ -41,6 +42,7 @@
 	    <td>{{ voorval.type_voorval }}</td>
             <td>{{ voorval.locatie }}</td>
 	    <td>{{ voorval.type_toestel }}</td>
+	    <td>{{ voorval.ato }}</td>
 	    <td>{{ voorval.opleiding }}</td>
 	    <td>{{ voorval.synopsis|truncatewords:20 }}</td>
 	    <td><a href="{% url 'report_ia:upload_bestand' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-upload"></span></a></td>

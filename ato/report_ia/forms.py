@@ -15,8 +15,9 @@ class VoorvalForm(ModelForm):
 
         ordering = ['-datum']
         fields = ( 'datum', 'uur', 'locatie', 'andere_locatie',
-                   'ato', 'type_voorval', 'synopsis', 'opleiding', 'startwijze' ,
-                   'type_toestel', 'kern_activiteit', 
+                   'ato', 'opleiding', 'type_voorval', 'synopsis',  'startwijze' ,
+                   'type_toestel', 'kern_activiteit',
+                   'windsterkte', 'windrichting', 'wolken', 'wolkenbasis', 'thermiek', 'zichtbaarheid',
                    'mens', 'uitrusting', 'omgeving', 'product', 'organisatie',
                    'type_schade', 'schade_omschrijving',
                    'potentieel_risico')
@@ -28,13 +29,22 @@ Een ongeval is een voorval dat verband houdt met het gebruik van een luchtvaartu
 - een persoon dodelijk of ernstig gewond raakt 
 - het luchtvaartuig schade of een structureel defect oploop
 - het luchtvaartuig vermist of volledig onbereikbaar is
-	OFWEL EEN ACCIDENT
+	<b>OFWEL EEN ACCIDENT</b>
 """,
                        'synopsis' : 'omschrijf hier chronologisch en objectief wat er gebeurd is',
-                       'datum':'kies een datum',
-                       'mens' : 'een menselijke fout ligt aan de oorzaak',
+                       'mens' : 'persoonlijke gedragsbepalende factoren',                       
+                       'uitrusting' : 'alle gebruikte hardware, technische factoren',
+                       'omgeving' : 'gehele vliegomgeving en -inrichting',
+                       'product' : 'het proces/wat vervaardigd of bewerkt wordt',
+                       'organisatie' : 'beleid en werkorganisatie',
                        'kern_activiteit': 'de activiteit die werd uitgevoerd op het moment dat het fout is gelopen',
+                       'windsterkte' : 'in knopen',
+                       'wolken' : 'in okta\'s',
+                       'thermiek' : 'in m/s',
+                       'wolkenbasis' : 'in feet',
+                       'zichtbaarheid' : 'in km',
                       }
+        labels = { 'ato' : 'ATO' ,}
 ##        labels = { 'mens' : 'M', }
 ##         widgets = {
 ##             'datum': forms.DateInput(),
@@ -42,18 +52,20 @@ Een ongeval is een voorval dat verband houdt met het gebruik van een luchtvaartu
 
     def __init__(self, *args, **kwargs):
         super(VoorvalForm, self).__init__(*args, **kwargs)
-        for field in self.fields:
-            help_text = self.fields[field].help_text
-            self.fields[field].help_text = ''
-            if help_text != '':
-                self.fields[field].widget.attrs.update(
-                    {'class':'has-popover', 'data-content':help_text, 'data-placement':'bottom',
-                     'data-container':'body', 'title':'ingave voorval'})
+##         for field in self.fields:
+##             help_text = self.fields[field].help_text
+##             self.fields[field].help_text = ''
+##             if help_text != '':
+##                 self.fields[field].widget.attrs.update(
+##                     {'class':'has-popover', 'data-content':help_text, 'data-placement':'bottom',
+##                      'data-container':'body', 'title':'ingave voorval'})
         self.fields['datum'].widget.attrs.update({
             'class': 'has-popover datepicker'
         })
         self.fields['andere_locatie'].required = False;
         self.fields['schade_omschrijving'].required = False;
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'title':''})
 
 class MaatregelForm(ModelForm):
     synopsis = forms.CharField(label='synopsis voorval',
@@ -75,16 +87,18 @@ class MaatregelForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MaatregelForm, self).__init__(*args, **kwargs)
-        for field in self.fields:
-            help_text = self.fields[field].help_text
-            self.fields[field].help_text = ''
-            if help_text != '':
-                self.fields[field].widget.attrs.update(
-                    {'class':'has-popover', 'data-content':help_text, 'data-placement':'bottom',
-                     'data-container':'body', 'title':'ingave maatregel'})
+##         for field in self.fields:
+##             help_text = self.fields[field].help_text
+##             self.fields[field].help_text = ''
+##             if help_text != '':
+##                 self.fields[field].widget.attrs.update(
+##                     {'class':'has-popover', 'data-content':help_text, 'data-placement':'bottom',
+##                      'data-container':'body', 'title':'ingave maatregel'})
         self.fields['in_werking'].widget.attrs.update({
-                'class': 'has-popover datepicker'
+                'class': 'datepicker'
                 })
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'title':''})
     
 
 class UploadFileForm(ModelForm):
@@ -156,10 +170,24 @@ class StartsForm(ModelForm):
 
     class Meta:
         model = AantalStarts
-        fields = ('club', 'lier', 'ato_lier', 'sleep', 'ato_sleep', 'zelf', 'ato_zelf',
-                  'auto', 'ato_auto', 'bungee', 'ato_bungee', 'totaal',
+        fields = ('club',
+                  'lier','sleep', 'zelf','auto','bungee',
+                  'ato_lier','ato_sleep','ato_zelf','ato_auto','ato_bungee',
+                  'totaal',
                   'vliegdagen', 'ato_vliegdagen')
-
+        
+        labels = { 'lier' : 'Non ATO lier',
+                   'sleep' : 'Non ATO sleep',
+                   'zelf' : 'Non ATO zelf',
+                   'auto' : 'Non ATO auto',
+                   'bungee' : 'Non ATO bungee',
+                   'ato_lier' : 'ATO lier',
+                   'ato_sleep' : 'ATO sleep',
+                   'ato_zelf' : 'ATO zelf',
+                   'ato_auto' : 'ATO auto',
+                   'ato_bungee' : 'ATO bungee',
+                   'vliegdagen' : 'Non ATO vliegdagen',
+                   'ato_vliegdagen' : 'ATO vliegdagen'}
         help_texts = {'vliegdagen' : 'geldt voor elke dag waarvoor het vliegplein werd geopend, dit ongeacht de duurtijd van de dag en het aantal starten', }
 
 

@@ -4,7 +4,7 @@
 {% block content %}
  <script>
 $(document).ready(function() {
-	$('.has-popover').popover({'trigger':'hover'});
+//	$('.has-popover').popover({'trigger':'click'});
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 	//hide textarea if there is no damage (geen schade = 1)
 	//$('#id_schade_omschrijving').hide();
@@ -50,22 +50,22 @@ $(function() {
       
   </script>
 {% include "navbar_simpel.html" with lijst="voorval_create" %}
-  <h3>Feitelijke gegevens over het voorval : </h3> 
+  <h3><b>Feitelijke gegevens over het voorval : </b></h3> 
    <form  class="form-vertical" method="POST">
         {% csrf_token %}
 	{% for field in form %}
          {% if field.name == 'mens' %}
-           <div class="form-inline">
-             <h4>MUOPO</h4>
-         {% endif %}          
+               <h3><b>Onderzoek voorval</b></h3>
+             <h4>Duid de factor(en) aan die een oorzakelijk verband hebben met het voorval (MUOPO principe)</h4>
+         {% endif %}   
+         {% if field.name == 'windsterkte' %}
+             <h4>Meteo</h4>
+         {% endif %}
           {% if field.name not in form.boolean_set %}
    	    {% bootstrap_label field.label_tag  %}
           {% endif %}
 	  {% bootstrap_field field show_label=False  %}
-         {% if field.name == 'organisatie'  %}
-           </div>
-         {% endif %}
-        {% endfor %}
+         {% endfor %}
 	<button type="submit" class="btn btn-primary">
 	  {% bootstrap_icon "star" %} Opslaan en verzenden
 	</button>
