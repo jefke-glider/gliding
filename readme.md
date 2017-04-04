@@ -15,13 +15,14 @@ The safety manager can query the database, and make reports in different formats
 * bootstrap 3.0
 * jQuery
 * PostgreSQL 9.x
+* templated-docs : to generate LibreOffice reports of all kinds
 
 #ToDO
 * send email to Ahot and safety manager OK
 * corrective actions registration OK
 * complete registration fields
 * add some filtering possibilities e.g. only show records for the current year
-* upload of all kinds of files (photo, document, etc..)
+* upload of all kinds of files (photo, document, etc..) OK
 *
 
 #[General Info](docs/general.md)

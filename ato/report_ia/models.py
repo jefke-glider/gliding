@@ -333,6 +333,8 @@ class AantalStarts(models.Model):
     totaal = models.IntegerField(blank=True, default=0)
     vliegdagen  = models.IntegerField(blank=True, default=0)
     ato_vliegdagen  = models.IntegerField(blank=True, default=0)
+    van = models.DateField()
+    tot = models.DateField()
 
     
     class Meta:
