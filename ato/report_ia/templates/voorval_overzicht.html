@@ -7,10 +7,11 @@
     }
 </style>
 
-{% include "navbar_simpel.html" with lijst='voorval_create' %}      
-
+<div class="ingave-lijst">
+{% include "navbar.html" %}      
+ <p class="lead">Voorvallen totalen</p>      
 {% if object_list %}
-    <div class="ingave-lijst">
+
       <div class="table-responsive">
 	<table class="table table-bordered">
         <thead>

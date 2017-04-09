@@ -30,7 +30,7 @@ def export(qs, fields=None):
         row = []
         for field in headers:
             if field in headers:
-                val = getattr(obj, field)
+                val = getattr(obj, field, '-')
                 if callable(val):
                     val = val()
                 row.append(val)
@@ -178,4 +178,12 @@ def create_ato_users(apps, schema_editor):
 
 
 
-
+## def update_ato_passwords(apps, schema_editor):
+##     clubs = Club.objects.all()
+##     admin_group = Group.objects.get(name='ato_admin')
+##     user_group = Group.objects.get(name='ato_user')
+##     ato_gebruiker = Ato_gebruiker
+##     for club in clubs:
+##         username =  club.naam_kort.lower() + '_admin'
+##         user = Users.objects.filter(username=username)
+##         if user:

@@ -62,7 +62,7 @@ class Type_toestel(models.Model):
         verbose_name_plural = 'Type toestellen'
 
 class Type_voorval(models.Model):
-    naam = models.CharField(max_length = 20)
+    naam = models.CharField(max_length = 50)
 
     def __str__(self):
         return self.naam
@@ -155,7 +155,7 @@ class Wolkenbasis(models.Model):
         verbose_name_plural = 'Wolkenbasissen'
 
 class Thermiek(models.Model):
-    sterkte = models.CharField(max_length=3)
+    sterkte = models.CharField(max_length=10)
     omschrijving = models.TextField()
     
     def __str__(self):
@@ -211,13 +211,13 @@ class Voorval(models.Model):
     aantal_maatregelen = models.IntegerField(default=0)
     aantal_bestanden = models.IntegerField(default=0)
     ato = models.IntegerField(choices=ATO_VOORVAL, default=1)
-    potentieel_risico = models.ForeignKey(Potentieel_risico, on_delete=models.CASCADE)
-    windsterkte = models.ForeignKey(Windsterkte, on_delete=models.CASCADE)
-    windrichting = models.ForeignKey(Windrichting, on_delete=models.CASCADE)
-    wolken = models.ForeignKey(Wolken, on_delete=models.CASCADE)
-    thermiek = models.ForeignKey(Thermiek, on_delete=models.CASCADE)
-    wolkenbasis = models.ForeignKey(Wolkenbasis, on_delete=models.CASCADE)
-    zichtbaarheid = models.ForeignKey(Zichtbaarheid, on_delete=models.CASCADE)
+    windsterkte = models.ForeignKey(Windsterkte, on_delete=models.CASCADE, null=True, blank=True)
+    windrichting = models.ForeignKey(Windrichting, on_delete=models.CASCADE, null=True, blank=True)
+    wolken = models.ForeignKey(Wolken, on_delete=models.CASCADE, null=True, blank=True)
+    thermiek = models.ForeignKey(Thermiek, on_delete=models.CASCADE,null=True, blank=True)
+    wolkenbasis = models.ForeignKey(Wolkenbasis, on_delete=models.CASCADE,null=True, blank=True)
+    zichtbaarheid = models.ForeignKey(Zichtbaarheid, on_delete=models.CASCADE, null=True, blank=True)
+    muopo_omschrijving = models.TextField(null=True, blank=True)
 
     def __iter__(self):
         fieldnames = [f.name for f in self._meta.get_fields()]
@@ -232,7 +232,7 @@ class Voorval(models.Model):
     def is_recent(self):
         #a voorval is recent if it has been entered less than a week ago
         from datetime import datetime, timedelta
-        if self.ingave.replace(tzinfo=None) < (datetime.today() - timedelta(days = 7)):
+        if self.ingave.replace(tzinfo=None) < (datetime.today() - timedelta(days = 14)):
             return False
         else:
             return True
@@ -319,7 +319,7 @@ class Nieuws(models.Model):
 
 class AantalStarts(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
-    op_datum = models.DateField(auto_now=True)
+    ingevuld_op = models.DateTimeField(null=True)
     lier = models.IntegerField(blank=True, default=0)
     ato_lier = models.IntegerField(blank=True, default=0)
     sleep = models.IntegerField(blank=True, default=0)
@@ -330,12 +330,19 @@ class AantalStarts(models.Model):
     ato_auto = models.IntegerField(blank=True, default=0)
     bungee  = models.IntegerField(blank=True, default=0)
     ato_bungee = models.IntegerField(blank=True, default=0)
-    totaal = models.IntegerField(blank=True, default=0)
+    totaal_starts = models.IntegerField(blank=True, default=0)
     vliegdagen  = models.IntegerField(blank=True, default=0)
-    ato_vliegdagen  = models.IntegerField(blank=True, default=0)
-    van = models.DateField()
-    tot = models.DateField()
+    van = models.DateField(blank=True, null=True)
+    tot = models.DateField(blank=True, null=True)
 
+    @property
+    def has_been_updated(self):
+        #this model has been updated, when totaal_starts and totaal_vbliegdagen
+        #both are different from 0
+        if self.totaal_starts == 0:
+            return False
+        else:
+            return True
     
     class Meta:
         verbose_name_plural = 'Aantal starts'

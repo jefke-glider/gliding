@@ -7,7 +7,7 @@ from django.db.models import Count, Avg
 from django import forms
 from django.db import connection
 from django.core.mail import send_mail
-
+from django.utils import timezone
 
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -15,7 +15,7 @@ from django.shortcuts import render_to_response
 from django.views.generic import ListView
 from django.forms import ModelChoiceField
 
-from .forms import VoorvalForm, ExportForm, MaatregelForm, StartsForm, UploadFileForm
+from .forms import VoorvalForm, ExportForm, MaatregelForm, StartsForm, UploadFileForm, StartsForm, GenerateStartRecords
 from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws, AantalStarts, Club, Bestand
 from .models import Type_toestel
 from .utilities import export, Ato
@@ -34,19 +34,35 @@ def index(request, template_name='home.html'):
     ausr = Ato(request.user)
     nieuws = Nieuws.objects.filter(online=True)
     #we first check if a group is specified
+    newsl=[]
+    news = ''
     if ausr.is_admin:
-        fresh_news = nieuws.filter(groep__name='ato_admin')
+        news = nieuws.filter(groep__name='ato_admin')
     elif ausr.is_user:
-        fresh_news = nieuws.filter(groep__name='ato_user')
-    else:
-        fresh_news = nieuws.filter(groep__name='ato_super')
+        news = nieuws.filter(groep__name='ato_user')
+    elif ausr.is_super:
+        news = nieuws.filter(groep__name='ato_super')
+    if len(news) > 0:
+        newsl.append(news)
+    #messages for all
+    news = nieuws.filter(groep__name='ato_all')
+    if len(news) > 0:
+        newsl.append(news)
+    #messages for a specific user
+    news = nieuws.filter(user=ausr.user())
+    if len(news) > 0:
+        newsl.append(news)
+    print(newsl)
     #if no specific news found for a group, then we check for a specific user
     nieuws_html=[]
-    if len(fresh_news) == 0:
-        fresh_news = nieuws.filter(user=ausr.user())
-    if len(fresh_news) > 0:
-        for art in fresh_news:
-            nieuws_html.append(markdown.markdown(art.bericht))
+    if len(newsl) > 0:
+        for qs in newsl:
+            msgs=qs.values('bericht')
+            print(msgs)
+            for msg in msgs:
+                if msg['bericht']:
+                    nieuws_html.append(markdown.markdown(msg['bericht']))
+                    nieuws_html.append("<hr>")
     else:
         nieuws_html.append("<h4>Geen berichten")
     return render(request, template_name, {'data' : nieuws_html, 'club':ausr.club_naam(), 'ausr':ausr})
@@ -85,6 +101,9 @@ def voorval_overzicht(request,template_name='voorval_overzicht.html'):
 @login_required
 def voorval_create(request, template_name="voorval_ingave.html"):
     ausr = Ato(request.user)
+    print(ausr.is_super)
+    print(ausr.is_admin)
+    print(ausr.is_user)
     form = VoorvalForm(request.POST or None, initial={'locatie':ausr.club().locatie})
     fieldset = ( 'mens', 'uitrusting', 'omgeving', 'product', 'organisatie' ) 
     if form.is_valid():
@@ -113,8 +132,8 @@ def voorval_create(request, template_name="voorval_ingave.html"):
         except:
             pass
         return redirect('report_ia:voorval_toegevoegd')
-    return render(request, template_name, {'form':form, 'action':'create', 'fieldset' : fieldset,
-                                           'club':ausr.club_naam()})
+    return render(request, template_name, {'form':form, 'action':'Ingave', 'fieldset' : fieldset,
+                                           'club':ausr.club_naam(), 'ausr' : ausr})
 
 @login_required
 def voorval_toegevoegd(request, template_name="voorval_ingave_bevestiging.html"):
@@ -130,7 +149,7 @@ def voorval_update(request, pk, template_name='voorval_ingave.html'):
     if form.is_valid():
         form.save()
         return redirect('report_ia:voorval_lijst')
-    return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam()})
+    return render(request, template_name, {'form':form, 'action':'Aanpassen','club':ausr.club_naam()})
 
 @login_required
 def voorval_detail(request, pk, action=None, template_name="voorval_overview.html",
@@ -169,7 +188,8 @@ def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
 
 @login_required
 def voorval_export(request, template_name="export_table.html"):
-    ausr = Ato(request.user)        
+    ausr = Ato(request.user)
+    print(ausr.is_super)
     ef = ExportForm(request.POST or None)
     if ausr.is_admin:
         #fix this choicefield for club to the admins club
@@ -198,7 +218,7 @@ def voorval_export(request, template_name="export_table.html"):
             return export(st)            
         else:
             print('no matching choice for table to export')
-    return render(request, template_name, {'form':ef, 'club':ausr.club_naam()})
+    return render(request, template_name, {'form':ef, 'club':ausr.club_naam(), 'ausr':ausr})
 
 @login_required
 def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.html"):
@@ -232,7 +252,7 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
         except:
             pass
         return redirect('report_ia:maatregel_toegevoegd', voorval_id=my_model.voorval.id)
-    return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam(),
+    return render(request, template_name, {'form':form, 'action':'Aanmaken', 'club':ausr.club_naam(),
                                            'voorval_id': voorval_pk})
     
 @login_required
@@ -282,7 +302,7 @@ def maatregel_update(request, pk, template_name='maatregel_ingave.html'):
     if form.is_valid():
         form.save()
         return redirect('report_ia:maatregel_lijst', pk=maatregel.voorval.id )
-    return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam(),
+    return render(request, template_name, {'form':form, 'action':'Aanpassen','club':ausr.club_naam(),
                                            'voorval_id':maatregel.voorval.id})
 
 
@@ -290,7 +310,7 @@ def maatregel_update(request, pk, template_name='maatregel_ingave.html'):
 def starts_create(request, template_name="starts_ingave.html"):
     ausr = Ato(request.user)
     form = StartsForm(request.POST or None)
-    form.fields['totaal'].editable = False
+    form.fields['totaal_starts'].editable = False
     if ausr.is_admin:
         #fix this choicefield for club to the admins club
         form.fields['club'].initial=ausr.club_id()
@@ -301,8 +321,24 @@ def starts_create(request, template_name="starts_ingave.html"):
         my_model.save()
 
         return redirect('report_ia:home')
-    return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam()})
+    return render(request, template_name, {'form':form, 'action':'create', 'club':ausr.club_naam(),
+                                           'ausr':ausr})
 
+@login_required
+def starts_update(request, start_id, template_name="starts_ingave.html"):
+    ausr = Ato(request.user)
+    starts = get_object_or_404(AantalStarts, pk=start_id)
+    form = StartsForm(request.POST or None, instance=starts)
+    form.fields['club'].initial=ausr.club_id()
+    form.fields['club'].disabled=True
+    if form.is_valid():
+        myform = form.save(commit=False)
+        myform.ingevuld_op = timezone.now()
+        myform.save()
+        return redirect('report_ia:starts_lijst')
+    return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam(),
+                                           'ausr':ausr})
+    
 
 @login_required
 def starts_toegevoegd(request, id, template_name="starts_ingave_bevestiging.html"):
@@ -328,6 +364,21 @@ def starts_list(request, pk = None, template_name='starts_lijst.html'):
     data['ausr'] = ausr
     data['club'] = ausr.club_naam()
     return render(request, template_name, data)
+
+@login_required
+def starts_generate(request, template_name="starts_generate.html"):
+    ausr = Ato(request.user)        
+    gsr = GenerateStartRecords(request.POST or None)
+    if gsr.is_valid():
+        #should generate start records for all clubs here
+        van = gsr.cleaned_data['date_from']
+        tot = gsr.cleaned_data['date_till']
+        clubs = Club.objects.all()
+        for club in clubs:
+            AantalStarts.objects.create(club=club, van=van, tot=tot)
+        return redirect('report_ia:starts_lijst')
+    return render(request, template_name, {'form':gsr, 'club':ausr.club_naam(), 'ausr':ausr})
+    
 
 @login_required
 def upload_bestand(request, voorval_id, template_name="upload_bestand.html"):

@@ -2,46 +2,58 @@
 {% load bootstrap3 %}
 {% block content %}
 
-<div class="ingave-lijst">
-{% include "navbar_simpel.html"  %}      
-      
+<div class="ingave-class">
+{% include "navbar.html"  %}      
+<p class="lead">Overzicht starts per periode</p>      
 {% if object_list %}
-    <div class="ingave-lijst">
-      <div class="table-responsive">
-	<table class="table table-bordered">
-        <thead>
-            <tr>
-	        <th>Club</th>
-	        <th>Op datum</th>
-                <th>lier</th>
-                <th>lier-ATO</th>
-	        <th>sleep</th>
-                <th>sleep-ATO</th>
-                <th>zelf</th>
-                <th>zelf-ATO</th>
-	        <th>totaal</th>
-            </tr>
-        </thead>
-        <tbody>
-	  {% for start in object_list %}
-          <tr>
-	    <td>{{ start.club.naam_kort }}</td>
-	    <td>{{ start.op_datum|date:"SHORT_DATE_FORMAT" }}</td>
-	    <td>{{ start.lier }}</td>
-	    <td>{{ start.ato_lier }}</td>
-	    <td>{{ start.sleep }}</td>
-	    <td>{{ start.ato_sleep }}</td>
-	    <td>{{ start.zelf }}</td>
-	    <td>{{ start.ato_zelf }}</td>
-	    <td>{{ start.totaal }}</td>
-	   </tr>
+	<div class="ingave-lijst">
+	  <div class="table-responsive">
+	    <table class="table table-bordered">
+	      <thead>
+		<tr>
+		  <th>Club</th>
+		  <th>Van</th>
+		  <th>Tot</th>
+		  <th>lier</th>
+		  <th>lier-ATO</th>
+		  <th>sleep</th>
+		  <th>sleep-ATO</th>
+		  <th>zelf</th>
+		  <th>zelf-ATO</th>
+		  <th>totaal_starts</th>
+		  <th>vliegdagen</th>
+		  <th>invullen</th>
+		</tr>
+	      </thead>
+	      <tbody>
+		{% for start in object_list %}
+		{% if start.has_been_updated %}
+		<tr class="info">
+		{% else %}
+		<tr class="warning">
+		{% endif %}
+		  <td>{{ start.club.naam_kort }}</td>
+		  <td>{{ start.van|date:"SHORT_DATE_FORMAT" }}</td>
+		  <td>{{ start.tot|date:"SHORT_DATE_FORMAT" }}</td>
+		  <td>{{ start.lier }}</td>
+		  <td>{{ start.ato_lier }}</td>
+		  <td>{{ start.sleep }}</td>
+		  <td>{{ start.ato_sleep }}</td>
+		  <td>{{ start.zelf }}</td>
+		  <td>{{ start.ato_zelf }}</td>
+		  <td>{{ start.totaal_starts }}</td>
+		  <td>{{ start.vliegdagen }}</td>            
+		  {% if ausr.is_admin or ausr.is_super%}
+	    <td><a href="{% url 'report_ia:starts_update' start.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
+		  {% endif %}
+		  </tr>
            {% endfor %}
 	  </tbody>
          </table>
 	</div>
-       </div>
+	</div>
 {% else %}
     <p>Er zijn nog geen starts geregistreerd.</p>
 {% endif %}
-
+</div>      
 {% endblock %}

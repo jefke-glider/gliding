@@ -35,4 +35,13 @@ te melden, zodat we ze later kunnen herkennen.
 ###hoe bestand uploaden
 
 
+###
+Een incident is een voorval dat verband houdt met het functioneren van een luchtvaartuig en dat afbreuk doet of zou kunnen doen aan veilige vluchtuitvoering,met uitzondering van een ongeval – OFWEL EEN ONVEILIGE SITUATIE
+Een ernstig incident is een incident dat zich voordoet onder omstandigheden die erop wijzen dat bijna een ongeval heeft plaatsgevonden – OFWEL EEN SCHIERONGEVAL
+Een ongeval is een voorval dat verband houdt met het gebruik van een luchtvaartuig waarbij:
+- een persoon dodelijk of ernstig gewond raakt 
+- het luchtvaartuig schade of een structureel defect oploop
+- het luchtvaartuig vermist of volledig onbereikbaar is
+	<b>OFWEL EEN ACCIDENT</b>
+
 

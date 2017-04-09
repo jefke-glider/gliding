@@ -6,7 +6,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-      <a class="navbar-brand" href="{% url 'report_ia:home' %}"><span class="glyphicon glyphicon-menu-left"></span>e-IA LVZC</a>
+      <a class="navbar-brand" href="{% url 'report_ia:home' %}"><span class="glyphicon glyphicon-home"></span></a>
      </div>
     <div id="navbarCollapse" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
@@ -20,15 +20,10 @@
         {% elif lijst == 'maatregel_create' %}
 	  <li><a class="navbar-brand" href="{% url 'report_ia:maatregel_lijst' voorval_id %}">Overzicht Maatregelen</a></li>
         {% elif lijst == 'start' %}
-	  <li><a class="navbar-brand" href="{% url 'report_ia:starts_list' %} ">Overzicht starts</a></li>
+	  <li><a class="navbar-brand" href="{% url 'report_ia:starts_lijst' %} ">Overzicht starts</a></li>
         {% endif %} 
      </ul>
     <ul class="nav navbar-nav navbar-right"> 
-	{% if action == 'create' %}
-	<p class="navbar-text"> Aanmaken </p>
-	{% elif action == 'update' %}
-	<p class="navbar-text"> Aanpassen </p>
-	{% endif %}
 	<p class="navbar-text"> {{club}} </p>
 	<p class="navbar-text"> {{user.username}} </p>
 	<li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>Afmelden</a></li>    

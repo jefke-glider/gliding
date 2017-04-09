@@ -49,8 +49,11 @@ $(function() {
 });
       
   </script>
-{% include "navbar_simpel.html" with lijst="voorval_create" %}
-  <h3><b>Feitelijke gegevens over het voorval : </b></h3> 
+<div class="ingave-class">
+
+{% include "navbar.html" %}
+ <p class="lead">Voorval {{ action }}</p>
+  <h3><b>Feitelijke gegevens over het voorval</b></h3> 
    <form  class="form-vertical" method="POST">
         {% csrf_token %}
 	{% for field in form %}
@@ -72,9 +75,6 @@ $(function() {
 	<button type="Reset" class="btn">
 	  Reset
 	</button>
-
     </form>
-
-
 </div>
 {% endblock %}

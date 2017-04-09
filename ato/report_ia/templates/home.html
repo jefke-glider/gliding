@@ -11,6 +11,7 @@ $(document).ready(function() {
 
 <div class="ingave-class">
 {% include "navbar.html" %}
+<p class="lead">Berichten</p>
 {% for artikel in data %}
   {{ artikel|safe }}
 {% endfor %}

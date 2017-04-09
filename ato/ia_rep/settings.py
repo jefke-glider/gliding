@@ -30,7 +30,7 @@ else:
     DEBUG = True
     EMAIL_HOST = 'wall-e'
 
-ALLOWED_HOSTS = ['localhost', 'atoia.dyndns.org']
+ALLOWED_HOSTS = ['localhost', 'air.lvzc.be']
 
 
 # Application definition

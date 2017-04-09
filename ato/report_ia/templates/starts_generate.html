@@ -9,7 +9,8 @@ $(document).ready(function() {
 </script>
 <div class="ingave-class">
 {% include "navbar.html" %}
-<p class="lead">Exporteren van gegevens</p>      
+<p class="lead">Automatisch aanmaken van de start-records van alle clubs</p>
+  <h3><b>Aanmaken start records alle clubs : </b></h3> 
    <form  class="form-vertical" method="POST">
         {% csrf_token %}
         {% bootstrap_form form layout="vertical" %}

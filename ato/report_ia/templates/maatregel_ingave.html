@@ -8,9 +8,9 @@ $(document).ready(function() {
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 });
 </script>
-
-{% include "navbar_simpel.html" with lijst="maatregel_create"%}
 <div class="ingave-class">
+{% include "navbar.html" %}
+ <p class="lead">Maatregel {{ action }}</p>
    <form  class="form-vertical" method="POST">
         {% csrf_token %}
         {% bootstrap_form form layout="vertical" %}

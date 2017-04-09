@@ -15,36 +15,31 @@ class VoorvalForm(ModelForm):
 
         ordering = ['-datum']
         fields = ( 'datum', 'uur', 'locatie', 'andere_locatie',
-                   'ato', 'opleiding', 'type_voorval', 'synopsis',  'startwijze' ,
+                   'ato', 'opleiding', 'type_voorval',
+                   'type_schade', 'schade_omschrijving',
+                   'synopsis',  'startwijze' ,
                    'type_toestel', 'kern_activiteit',
                    'windsterkte', 'windrichting', 'wolken', 'wolkenbasis', 'thermiek', 'zichtbaarheid',
                    'mens', 'uitrusting', 'omgeving', 'product', 'organisatie',
-                   'type_schade', 'schade_omschrijving',
-                   'potentieel_risico')
+                   'muopo_omschrijving',
+                   )
         help_texts = { 'uur' : 'uur van het voorval in formaat hh:mm',
-                       'type_voorval' : """
-Een incident is een voorval dat verband houdt met het functioneren van een luchtvaartuig en dat afbreuk doet of zou kunnen doen aan veilige vluchtuitvoering,met uitzondering van een ongeval – OFWEL EEN ONVEILIGE SITUATIE
-Een ernstig incident is een incident dat zich voordoet onder omstandigheden die erop wijzen dat bijna een ongeval heeft plaatsgevonden – OFWEL EEN SCHIERONGEVAL
-Een ongeval is een voorval dat verband houdt met het gebruik van een luchtvaartuig waarbij:
-- een persoon dodelijk of ernstig gewond raakt 
-- het luchtvaartuig schade of een structureel defect oploop
-- het luchtvaartuig vermist of volledig onbereikbaar is
-	<b>OFWEL EEN ACCIDENT</b>
-""",
                        'synopsis' : 'omschrijf hier chronologisch en objectief wat er gebeurd is',
                        'mens' : 'persoonlijke gedragsbepalende factoren',                       
                        'uitrusting' : 'alle gebruikte hardware, technische factoren',
                        'omgeving' : 'gehele vliegomgeving en -inrichting',
-                       'product' : 'het proces/wat vervaardigd of bewerkt wordt',
-                       'organisatie' : 'beleid en werkorganisatie',
+                       'product' : 'het vlieggebeuren',
+                       'organisatie' : 'het clubbeleid',
                        'kern_activiteit': 'de activiteit die werd uitgevoerd op het moment dat het fout is gelopen',
                        'windsterkte' : 'in knopen',
                        'wolken' : 'in okta\'s',
                        'thermiek' : 'in m/s',
                        'wolkenbasis' : 'in feet',
                        'zichtbaarheid' : 'in km',
+                       'muopo_omschrijving' : 'verduidelijk nader voor ELK aangeduid MUOPO ascpect',
+                       'ato' : 'voorval valt al dan niet binnen/buiten ATO opleiding',
                       }
-        labels = { 'ato' : 'ATO' ,}
+        labels = { 'ato' : 'Domein' , 'muopo_omschrijving' : 'MUOPO omschrijving'}
 ##        labels = { 'mens' : 'M', }
 ##         widgets = {
 ##             'datum': forms.DateInput(),
@@ -62,8 +57,14 @@ Een ongeval is een voorval dat verband houdt met het gebruik van een luchtvaartu
         self.fields['datum'].widget.attrs.update({
             'class': 'has-popover datepicker'
         })
-        self.fields['andere_locatie'].required = False;
-        self.fields['schade_omschrijving'].required = False;
+        self.fields['andere_locatie'].required = False
+        self.fields['schade_omschrijving'].required = False
+        self.fields['windsterkte'].required = False
+        self.fields['windrichting'].required = False
+        self.fields['wolken'].required = False
+        self.fields['wolkenbasis'].required = False
+        self.fields['thermiek'].required = False
+        self.fields['zichtbaarheid'].required = False
         for field in self.fields:
             self.fields[field].widget.attrs.update({'title':''})
 
@@ -149,10 +150,9 @@ class ExportForm(forms.Form):
                                             )
     
 class StartsForm(ModelForm):
-    op_datum = forms.DateField(required=True,
-                               widget=forms.DateInput(attrs={'format':'%d/%m/%Y',
-                                                             'class': 'datepicker'}))
-
+#    op_datum = forms.DateField(required=True,
+#                               widget=forms.DateInput(attrs={'format':'%d/%m/%Y','class': 'datepicker'}))
+    totaal_starts = forms.IntegerField(disabled=True)
     def clean(self, *args, **kwargs):
         cleaned_data = super(StartsForm, self).clean()
         totaal=0
@@ -162,19 +162,29 @@ class StartsForm(ModelForm):
         totaal+=int(cleaned_data.get('ato_sleep'))
         totaal+=int(cleaned_data.get('zelf'))
         totaal+=int(cleaned_data.get('ato_zelf'))
+        totaal+=int(cleaned_data.get('auto'))
+        totaal+=int(cleaned_data.get('ato_auto'))
+        totaal+=int(cleaned_data.get('bungee'))
+        totaal+=int(cleaned_data.get('ato_bungee'))
+        print(totaal)
         if totaal <= 0:
             raise forms.ValidationError("Gelieve aantal starts in te vullen")
         else:
-            self.cleaned_data['totaal'] = totaal
-            return self.cleaned_data
+            self.cleaned_data['totaal_starts'] = totaal
+
+        totaal_vd=0
+        totaal_vd=int(cleaned_data.get('vliegdagen'))
+        if totaal_vd <= 0:
+            raise forms.ValidationError("Gelieve aantal vliegdagen in te vullen")
+
+        return self.cleaned_data
 
     class Meta:
         model = AantalStarts
         fields = ('club',
                   'lier','sleep', 'zelf','auto','bungee',
                   'ato_lier','ato_sleep','ato_zelf','ato_auto','ato_bungee',
-                  'totaal',
-                  'vliegdagen', 'ato_vliegdagen')
+                  'vliegdagen', 'totaal_starts')
         
         labels = { 'lier' : 'Non ATO lier',
                    'sleep' : 'Non ATO sleep',
@@ -186,10 +196,21 @@ class StartsForm(ModelForm):
                    'ato_zelf' : 'ATO zelf',
                    'ato_auto' : 'ATO auto',
                    'ato_bungee' : 'ATO bungee',
-                   'vliegdagen' : 'Non ATO vliegdagen',
-                   'ato_vliegdagen' : 'ATO vliegdagen'}
+                   }
         help_texts = {'vliegdagen' : 'geldt voor elke dag waarvoor het vliegplein werd geopend, dit ongeacht de duurtijd van de dag en het aantal starten', }
 
 
            
         
+class GenerateStartRecords(forms.Form):
+    clubs = Club.objects.all()
+    date_from = forms.DateField(label='datum vanaf', required=False,
+                                widget=forms.DateInput(attrs={'format':'%m/%d/%Y',
+                                                              'class':'datepicker'}),
+                                
+                                )
+    date_till = forms.DateField(label='datum tot', required=False,
+                                widget=forms.DateInput(attrs={'format':'%m/%d/%Y',
+                                                              'class': 'datepicker'}))
+
+    

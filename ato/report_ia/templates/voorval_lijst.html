@@ -2,9 +2,9 @@
 {% load bootstrap3 %}
 {% block content %}
 
-
 <div class="ingave-class">
-{% include "navbar_simpel.html" with lijst="voorval" %}      
+{% include "navbar.html" %}
+ <p class="lead">Overzicht voorvallen</p>
 {% if object_list %}
     <div class="ingave-lijst">
       <div class="table-responsive">
@@ -45,7 +45,7 @@
 	    <td>{{ voorval.ato }}</td>
 	    <td>{{ voorval.opleiding }}</td>
 	    <td>{{ voorval.synopsis|truncatewords:20 }}</td>
-	    <td><a href="{% url 'report_ia:upload_bestand' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-upload"></span></a></td>
+	    <td><a href="{% url 'report_ia:upload_bestand' voorval.id %}" class="btn btn-success btn-sm" data-toggle="voorval" title="bestand uploaden" data-content="Default"><span class="glyphicon glyphicon-upload"></span></a></td>
 	    <td><a href="{% url 'report_ia:bestand_lijst' voorval.id %}" class="btn btn-success btn-sm"><span class="badge">{{ voorval.aantal_bestanden }}</span></a></td>
 {% if ausr.is_admin or ausr.is_super%}
 	    <td><a href="{% url 'report_ia:voorval_update' voorval.id %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
