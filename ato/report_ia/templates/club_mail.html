@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block content %}
+ <script>
+$(document).ready(function() {
+	$('.has-popover').popover({'trigger':'hover'});
+	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
+});
+  </script>
+<div class="ingave-class">
+{% include "navbar.html"  %}
+<p class="lead">Club mail adressen invullen</p>
+   <form  class="form-vertical" method="POST">
+        {% csrf_token %}
+
+        {% bootstrap_formset formset %}
+
+
+	<button type="submit" class="btn btn-primary">
+	  {% bootstrap_icon "star" %} Opslaan
+	</button>
+	<button type="Reset" class="btn">
+	  Reset
+	</button>
+    </form>
+</div>
+{% endblock %}

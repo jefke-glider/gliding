@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User, Group
 from django.core.mail import send_mail
-from .models import Ato_gebruiker, Maatregel, Voorval, VoorvalMaatregel, Club
+from .models import Ato_gebruiker, Maatregel, Voorval, VoorvalMaatregel, Club, Club_mail
 from django.db import connection
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
@@ -15,7 +15,7 @@ def export(qs, fields=None):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s_%s.csv' % (slugify(model.__name__),
                                                                           datetime.now().strftime('%Y%m%d_%H%M'))
-    writer = csv.writer(response)
+    writer = csv.writer(response, delimiter=';')
     # Write headers to CSV file
     if fields:
         headers = fields
@@ -176,7 +176,17 @@ def create_ato_users(apps, schema_editor):
         user.groups.add(user_group)
         Ato_gebruiker.objects.create(club=club, user=user)
 
-
+def get_email_list_club(ausr, action):
+    if action == 'voorval':
+        club_emails = Club_mail.objects.filter(club=ausr.club()).filter(voorval=True)
+    elif action == 'maatregel':
+        club_emails = Club_mail.objects.filter(club=ausr.club()).filter(maatregel=True)
+    elif action == 'starts':
+        club_emails = Club_mail.objects.filter(club=ausr.club()).filter(starts=True)
+    email_admins = list(club_emails.values_list('email', flat=True))
+    print(email_admins)
+    email_to = email_admins + ausr.email_supers()
+    return email_to
 
 ## def update_ato_passwords(apps, schema_editor):
 ##     clubs = Club.objects.all()

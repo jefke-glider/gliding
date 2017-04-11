@@ -1,0 +1,9 @@
+Hallo,
+
+Het aantal starts werd aangepast voor {{club}} door {{user.username}}.
+voor de periode van {{ myform.van }} tot {{ myform.tot }}
+
+Greetz
+
+ATO eIA superuser
+Have a nice day!

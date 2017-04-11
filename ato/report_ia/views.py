@@ -13,12 +13,12 @@ from django.utils import timezone
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.views.generic import ListView
-from django.forms import ModelChoiceField
+from django.forms import ModelChoiceField, modelformset_factory, BaseModelFormSet
 
 from .forms import VoorvalForm, ExportForm, MaatregelForm, StartsForm, UploadFileForm, StartsForm, GenerateStartRecords
-from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws, AantalStarts, Club, Bestand
+from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws, AantalStarts, Club, Bestand, Club_mail
 from .models import Type_toestel
-from .utilities import export, Ato
+from .utilities import export, Ato, get_email_list_club
 
 import markdown
 from templated_docs import fill_template
@@ -116,7 +116,7 @@ def voorval_create(request, template_name="voorval_ingave.html"):
 
         #we send an email to responsable persons
         subject = "Voorval geregistreerd"
-        email_to = ausr.email_admins() + ausr.email_supers()
+        email_to = get_email_list_club(ausr, 'voorval')
         try:
             #we get the email txt from a template
             t = loader.get_template('nieuwe_registratie_email.txt')
@@ -138,8 +138,8 @@ def voorval_create(request, template_name="voorval_ingave.html"):
 @login_required
 def voorval_toegevoegd(request, template_name="voorval_ingave_bevestiging.html"):
     ausr = Ato(request.user)
-    emails = ausr.email_admins() + ausr.email_supers()
-    return render(request, template_name, {'emails' : emails, 'club':ausr.club_naam()})
+    emails = get_email_list_club(ausr, 'voorval')
+    return render(request, template_name, {'emails' : emails, 'club':ausr.club_naam(), 'ausr':ausr})
 
 @login_required
 def voorval_update(request, pk, template_name='voorval_ingave.html'):
@@ -149,7 +149,7 @@ def voorval_update(request, pk, template_name='voorval_ingave.html'):
     if form.is_valid():
         form.save()
         return redirect('report_ia:voorval_lijst')
-    return render(request, template_name, {'form':form, 'action':'Aanpassen','club':ausr.club_naam()})
+    return render(request, template_name, {'form':form, 'action':'Aanpassen','club':ausr.club_naam(), 'ausr':ausr})
 
 @login_required
 def voorval_detail(request, pk, action=None, template_name="voorval_overview.html",
@@ -184,7 +184,7 @@ def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
     if request.method=='POST':
         voorval.delete()
         return redirect('report_ia:voorval_lijst')
-    return render(request, template_name, {'object':voorval, 'club':ausr.club_naam()})
+    return render(request, template_name, {'object':voorval, 'club':ausr.club_naam(), 'ausr':ausr})
 
 @login_required
 def voorval_export(request, template_name="export_table.html"):
@@ -236,7 +236,8 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
 
         #print(new_link)
         #we send an email to responsable persons
-        email_to = ausr.email_admins() + ausr.email_supers()
+        email_to = get_email_list_club(ausr, 'maatregel')
+
         try:
             #we get the email txt from a template
             t = loader.get_template('nieuwe_maatregel_email.txt')
@@ -253,13 +254,14 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
             pass
         return redirect('report_ia:maatregel_toegevoegd', voorval_id=my_model.voorval.id)
     return render(request, template_name, {'form':form, 'action':'Aanmaken', 'club':ausr.club_naam(),
-                                           'voorval_id': voorval_pk})
+                                           'voorval_id': voorval_pk, 'ausr':ausr})
     
 @login_required
 def maatregel_toegevoegd(request, voorval_id, template_name="maatregel_ingave_bevestiging.html"):
     ausr = Ato(request.user)
-    emails = ausr.email_admins() + ausr.email_supers()
-    return render(request, template_name, {'emails' : emails, 'club':ausr.club_naam(), 'voorval_id':voorval_id})
+    emails = get_email_list_club(ausr, 'maatregel')
+    return render(request, template_name, {'emails' : emails, 'club':ausr.club_naam(), 'voorval_id':voorval_id,
+                                            'ausr':ausr})
 
 @login_required
 def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
@@ -291,7 +293,8 @@ def maatregel_delete(request, pk, template_name="maatregel_confirm_delete.html")
     if request.method=='POST':
         maatregel.delete()
         return redirect('report_ia:maatregel_lijst', pk=voorval_id)
-    return render(request, template_name, {'maatregel':maatregel, 'club':ausr.club_naam(), 'voorval_id':voorval_id})
+    return render(request, template_name, {'maatregel':maatregel, 'club':ausr.club_naam(), 'voorval_id':voorval_id,
+                                            'ausr':ausr})
     
 @login_required
 def maatregel_update(request, pk, template_name='maatregel_ingave.html'):
@@ -303,7 +306,7 @@ def maatregel_update(request, pk, template_name='maatregel_ingave.html'):
         form.save()
         return redirect('report_ia:maatregel_lijst', pk=maatregel.voorval.id )
     return render(request, template_name, {'form':form, 'action':'Aanpassen','club':ausr.club_naam(),
-                                           'voorval_id':maatregel.voorval.id})
+                                           'voorval_id':maatregel.voorval.id, 'ausr':ausr})
 
 
 @login_required
@@ -335,6 +338,25 @@ def starts_update(request, start_id, template_name="starts_ingave.html"):
         myform = form.save(commit=False)
         myform.ingevuld_op = timezone.now()
         myform.save()
+        
+        email_to = get_email_list_club(ausr, 'starts')
+
+        try:
+            #we get the email txt from a template
+            t = loader.get_template('starts_aangepast.txt')
+            c= Context({'club': ausr.club_naam(), 'user': request.user, 'myform' : myform })
+            message = t.render(c)            
+            send_mail(
+                'Starts aangepast',
+                message,
+                'eia@gmail.com',
+                email_to,
+                fail_silently=False,
+                )
+        except:
+            print('something went wrong')
+            pass
+        
         return redirect('report_ia:starts_lijst')
     return render(request, template_name, {'form':form, 'action':'update','club':ausr.club_naam(),
                                            'ausr':ausr})
@@ -382,6 +404,7 @@ def starts_generate(request, template_name="starts_generate.html"):
 
 @login_required
 def upload_bestand(request, voorval_id, template_name="upload_bestand.html"):
+    ausr = Ato(request.user)        
     voorval = get_object_or_404(Voorval, pk=voorval_id)
     form = UploadFileForm(request.POST or None, request.FILES or None, initial={'synopsis':voorval.synopsis})
     if request.method == 'POST':
@@ -393,7 +416,7 @@ def upload_bestand(request, voorval_id, template_name="upload_bestand.html"):
             return redirect('report_ia:bestand_lijst', pk=my_form.voorval.id)
     #else:
     #    form = UploadFileForm()
-    return render(request, template_name, {'form': form})
+    return render(request, template_name, {'form': form,  'ausr':ausr})
 
 @login_required
 def bestand_list(request, pk = None, template_name='bestand_lijst.html'):
@@ -438,5 +461,24 @@ def search_gliders(request, template_name="search_resp.html"):
         else:
             return render(request, template_name)
     return HttpResponse(response, content_type='application/json')
+
+
+@login_required
+def club_mail(request, template_name="club_mail.html"):
+    ausr = Ato(request.user)
+    ClubMailFormset = modelformset_factory(Club_mail, fields=('naam', 'email', 'voorval', 'maatregel','starts'), max_num=5, extra=1)
+    if request.method == 'POST':
+        form_set = ClubMailFormset(request.POST, queryset=Club_mail.objects.filter(club__id=ausr.club_id()))
+        if form_set.is_valid():
+            for form in form_set:
+                my_form = form.save(commit=False)
+                my_form.club = ausr.club()
+                my_form.save()
+            return redirect('report_ia:home')
+    else:
+        form_set = ClubMailFormset(queryset=Club_mail.objects.filter(club__id=ausr.club_id()))
+    return render(request, template_name,  {'formset': form_set,  'ausr':ausr})
+
+
 
 

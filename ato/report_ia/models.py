@@ -23,12 +23,31 @@ class Club(models.Model):
     def __str__(self):
         return self.naam_kort + ' ' + self.naam
 
+class Club_mail(models.Model):
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    naam = models.CharField(max_length=50)
+    email = models.EmailField()
+    voorval = models.BooleanField(default=False)
+    maatregel = models.BooleanField(default=False)
+    starts = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.naam
+
+    
 class Ato_gebruiker(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.club.naam + ' ' + self.user.username
+
+class Domein(models.Model):
+    naam = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.naam
+
 
 class Opleiding(models.Model):
     naam = models.CharField(max_length=30)
@@ -176,18 +195,6 @@ class Zichtbaarheid(models.Model):
     
    
 class Voorval(models.Model):
-    ATO_VOORVAL = (
-        (1, 'ATO voorval'),
-        (2, 'niet ATO voorval'),
-        (3, 'onduidelijk (ATO/niet ATO)')
-        )
-    
-    OORZAKEN_KEUZES = (
-        (1, 'Mens'),
-        (2, 'Uitrusting'),
-        (3, 'Omgeving'),
-        (4, 'Product'),
-        (5, 'Organisatie'))
     
     ingave = models.DateTimeField(auto_now=True)
     datum = models.DateField()
@@ -196,7 +203,7 @@ class Voorval(models.Model):
     andere_locatie = models.TextField(null=True, blank=True)
     type_voorval = models.ForeignKey(Type_voorval, on_delete=models.CASCADE)    
     synopsis = models.TextField()
-    opleiding = models.ForeignKey(Opleiding, on_delete=models.CASCADE)
+    opleiding = models.ForeignKey(Opleiding, on_delete=models.CASCADE, null=True, blank=True)
     startwijze = models.ForeignKey(Startwijze, on_delete=models.CASCADE)
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     type_schade = models.ForeignKey(Type_schade, on_delete=models.CASCADE)
@@ -210,7 +217,7 @@ class Voorval(models.Model):
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.CASCADE)
     aantal_maatregelen = models.IntegerField(default=0)
     aantal_bestanden = models.IntegerField(default=0)
-    ato = models.IntegerField(choices=ATO_VOORVAL, default=1)
+    domein = models.ForeignKey(Domein, on_delete=models.CASCADE)
     windsterkte = models.ForeignKey(Windsterkte, on_delete=models.CASCADE, null=True, blank=True)
     windrichting = models.ForeignKey(Windrichting, on_delete=models.CASCADE, null=True, blank=True)
     wolken = models.ForeignKey(Wolken, on_delete=models.CASCADE, null=True, blank=True)
@@ -279,7 +286,7 @@ class VoorvalMaatregel(models.Model):
     id = models.IntegerField(primary_key=True)
     datum_voorval = models.DateField()
     uur = models.TimeField()
-    ato = models.IntegerField()
+    domein = models.ForeignKey(Domein, on_delete=models.DO_NOTHING)
     type_voorval = models.ForeignKey(Type_voorval, on_delete=models.DO_NOTHING)    
     synopsis = models.TextField()
     opleiding = models.ForeignKey(Opleiding, on_delete=models.DO_NOTHING)
@@ -292,6 +299,7 @@ class VoorvalMaatregel(models.Model):
     omgeving =  models.BooleanField(default=False)
     product =  models.BooleanField(default=False)
     organisatie =  models.BooleanField(default=False)
+    muopo_omschrijving = models.TextField()
     type_toestel = models.ForeignKey(Type_toestel, on_delete=models.DO_NOTHING)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.DO_NOTHING)
     windsterkte = models.ForeignKey(Windsterkte, on_delete=models.DO_NOTHING)

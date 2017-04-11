@@ -29,4 +29,5 @@ urlpatterns = [
     url(r'^bestand/lijst/(?P<pk>\d*$)', views.bestand_list, name='bestand_lijst'),
     url(r'^bestand/delete/(?P<pk>\d+$)', views.bestand_delete, name='bestand_delete'),
     url(r'^zwevers/$', views.search_gliders, name='search_gliders'),
+    url(r'^mail/$', views.club_mail, name='club_mail'),
 ]

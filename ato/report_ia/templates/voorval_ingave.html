@@ -25,7 +25,7 @@ $(document).ready(function() {
         //$("label[for='id_andere_locatie']").hide();
 	$('#id_locatie').on('change', function() {         
 	   var selectedValue = $(this).val();
-	   if (selectedValue){
+	   if (selectedValue != 1){
               $('#id_andere_locatie').hide();
               $("label[for='id_andere_locatie']").hide();
                $('#id_andere_locatie').val("");
@@ -34,8 +34,20 @@ $(document).ready(function() {
               $("label[for='id_andere_locatie']").show(); 
            }
          });
+	$('#id_ato').on('change', function() {         
+	   var selectedValue = $(this).val();
+	   //ato opleiding = 1
+	   if (selectedValue != 1){ 
+              $('#id_opleiding').hide();
+              $("label[for='id_opleiding']").hide();
+           }else{
+	      $('#id_opleiding').show();
+              $("label[for='id_opleiding']").show(); 
+           }
+         });
 	$('#id_type_schade').trigger('change');
 	$('#id_locatie').trigger('change');
+        $('#id_ato').trigger('ato');
   
 });
 $(function() {

@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% block content %}
-{% include "navbar_simpel.html" with lijst="voorval_create" %}
 
 <div class="ingave-class">
+{% include "navbar.html" %}
+<p class="lead">Voorval verwijderen</p>
    <form  class="form-vertical" method="POST">{% csrf_token %}
 	  Bent u zeker dat u het voorval met omschrijving <br> 
 	  <code>{{ object.synopsis|truncatewords:10 }}</code><br>
@@ -11,4 +12,5 @@
         {% buttons submit='Verwijderen' layout='horizontal' %}{% endbuttons %}
     </form>
 </div>
+      
 {% endblock %}

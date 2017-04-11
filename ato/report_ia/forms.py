@@ -2,7 +2,7 @@ from django.forms import ModelForm, Textarea
 from django.core.exceptions import ValidationError
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from .models import Voorval, Club, Maatregel, AantalStarts, Bestand
+from .models import Voorval, Club, Maatregel, AantalStarts, Bestand, Club_mail
 
 class VoorvalForm(ModelForm):
 #    zoek_type_toestel = forms.CharField(label="zoek type toestel", required = False)
@@ -15,7 +15,7 @@ class VoorvalForm(ModelForm):
 
         ordering = ['-datum']
         fields = ( 'datum', 'uur', 'locatie', 'andere_locatie',
-                   'ato', 'opleiding', 'type_voorval',
+                   'domein', 'opleiding', 'type_voorval',
                    'type_schade', 'schade_omschrijving',
                    'synopsis',  'startwijze' ,
                    'type_toestel', 'kern_activiteit',
@@ -37,9 +37,9 @@ class VoorvalForm(ModelForm):
                        'wolkenbasis' : 'in feet',
                        'zichtbaarheid' : 'in km',
                        'muopo_omschrijving' : 'verduidelijk nader voor ELK aangeduid MUOPO ascpect',
-                       'ato' : 'voorval valt al dan niet binnen/buiten ATO opleiding',
+                       'domein' : 'voorval valt al dan niet binnen/buiten ATO opleiding',
                       }
-        labels = { 'ato' : 'Domein' , 'muopo_omschrijving' : 'MUOPO omschrijving'}
+        labels = {  'muopo_omschrijving' : 'MUOPO omschrijving'}
 ##        labels = { 'mens' : 'M', }
 ##         widgets = {
 ##             'datum': forms.DateInput(),
@@ -152,7 +152,7 @@ class ExportForm(forms.Form):
 class StartsForm(ModelForm):
 #    op_datum = forms.DateField(required=True,
 #                               widget=forms.DateInput(attrs={'format':'%d/%m/%Y','class': 'datepicker'}))
-    totaal_starts = forms.IntegerField(disabled=True)
+ #   totaal_starts = forms.IntegerField(disabled=True)
     def clean(self, *args, **kwargs):
         cleaned_data = super(StartsForm, self).clean()
         totaal=0
@@ -176,7 +176,7 @@ class StartsForm(ModelForm):
         totaal_vd=int(cleaned_data.get('vliegdagen'))
         if totaal_vd <= 0:
             raise forms.ValidationError("Gelieve aantal vliegdagen in te vullen")
-
+        print(self.cleaned_data)
         return self.cleaned_data
 
     class Meta:
@@ -197,7 +197,8 @@ class StartsForm(ModelForm):
                    'ato_auto' : 'ATO auto',
                    'ato_bungee' : 'ATO bungee',
                    }
-        help_texts = {'vliegdagen' : 'geldt voor elke dag waarvoor het vliegplein werd geopend, dit ongeacht de duurtijd van de dag en het aantal starten', }
+        help_texts = {'vliegdagen' : 'geldt voor elke dag waarvoor het vliegplein werd geopend, dit ongeacht de duurtijd van de dag en het aantal starten',
+                      'totaal_starts': 'niet in te vullen, wordt automatisch berekend'}
 
 
            
@@ -214,3 +215,9 @@ class GenerateStartRecords(forms.Form):
                                                               'class': 'datepicker'}))
 
     
+
+class MailForm(ModelForm):
+    
+    class Meta:
+        model = Club_mail
+        fields = ('club', 'naam', 'email','voorval','maatregel', 'starts')
