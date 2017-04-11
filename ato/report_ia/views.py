@@ -26,8 +26,9 @@ from templated_docs.http import FileResponse
 
 @login_required
 def faq(request, template_name='faq.html'):
+    ausr = Ato(request.user)
     faq_html = markdown.markdown(render_to_string('faq.md'))
-    return render(request, template_name, {'data':faq_html})
+    return render(request, template_name, {'data':faq_html, 'ausr':ausr})
             
 @login_required
 def index(request, template_name='home.html'):

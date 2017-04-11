@@ -188,12 +188,23 @@ def get_email_list_club(ausr, action):
     email_to = email_admins + ausr.email_supers()
     return email_to
 
-## def update_ato_passwords(apps, schema_editor):
-##     clubs = Club.objects.all()
-##     admin_group = Group.objects.get(name='ato_admin')
-##     user_group = Group.objects.get(name='ato_user')
-##     ato_gebruiker = Ato_gebruiker
-##     for club in clubs:
-##         username =  club.naam_kort.lower() + '_admin'
-##         user = Users.objects.filter(username=username)
-##         if user:
+#def update_ato_passwords(apps, schema_editor):
+def update_ato_passwords():
+
+    clubs = Club.objects.all()
+    admin_group = Group.objects.get(name='ato_admin')
+    user_group = Group.objects.get(name='ato_user')
+    ato_gebruiker = Ato_gebruiker
+    user_types = ( '_admin', '_user')
+    pwd_idx = 0
+    for club in clubs:
+        for user_type in user_types:
+            username =  club.naam_kort.lower() + user_type
+            print('getting user with username ' , username)
+            user = User.objects.get(username__exact=username)
+            if user:
+                print('username' , username, 'does exist and gets!', pwds[pwd_idx], 'as new password')
+                user.set_password(pwds[pwd_idx])
+                user.save()
+                pwd_idx +=1
+            
