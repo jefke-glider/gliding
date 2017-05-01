@@ -62,12 +62,14 @@ class Opleiding(models.Model):
 class Startwijze(models.Model):
     naam = models.CharField(max_length=30)
     naam_kort = models.CharField(max_length=1)
+    prio = models.IntegerField()
 
     def __str__(self):
         return self.naam
     
     class Meta:
         verbose_name_plural = 'Startwijzen'
+        ordering = ['prio']
 
 
 
@@ -79,6 +81,7 @@ class Type_toestel(models.Model):
 
     class Meta:
         verbose_name_plural = 'Type toestellen'
+        ordering = ['naam']
 
 class Type_voorval(models.Model):
     naam = models.CharField(max_length = 50)
@@ -91,6 +94,7 @@ class Type_voorval(models.Model):
 
 class Kern_activiteit(models.Model):
     naam = models.CharField(max_length=100)
+    prio = models.IntegerField()
 
     def __str__(self):
         return self.naam
@@ -220,6 +224,7 @@ class Voorval(models.Model):
     domein = models.ForeignKey(Domein, on_delete=models.CASCADE)
     windsterkte = models.ForeignKey(Windsterkte, on_delete=models.CASCADE, null=True, blank=True)
     windrichting = models.ForeignKey(Windrichting, on_delete=models.CASCADE, null=True, blank=True)
+    piste = models.CharField(max_length=2, null=True, blank=True)
     wolken = models.ForeignKey(Wolken, on_delete=models.CASCADE, null=True, blank=True)
     thermiek = models.ForeignKey(Thermiek, on_delete=models.CASCADE,null=True, blank=True)
     wolkenbasis = models.ForeignKey(Wolkenbasis, on_delete=models.CASCADE,null=True, blank=True)

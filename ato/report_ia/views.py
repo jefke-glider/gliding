@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404,render,redirect,reverse, get_list_or_404
 from django.template import loader, Context
 from django.template.loader import render_to_string
@@ -8,6 +9,7 @@ from django import forms
 from django.db import connection
 from django.core.mail import send_mail
 from django.utils import timezone
+from formtools.wizard.views import SessionWizardView
 
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -16,6 +18,7 @@ from django.views.generic import ListView
 from django.forms import ModelChoiceField, modelformset_factory, BaseModelFormSet
 
 from .forms import VoorvalForm, ExportForm, MaatregelForm, StartsForm, UploadFileForm, StartsForm, GenerateStartRecords
+from .forms_voorval import VoorvalForm1, VoorvalForm2
 from .models import Voorval, Maatregel, VoorvalMaatregel, Nieuws, AantalStarts, Club, Bestand, Club_mail
 from .models import Type_toestel
 from .utilities import export, Ato, get_email_list_club
@@ -98,6 +101,51 @@ def voorval_overzicht(request,template_name='voorval_overzicht.html'):
     data['ausr'] = ausr
     data['club'] = ausr.club_naam()
     return render(request, template_name, data)
+
+
+class VoorvalWizard(SessionWizardView):
+##     TEMPLATES = {
+##         '0': 'voorval_ingave_wizard.html',
+##         '1': 'voorval_ingave_wizard.html',
+##         }
+    instance = None
+    form_list = [VoorvalForm1, VoorvalForm2]
+##     initial = {
+##         '0': {'locatie': },
+##         '1': {}
+##         }
+
+#    @method_decorator(login_required)
+#    def dispatch(self, *args, **kwargs):
+#        return super(VoorvalWizard, self).dispatch(*args, **kwargs)
+    
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.ausr = Ato(request.user)
+        return super(VoorvalWizard, self).dispatch(request, *args, **kwargs)
+
+    
+    def get_form_instance( self, step ):
+        print('get_form_instance')
+        if self.instance is None:
+            self.instance = Voorval()
+
+        return self.instance
+
+    def done(self, form_list, **kwargs):
+        #ausr = Ato(self.request.user)
+        form_clean_values = [form.cleaned_data for form in form_list]
+        print(form_clean_values)
+        self.instance.club = self.ausr.club()
+        self.instance.save()
+        return  redirect('report_ia:voorval_toegevoegd')
+    
+    def get_template_names(self):
+        """
+        Custom templates for the different steps
+        """
+        print(self.steps.current)
+        return [self.TEMPLATES[self.steps.current]]
 
 @login_required
 def voorval_create(request, template_name="voorval_ingave.html"):

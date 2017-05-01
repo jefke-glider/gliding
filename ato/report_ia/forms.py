@@ -5,9 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Voorval, Club, Maatregel, AantalStarts, Bestand, Club_mail
 
 class VoorvalForm(ModelForm):
-#    zoek_type_toestel = forms.CharField(label="zoek type toestel", required = False)
-#    type_toestel = forms.CharField(label='', widget = forms.HiddenInput(), required = False)
-#    type_toestel = forms.CharField(label='geselecteerd type toestel', required = False)
     boolean_set = ( 'mens', 'uitrusting', 'omgeving', 'product', 'organisatie' )
                                
     class Meta:
@@ -40,20 +37,9 @@ class VoorvalForm(ModelForm):
                        'domein' : 'voorval valt al dan niet binnen/buiten ATO opleiding',
                       }
         labels = {  'muopo_omschrijving' : 'MUOPO omschrijving'}
-##        labels = { 'mens' : 'M', }
-##         widgets = {
-##             'datum': forms.DateInput(),
-##         }
 
     def __init__(self, *args, **kwargs):
         super(VoorvalForm, self).__init__(*args, **kwargs)
-##         for field in self.fields:
-##             help_text = self.fields[field].help_text
-##             self.fields[field].help_text = ''
-##             if help_text != '':
-##                 self.fields[field].widget.attrs.update(
-##                     {'class':'has-popover', 'data-content':help_text, 'data-placement':'bottom',
-##                      'data-container':'body', 'title':'ingave voorval'})
         self.fields['datum'].widget.attrs.update({
             'class': 'has-popover datepicker'
         })
@@ -88,13 +74,6 @@ class MaatregelForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MaatregelForm, self).__init__(*args, **kwargs)
-##         for field in self.fields:
-##             help_text = self.fields[field].help_text
-##             self.fields[field].help_text = ''
-##             if help_text != '':
-##                 self.fields[field].widget.attrs.update(
-##                     {'class':'has-popover', 'data-content':help_text, 'data-placement':'bottom',
-##                      'data-container':'body', 'title':'ingave maatregel'})
         self.fields['in_werking'].widget.attrs.update({
                 'class': 'datepicker'
                 })

@@ -4,7 +4,9 @@ Er werd een nieuwe maatregel aangemaakt voor {{club}} door {{user.username}}.
 Volg deze link om de registratie vd maatregel te bekijken.
 {{link}}
 
-Greetz
+De maatregel kan steeds bijgestuurd worden als blijkt dat deze niet of onvoldoende effect heeft.
 
-ATO eIA superuser
-Have a nice day!
+vanwege de AIR beheerders  
+
+Happy and safe landings!
+

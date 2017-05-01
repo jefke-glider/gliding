@@ -34,7 +34,7 @@
     <li><a href="{% url 'report_ia:voorval_export' %}">Exporteren</a></li>
     <li><a href="{% url 'report_ia:club_mail' %}">Mail</a></li>
 {% endif %}
-{% if ausr.is_super %}
+{% if ausr.is_super and user.is_staff%}
     <li><a href="{% url 'admin:index' %}">Administrator</a></li>
 {% endif %}
     <li><a href="{% url 'report_ia:faq' %}">FAQ</a></li>

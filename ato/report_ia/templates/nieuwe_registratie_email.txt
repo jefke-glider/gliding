@@ -1,10 +1,11 @@
 Hallo,
 
-Er werd een nieuwe registratie aangemaakt voor {{club}} door {{user.username}}.
-Volg deze link om de registratie te bekijken.
+Er werd een nieuw voorval aangemaakt voor {{club}} door {{user.username}}.
+Volg deze link om de ingave te bekijken.
 {{link}}
 
-Greetz
+Gelieve het voorval objectief te onderzoeken en de juiste maatregel(en) te treffen.
 
-ATO eIA superuser
-Have a nice day!
+vanwege de AIR beheerders  
+
+Happy and safe landings!

@@ -2,6 +2,8 @@ from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 
 from . import views
+from report_ia.forms_voorval import VoorvalForm1, VoorvalForm2
+from report_ia.views import VoorvalWizard
 
 urlpatterns = [
     url(r'^$', views.index, name='home'),
@@ -13,6 +15,7 @@ urlpatterns = [
     url(r'^overzicht$', views.voorval_overzicht, name='voorval_overzicht'),
     url(r'^export$', views.voorval_export, name='voorval_export'),    
     url(r'^create$', views.voorval_create, name='voorval_create'),
+    url(r'^create_new/$', VoorvalWizard.as_view()),
     url(r'^created$', views.voorval_toegevoegd, name='voorval_toegevoegd'),    
     url(r'^edit/(?P<pk>\d+$)', views.voorval_update, name='voorval_update'),
     url(r'^delete/(?P<pk>\d+$)', views.voorval_delete, name='voorval_delete'),

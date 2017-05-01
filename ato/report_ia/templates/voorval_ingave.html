@@ -77,7 +77,10 @@ $(function() {
              <h4>Meteo</h4>
          {% endif %}
           {% if field.name not in form.boolean_set %}
-   	    {% bootstrap_label field.label_tag  %}
+           {% if field.field.required %}
+   	    {% bootstrap_icon "star" %}
+           {% endif %}
+           {% bootstrap_label field.label_tag  %}
           {% endif %}
 	  {% bootstrap_field field show_label=False  %}
          {% endfor %}
