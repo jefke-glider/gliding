@@ -101,6 +101,7 @@ class Kern_activiteit(models.Model):
     
     class Meta:
         verbose_name_plural = 'Kern activiteit'
+        ordering = ['prio']
 
 class Kern_gevaar(models.Model):
     naam = models.CharField(max_length=100)
@@ -149,7 +150,7 @@ class Windsterkte(models.Model):
         verbose_name_plural = 'Wind sterktes'
         
 class Windrichting(models.Model):
-    uit = models.CharField(max_length=3)
+    uit = models.CharField(max_length=10)
 
     def __str__(self):
         return self.uit

@@ -16,7 +16,7 @@ class VoorvalForm(ModelForm):
                    'type_schade', 'schade_omschrijving',
                    'synopsis',  'startwijze' ,
                    'type_toestel', 'kern_activiteit',
-                   'windsterkte', 'windrichting', 'wolken', 'wolkenbasis', 'thermiek', 'zichtbaarheid',
+                   'windsterkte', 'windrichting', 'wolken', 'wolkenbasis', 'thermiek', 'zichtbaarheid', 'piste',
                    'mens', 'uitrusting', 'omgeving', 'product', 'organisatie',
                    'muopo_omschrijving',
                    )
@@ -35,8 +35,14 @@ class VoorvalForm(ModelForm):
                        'zichtbaarheid' : 'in km',
                        'muopo_omschrijving' : 'verduidelijk nader voor ELK aangeduid MUOPO ascpect',
                        'domein' : 'voorval valt al dan niet binnen/buiten ATO opleiding',
+                       'piste' : 'welke piste was in gebruik, vb 07 of 25',
                       }
-        labels = {  'muopo_omschrijving' : 'MUOPO omschrijving'}
+        labels = {  'muopo_omschrijving' : 'MUOPO omschrijving',
+                    'synopsis' : 'relaas',
+                    'zichtbaarheid' : 'zichtbaarheid van op de grond(km)',
+                    'wolkenbasis' : 'wolkenbasis (ft)',
+                    'thermiek' : 'thermiek (m/s)',
+                    'windsterkte' : 'windsterkte (kts)'}
 
     def __init__(self, *args, **kwargs):
         super(VoorvalForm, self).__init__(*args, **kwargs)

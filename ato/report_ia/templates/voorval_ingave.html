@@ -34,7 +34,7 @@ $(document).ready(function() {
               $("label[for='id_andere_locatie']").show(); 
            }
          });
-	$('#id_ato').on('change', function() {         
+	$('#id_domein').on('change', function() {         
 	   var selectedValue = $(this).val();
 	   //ato opleiding = 1
 	   if (selectedValue != 1){ 
@@ -47,7 +47,7 @@ $(document).ready(function() {
          });
 	$('#id_type_schade').trigger('change');
 	$('#id_locatie').trigger('change');
-        $('#id_ato').trigger('ato');
+        $('#id_domein').trigger('change');
   
 });
 $(function() {
