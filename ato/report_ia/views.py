@@ -171,6 +171,7 @@ def voorval_create(request, template_name="voorval_ingave.html"):
             t = loader.get_template('nieuwe_registratie_email.txt')
             c= Context({'club': ausr.club_naam(), 'user': request.user, 'link': new_voorval_link})
             message = t.render(c)
+            print('message' ,message)
             send_mail(
                 subject,
                 message,

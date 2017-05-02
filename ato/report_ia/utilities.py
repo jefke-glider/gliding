@@ -184,8 +184,12 @@ def get_email_list_club(ausr, action):
     elif action == 'starts':
         club_emails = Club_mail.objects.filter(club=ausr.club()).filter(starts=True)
     email_admins = list(club_emails.values_list('email', flat=True))
-    print(email_admins)
+    print('admins' , email_admins)
+    print('supers ' ,  ausr.email_supers())
     email_to = email_admins + ausr.email_supers()
+    print('email_to ', email_to)
+    email_to = list(filter(None, email_to))
+    print('email_to after filter', email_to)    
     return email_to
 
 #def update_ato_passwords(apps, schema_editor):
