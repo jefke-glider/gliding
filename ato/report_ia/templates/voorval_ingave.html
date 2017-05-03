@@ -3,8 +3,20 @@
 {% load staticfiles %}
 {% block content %}
  <script>
+var warnMessage = "You have unsaved changes on this page!";
 $(document).ready(function() {
 //	$('.has-popover').popover({'trigger':'click'});
+	//prevent the user from leaving a page with unsaved data!!!
+	$('input:not(:button,:submit),textarea,select').change(function () {
+              window.onbeforeunload = function () {
+	         if (warnMessage != null) return warnMessage;
+              }
+        });
+        $('button:submit').click(function(e) {
+             //alert('submit');
+             warnMessage = null;
+        });
+
 	$('.datepicker').datepicker({'dateFormat':'dd/mm/yy'});
 	//hide textarea if there is no damage (geen schade = 1)
 	//$('#id_schade_omschrijving').hide();

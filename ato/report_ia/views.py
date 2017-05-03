@@ -56,13 +56,11 @@ def index(request, template_name='home.html'):
     news = nieuws.filter(user=ausr.user())
     if len(news) > 0:
         newsl.append(news)
-    print(newsl)
     #if no specific news found for a group, then we check for a specific user
     nieuws_html=[]
     if len(newsl) > 0:
         for qs in newsl:
             msgs=qs.values('bericht')
-            print(msgs)
             for msg in msgs:
                 if msg['bericht']:
                     nieuws_html.append(markdown.markdown(msg['bericht']))
@@ -126,7 +124,6 @@ class VoorvalWizard(SessionWizardView):
 
     
     def get_form_instance( self, step ):
-        print('get_form_instance')
         if self.instance is None:
             self.instance = Voorval()
 
@@ -150,9 +147,6 @@ class VoorvalWizard(SessionWizardView):
 @login_required
 def voorval_create(request, template_name="voorval_ingave.html"):
     ausr = Ato(request.user)
-    print(ausr.is_super)
-    print(ausr.is_admin)
-    print(ausr.is_user)
     form = VoorvalForm(request.POST or None, initial={'locatie':ausr.club().locatie})
     fieldset = ( 'mens', 'uitrusting', 'omgeving', 'product', 'organisatie' ) 
     if form.is_valid():
@@ -171,7 +165,6 @@ def voorval_create(request, template_name="voorval_ingave.html"):
             t = loader.get_template('nieuwe_registratie_email.txt')
             c= Context({'club': ausr.club_naam(), 'user': request.user, 'link': new_voorval_link})
             message = t.render(c)
-            print('message' ,message)
             send_mail(
                 subject,
                 message,
@@ -239,7 +232,6 @@ def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
 @login_required
 def voorval_export(request, template_name="export_table.html"):
     ausr = Ato(request.user)
-    print(ausr.is_super)
     ef = ExportForm(request.POST or None)
     if ausr.is_admin:
         #fix this choicefield for club to the admins club
@@ -282,7 +274,7 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
 
         # ok, new voorval has been saved to the database
         new_link = request.build_absolute_uri(reverse('report_ia:voorval_detail',
-                                                      args=[my_model.pk]))
+                                                      args=[my_model.voorval.pk]))
 
         #print(new_link)
         #we send an email to responsable persons
@@ -404,7 +396,6 @@ def starts_update(request, start_id, template_name="starts_ingave.html"):
                 fail_silently=False,
                 )
         except:
-            print('something went wrong')
             pass
         
         return redirect('report_ia:starts_lijst')

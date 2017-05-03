@@ -26,11 +26,12 @@ SECRET_KEY = 'e07rwrgj2_@ya^^@0lyi*21pjn^y2ls9)&rhr@96u%47^l228-'
 if os.uname()[1] == 'gimli':
     DEBUG = False
     EMAIL_HOST='localhost'
+    ALLOWED_HOSTS = ['air.lvzc.be']
 else:
     DEBUG = True
     EMAIL_HOST = 'wall-e'
+    ALLOWED_HOSTS = ['localhost']
 
-ALLOWED_HOSTS = ['localhost', 'air.lvzc.be']
 
 
 # Application definition

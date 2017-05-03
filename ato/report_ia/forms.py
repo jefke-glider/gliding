@@ -39,7 +39,7 @@ class VoorvalForm(ModelForm):
                       }
         labels = {  'muopo_omschrijving' : 'MUOPO omschrijving',
                     'synopsis' : 'relaas',
-                    'zichtbaarheid' : 'zichtbaarheid van op de grond(km)',
+                    'zichtbaarheid' : 'zichtbaarheid van op de grond (km)',
                     'wolkenbasis' : 'wolkenbasis (ft)',
                     'thermiek' : 'thermiek (m/s)',
                     'windsterkte' : 'windsterkte (kts)'}
@@ -61,7 +61,7 @@ class VoorvalForm(ModelForm):
             self.fields[field].widget.attrs.update({'title':''})
 
 class MaatregelForm(ModelForm):
-    synopsis = forms.CharField(label='synopsis voorval',
+    synopsis = forms.CharField(label='relaas voorval',
                                required=False,
                                widget=forms.Textarea(attrs={'cols': '80',
                                                             'rows':'10', 'disabled':True}))
@@ -72,7 +72,8 @@ class MaatregelForm(ModelForm):
     class Meta:
         model = Maatregel
         fields = ('synopsis', 'omschrijving', 'in_werking')
-        labels = {'omschrijving' : 'omschrijving maatregel'}
+        labels = {'omschrijving' : 'omschrijving maatregel',
+                  'synopsis' : 'relaas'}
         help_texts = { 'synopsis' : 'Omschrijving van het voorval' ,
                        'omschrijving' : 'beschrijf de genomen maatregel (1 per keer)',
                        'in_werking' : 'vanaf wanneer is deze maatregel in werking getreden?'
@@ -88,7 +89,7 @@ class MaatregelForm(ModelForm):
     
 
 class UploadFileForm(ModelForm):
-    synopsis = forms.CharField(label='synopsis voorval',
+    synopsis = forms.CharField(label='relaas voorval',
                                required=False,
                                widget=forms.Textarea(attrs={'cols': '80',
                                                             'rows':'10', 'disabled':True}))
