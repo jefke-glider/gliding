@@ -166,3 +166,41 @@ else:
     MEDIA_URL = '/media/'
 
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/django/debug.log',
+            },
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter' : 'verbose',
+            }
+        },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+            },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+            },
+        },
+    'loggers': {
+        'django': {
+            'handlers': [],
+            'level': 'DEBUG',
+            'propagate': True,
+            'formatter' : 'verbose',
+        },
+        'report_ia.views': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+            'formatter' : 'verbose',
+        },
+    },
+}

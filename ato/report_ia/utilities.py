@@ -59,6 +59,9 @@ class Ato:
         self.ato_user = web_user
         try:
             self.ato = Ato_gebruiker.objects.get(user=web_user)
+            self.is_ato_user =  self.ato_user.groups.filter(name='ato_user').exists()
+            self.is_ato_admin =  self.ato_user.groups.filter(name='ato_admin').exists()
+            self.is_ato_super =  self.ato_user.groups.filter(name='ato_super').exists()            
         except:
             self.ato = None
 
@@ -105,15 +108,15 @@ class Ato:
     
     @property
     def is_user(self):
-        return self.ato_user.groups.filter(name='ato_user').exists()
+        return self.is_ato_user
 
     @property
     def is_admin(self):
-        return self.ato_user.groups.filter(name='ato_admin').exists()
+        return self.is_ato_admin
     
     @property
     def is_super(self):
-        return self.ato_user.groups.filter(name='ato_super').exists()
+        return self.is_ato_super
 
     
     

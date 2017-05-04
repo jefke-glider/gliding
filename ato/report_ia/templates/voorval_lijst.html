@@ -12,11 +12,11 @@
         <thead>
             <tr>
 	        <th>Club</th>
-                <th>Datum voorval</th>
-                <th>Type voorval</th>
+                <th>Datum</th>
+                <th>Type</th>
 		<th>Locatie</th>
 	        <th>Type toestel</th>
-		<th>ATO</th>
+		<th>Domein</th>
                 <th>Opleiding</th>
                 <th>Relaas</th>
 	        <th colspan="2">Acties Bestand</th>
@@ -42,7 +42,7 @@
 	    <td>{{ voorval.type_voorval }}</td>
             <td>{{ voorval.locatie }}</td>
 	    <td>{{ voorval.type_toestel }}</td>
-	    <td>{{ voorval.ato }}</td>
+	    <td>{{ voorval.domein }}</td>
 	    <td>{{ voorval.opleiding }}</td>
 	    <td>{{ voorval.synopsis|truncatewords:20 }}</td>
 	    <td><a href="{% url 'report_ia:upload_bestand' voorval.id %}" class="btn btn-success btn-sm" data-toggle="bestand" title="bestand uploaden" data-content="Default"><span class="glyphicon glyphicon-upload"></span></a></td>
