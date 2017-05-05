@@ -8,6 +8,7 @@ from django.db.models import Count, Avg
 from django import forms
 from django.db import connection
 from django.core.mail import send_mail
+from django.contrib.auth import user_logged_in, user_logged_out
 from django.utils import timezone
 from formtools.wizard.views import SessionWizardView
 
@@ -29,8 +30,16 @@ from templated_docs.http import FileResponse
 import logging
 
 # Get an instance of a logger
-print(__name__)
 logger = logging.getLogger(__name__)
+
+def log_login(sender, user, **kwargs):
+    logger.info('user %s logged in', user)
+    
+def log_logout(sender, user, **kwargs):
+    logger.info('user %s logged out', user)
+
+user_logged_in.connect(log_login)
+user_logged_out.connect(log_logout)
 
 
 @login_required
@@ -43,7 +52,6 @@ def faq(request, template_name='faq.html'):
 @login_required
 def index(request, template_name='home.html'):
     ausr = Ato(request.user)
-    logger.info('logging of user %s club %s', request.user ,  ausr.club_naam())
     nieuws = Nieuws.objects.filter(online=True)
     #we first check if a group is specified
     newsl=[]
@@ -156,7 +164,7 @@ class VoorvalWizard(SessionWizardView):
 @login_required
 def voorval_create(request, template_name="voorval_ingave.html"):
     ausr = Ato(request.user)
-    logger.info('voorval_create for user %s (club %s)', request.user ,  ausr.club_naam())
+    logger.info('voorval_create for user %s (%s)', request.user ,  ausr.club_naam())
     form = VoorvalForm(request.POST or None, initial={'locatie':ausr.club().locatie})
     fieldset = ( 'mens', 'uitrusting', 'omgeving', 'product', 'organisatie' ) 
     if form.is_valid():
@@ -170,7 +178,7 @@ def voorval_create(request, template_name="voorval_ingave.html"):
         #we send an email to responsable persons
         subject = "AIR : Voorval geregistreerd"
         email_to = get_email_list_club(ausr, 'voorval')
-        logger.info('voorval geregistreerd email to %s (user %s club %s)', email_to, request.user ,
+        logger.info('voorval email to %s (user %s club %s)', email_to, request.user ,
                     ausr.club_naam())            
         try:
             #we get the email txt from a template
@@ -240,14 +248,14 @@ def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
     ausr = Ato(request.user)
     if request.method=='POST':
         voorval.delete()
-        logger.info('voorval_delete pk=%d for user %s ( %s)', pk, request.user ,  ausr.club_naam())
+        logger.info('voorval_delete pk=%s for user %s ( %s)', pk, request.user ,  ausr.club_naam())
         return redirect('report_ia:voorval_lijst')
     return render(request, template_name, {'object':voorval, 'club':ausr.club_naam(), 'ausr':ausr})
 
 @login_required
 def voorval_export(request, template_name="export_table.html"):
     ausr = Ato(request.user)
-    logger.info('voorval_export pk=%d for user %s ( %s)', pk, request.user ,  ausr.club_naam())
+    logger.info('voorval_export pk=%s for user %s ( %s)', pk, request.user ,  ausr.club_naam())
     ef = ExportForm(request.POST or None)
     if ausr.is_admin:
         #fix this choicefield for club to the admins club
@@ -281,7 +289,7 @@ def voorval_export(request, template_name="export_table.html"):
 @login_required
 def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.html"):
     ausr = Ato(request.user)
-    logger.info('maatregel_create pk=%d for user %s ( %s)', voorval_pk, request.user ,  ausr.club_naam())
+    logger.info('maatregel_create pk=%s for user %s ( %s)', voorval_pk, request.user ,  ausr.club_naam())
     voorval = get_object_or_404(Voorval, pk=voorval_pk)
     form = MaatregelForm(request.POST or None, initial={'synopsis':voorval.synopsis})
     if form.is_valid():
@@ -296,7 +304,7 @@ def maatregel_create(request, voorval_pk=None, template_name="maatregel_ingave.h
         #print(new_link)
         #we send an email to responsable persons
         email_to = get_email_list_club(ausr, 'maatregel')
-
+        logger.info('maatregel email to %s for user %s ( %s)', email_to, request.user ,  ausr.club_naam())
         try:
             #we get the email txt from a template
             t = loader.get_template('nieuwe_maatregel_email.txt')
@@ -348,8 +356,9 @@ def maatregel_list(request, pk = None, template_name='maatregel_lijst.html'):
 def maatregel_delete(request, pk, template_name="maatregel_confirm_delete.html"):
     ausr = Ato(request.user)
     maatregel = get_object_or_404(Maatregel, pk=pk)
-    voorval_id = maatregel.voorval.id
+    voorval_id = maatregel.voorval.id    
     if request.method=='POST':
+        logger.info('maatregel_deleted pk=%s voorval %d for user %s ( %s)', pk, voorval_id, request.user ,  ausr.club_naam())
         maatregel.delete()
         return redirect('report_ia:maatregel_lijst', pk=voorval_id)
     return render(request, template_name, {'maatregel':maatregel, 'club':ausr.club_naam(), 'voorval_id':voorval_id,
@@ -362,6 +371,7 @@ def maatregel_update(request, pk, template_name='maatregel_ingave.html'):
     form = MaatregelForm(request.POST or None, instance = maatregel, initial={'synopsis':maatregel.voorval.synopsis})
     #print (form.fields['voorval_.id)
     if form.is_valid():
+        logger.info('maatregel_updated pk=%s voorval %d for user %s ( %s)', pk, maatregel.voorval.id, request.user ,  ausr.club_naam())
         form.save()
         return redirect('report_ia:maatregel_lijst', pk=maatregel.voorval.id )
     return render(request, template_name, {'form':form, 'action':'Aanpassen','club':ausr.club_naam(),

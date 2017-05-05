@@ -6,6 +6,6 @@ def home(request):
     <h1>ATO incident/accident registraties</h1>
     <a href="/report_ia/">Registraties</a><br>
     """
-    return HttpResponse(html)
+    return redirect('/report_ia/')
 
 

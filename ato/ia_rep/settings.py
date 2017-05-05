@@ -174,6 +174,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': '/var/log/django/debug.log',
+            'formatter' : 'verbose',
             },
         'console':{
             'level':'DEBUG',
@@ -194,13 +195,11 @@ LOGGING = {
             'handlers': [],
             'level': 'DEBUG',
             'propagate': True,
-            'formatter' : 'verbose',
         },
         'report_ia.views': {
             'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': True,
-            'formatter' : 'verbose',
         },
     },
 }
