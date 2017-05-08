@@ -255,7 +255,7 @@ def voorval_delete(request, pk, template_name='voorval_confirm_delete.html'):
 @login_required
 def voorval_export(request, template_name="export_table.html"):
     ausr = Ato(request.user)
-    logger.info('voorval_export pk=%s for user %s ( %s)', pk, request.user ,  ausr.club_naam())
+    logger.info('voorval_export for user %s ( %s)', request.user ,  ausr.club_naam())
     ef = ExportForm(request.POST or None)
     if ausr.is_admin:
         #fix this choicefield for club to the admins club

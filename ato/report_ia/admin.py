@@ -24,6 +24,7 @@ from .models import Wolken
 from .models import Wolkenbasis
 from .models import Thermiek
 from .models import Zichtbaarheid
+from .models import Club_mail
 
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
@@ -60,4 +61,4 @@ admin.site.register(Wolken)
 admin.site.register(Wolkenbasis)
 admin.site.register(Thermiek)
 admin.site.register(Zichtbaarheid)
-
+admin.site.register(Club_mail)
