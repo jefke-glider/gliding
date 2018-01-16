@@ -178,7 +178,7 @@ def voorval_create(request, template_name="voorval_ingave.html"):
         #we send an email to responsable persons
         subject = "AIR : Voorval geregistreerd"
         email_to = get_email_list_club(ausr, 'voorval')
-        logger.info('voorval email to %s (user %s club %s)', email_to, request.user ,
+        logger.info('voorval (%d) email to %s (user %s club %s)', my_model.domein, email_to, request.user ,
                     ausr.club_naam())            
         try:
             #we get the email txt from a template
@@ -534,7 +534,11 @@ def search_gliders(request, template_name="search_resp.html"):
 @login_required
 def club_mail(request, template_name="club_mail.html"):
     ausr = Ato(request.user)
-    ClubMailFormset = modelformset_factory(Club_mail, fields=('naam', 'email', 'voorval', 'maatregel','starts'), max_num=5, extra=1)
+    ClubMailFormset = modelformset_factory(Club_mail,
+                                           fields=('naam', 'funktie', 'email',
+                                                   'voorval', 'maatregel',
+                                                   'starts', 'ato' ,'non_ato'),
+                                           max_num=5, extra=1)
     if request.method == 'POST':
         form_set = ClubMailFormset(request.POST, queryset=Club_mail.objects.filter(club__id=ausr.club_id()))
         if form_set.is_valid():
@@ -545,7 +549,7 @@ def club_mail(request, template_name="club_mail.html"):
             return redirect('report_ia:home')
     else:
         form_set = ClubMailFormset(queryset=Club_mail.objects.filter(club__id=ausr.club_id()))
-    return render(request, template_name,  {'formset': form_set,  'ausr':ausr})
+    return render(request, template_name,  {'formset': form_set,  'ausr':ausr, 'club' : ausr.club_naam()})
 
 
 

@@ -25,14 +25,17 @@ class Club(models.Model):
 
 class Club_mail(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    funktie = models.CharField(max_length=100, default='')
     naam = models.CharField(max_length=50)
     email = models.EmailField()
     voorval = models.BooleanField(default=False)
     maatregel = models.BooleanField(default=False)
     starts = models.BooleanField(default=False)
+    ato = models.BooleanField(default=False)
+    non_ato = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.naam
+        return self.club.naam + ' ' + self.naam
 
     
 class Ato_gebruiker(models.Model):
@@ -209,7 +212,7 @@ class Voorval(models.Model):
     type_voorval = models.ForeignKey(Type_voorval, on_delete=models.CASCADE)    
     synopsis = models.TextField()
     opleiding = models.ForeignKey(Opleiding, on_delete=models.CASCADE, null=True, blank=True)
-    startwijze = models.ForeignKey(Startwijze, on_delete=models.CASCADE)
+    startwijze = models.ForeignKey(Startwijze, on_delete=models.CASCADE, null=True, blank=True)
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     type_schade = models.ForeignKey(Type_schade, on_delete=models.CASCADE)
     schade_omschrijving = models.TextField(null=True, blank=True)
@@ -218,7 +221,7 @@ class Voorval(models.Model):
     omgeving =  models.BooleanField(default=False)
     product =  models.BooleanField(default=False)
     organisatie =  models.BooleanField(default=False)
-    type_toestel = models.ForeignKey(Type_toestel, on_delete=models.CASCADE)
+    type_toestel = models.ForeignKey(Type_toestel, on_delete=models.CASCADE, null=True, blank=True)
     kern_activiteit = models.ForeignKey(Kern_activiteit, on_delete=models.CASCADE)
     aantal_maatregelen = models.IntegerField(default=0)
     aantal_bestanden = models.IntegerField(default=0)

@@ -22,17 +22,17 @@ class VoorvalForm(ModelForm):
                    )
         help_texts = { 'uur' : 'uur van het voorval in formaat hh:mm',
                        'synopsis' : 'omschrijf hier chronologisch en objectief wat er gebeurd is',
-                       'mens' : 'persoonlijke gedragsbepalende factoren',                       
-                       'uitrusting' : 'alle gebruikte hardware, technische factoren',
-                       'omgeving' : 'gehele vliegomgeving en -inrichting',
-                       'product' : 'het vlieggebeuren',
-                       'organisatie' : 'het clubbeleid',
+                       'mens' : 'gedrag, mentale en fysieke toestand',                       
+                       'uitrusting' : 'de hardware, technische factoren, de infrastructuur, de middelen die nodig zijn voor de vliegactiviteiten',
+                       'omgeving' : 'gehele vliegomgeving, klimatologische omstandigheden...',
+                       'product' : 'het vlieggebeuren, de clubactiviteiten op zich',
+                       'organisatie' : 'het clubbeleid, procedures, clubwerking, taakverdeling',
                        'kern_activiteit': 'de activiteit die werd uitgevoerd op het moment dat het fout is gelopen',
-                       'windsterkte' : 'in knopen',
-                       'wolken' : 'in okta\'s',
-                       'thermiek' : 'in m/s',
-                       'wolkenbasis' : 'in feet',
-                       'zichtbaarheid' : 'in km',
+#                       'windsterkte' : 'in knopen',
+#                       'wolken' : 'in okta\'s',
+#                       'thermiek' : 'in m/s',
+#                       'wolkenbasis' : 'in feet',
+#                       'zichtbaarheid' : 'in km',
                        'muopo_omschrijving' : 'verduidelijk nader voor ELK aangeduid MUOPO ascpect',
                        'domein' : 'voorval valt al dan niet binnen/buiten ATO opleiding',
                        'piste' : 'welke piste was in gebruik, vb 07 of 25',
@@ -42,7 +42,9 @@ class VoorvalForm(ModelForm):
                     'zichtbaarheid' : 'zichtbaarheid van op de grond (km)',
                     'wolkenbasis' : 'wolkenbasis (ft)',
                     'thermiek' : 'thermiek (m/s)',
-                    'windsterkte' : 'windsterkte (kts)'}
+                    'windsterkte' : 'windsterkte (kts)',
+                    'wolken' : 'wolken (okta\'s of 8 stes)',
+}
 
     def __init__(self, *args, **kwargs):
         super(VoorvalForm, self).__init__(*args, **kwargs)
@@ -206,4 +208,5 @@ class MailForm(ModelForm):
     
     class Meta:
         model = Club_mail
-        fields = ('club', 'naam', 'email','voorval','maatregel', 'starts')
+        fields = ('club', 'funktie', 'naam', 'email','voorval','maatregel',
+                  'starts', 'ato', 'non_ato')

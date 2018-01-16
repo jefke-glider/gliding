@@ -60,6 +60,25 @@ $(document).ready(function() {
 	$('#id_type_schade').trigger('change');
 	$('#id_locatie').trigger('change');
         $('#id_domein').trigger('change');
+	$('#showHideMeteo').on('change', function() {
+		var meteoFields = ['id_windrichting', 'id_windsterkte', 'id_wolken', 'id_thermiek',
+			'id_wolkenbasis', 'id_zichtbaarheid'];
+		var checked = $(this).is(':checked');
+		//alert('checked value ' + checked);
+		if (checked){
+			for (i=0; i< meteoFields.length; i++){
+				     $('#' + meteoFields[i]).show();
+				     $("label[for='" + meteoFields[i] + "']").show();
+			}
+		}else{
+		     for (i=0; i < meteoFields.length; i++){
+				   $('#' + meteoFields[i]).hide();
+				   $("label[for='" + meteoFields[i] + "']").hide();
+		     }
+		}
+
+	});
+	//$('#showHideMeteo').trigger('change');			   
   
 });
 $(function() {
@@ -85,8 +104,11 @@ $(function() {
                <h3><b>Onderzoek voorval</b></h3>
              <h4>Duid de factor(en) aan die een oorzakelijk verband hebben met het voorval (MUOPO principe)</h4>
          {% endif %}   
-         {% if field.name == 'windsterkte' %}
-             <h4>Meteo</h4>
+             {% if field.name == 'windsterkte' %}
+	    <div> 
+             <input id="showHideMeteo" type="checkbox" name="meteo" >
+	     <label for="showHideMeteo">Meteo</label><br>
+	    </div>
          {% endif %}
           {% if field.name not in form.boolean_set %}
            {% if field.field.required %}

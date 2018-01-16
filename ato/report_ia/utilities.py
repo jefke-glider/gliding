@@ -179,11 +179,11 @@ def create_ato_users(apps, schema_editor):
         user.groups.add(user_group)
         Ato_gebruiker.objects.create(club=club, user=user)
 
-def get_email_list_club(ausr, action):
+def get_email_list_club(ausr, action, ato):
     if action == 'voorval':
-        club_emails = Club_mail.objects.filter(club=ausr.club()).filter(voorval=True)
+        club_emails = Club_mail.objects.filter(club=ausr.club()).filter(voorval=True).filter(ato=ato)
     elif action == 'maatregel':
-        club_emails = Club_mail.objects.filter(club=ausr.club()).filter(maatregel=True)
+        club_emails = Club_mail.objects.filter(club=ausr.club()).filter(maatregel=True).filter(ato=ato)
     elif action == 'starts':
         club_emails = Club_mail.objects.filter(club=ausr.club()).filter(starts=True)
     email_admins = list(club_emails.values_list('email', flat=True))
