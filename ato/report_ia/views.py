@@ -28,6 +28,7 @@ import markdown
 from templated_docs import fill_template
 from templated_docs.http import FileResponse
 import logging
+import datetime
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -87,20 +88,23 @@ def index(request, template_name='home.html'):
 
 @login_required
 def voorval_list(request, pk = None, template_name='voorval_lijst.html'):
-    ausr = Ato(request.user)        
+    ausr = Ato(request.user)
+    #we only show records from this year
+    year_filter = datetime.date.today().year         
     logger.info('voorval_list user %s (%s)', request.user ,  ausr.club_naam())
     if ausr.is_super:
         if pk:
-            voorval = Voorval.objects.filter(club__id=pk)
+            voorval = Voorval.objects.filter(club__id=pk, datum__year=year_filter) 
         else:
-            voorval = Voorval.objects.all()
+            voorval = Voorval.objects.all().filter(datum__year=year_filter)
     else:
-        voorval = Voorval.objects.filter(club=ausr.club())
+        voorval = Voorval.objects.filter(club=ausr.club(), datum__year=year_filter)
     #recent voorval where ingave < 1 week
     data = {}
     data['object_list'] = voorval
     data['ausr'] = ausr
     data['club'] = ausr.club_naam()
+    data['year_filter'] = year_filter
     return render(request, template_name, data)
 
 @login_required
