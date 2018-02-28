@@ -276,7 +276,7 @@ class Maatregel(models.Model):
         ordering = ['-ingave']
         
     def __str__(self):
-        return self.voorval.club.naam_kort + ' ' + self.voorval.datum + ' ' + self.voorval.uur
+        return self.voorval.club.naam_kort + ' ' + str(self.voorval.datum) + ' ' + str(self.voorval.uur)
 
     def __iter__(self):
         fieldnames = [f.name for f in self._meta.get_fields()]
