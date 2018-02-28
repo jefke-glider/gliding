@@ -241,8 +241,8 @@ class Voorval(models.Model):
             value = getattr(self, field_name, None)
             yield (field_name, value)
     
-#    def __str__(self):
-#        return self.club.naam_kort + ' ' + self.id + ' ' + self.uur
+    def __str__(self):
+        return self.club.naam_kort + ' ' + str(self.datum) + ' ' + str(self.uur)
 
     @property
     def is_recent(self):
